@@ -1,0 +1,42 @@
+name: Instalei e travei
+description: A instalação parou ou deu errado.
+title: "Instalei e travei em…"
+labels: ["instalação"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Esta página é pública. Não cole dado pessoal nem conteúdo das suas notas.
+  - type: input
+    id: versao
+    attributes:
+      label: Versão
+      description: Conteúdo do arquivo `.segundo-cerebro-version`. Se não chegou a existir, escreva "não cheguei lá".
+    validations:
+      required: true
+  - type: input
+    id: etapa
+    attributes:
+      label: Etapa do /instalar em que parou
+      description: Número ou nome da etapa.
+    validations:
+      required: true
+  - type: textarea
+    id: tela
+    attributes:
+      label: O que apareceu na tela
+      description: Mensagem de erro ou descrição do que você viu. Tire nomes e caminhos pessoais antes de colar.
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Versão do Windows
+    validations:
+      required: true
+  - type: input
+    id: desktop
+    attributes:
+      label: Versão do Claude Desktop
+    validations:
+      required: true

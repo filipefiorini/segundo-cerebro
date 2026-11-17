@@ -1,0 +1,16 @@
+{
+  "name": "painel-tarefas",
+  "version": "1.0.0",
+  "description": "Painel das tarefas do Segundo Cérebro ao lado do chat: vê o dia por projeto e trata cada tarefa (concluir, adiar, aguardar, prioridade, projeto, criar), gravando só os campos de data, status, prioridade e projeto em 06 - TAREFAS/Tarefas.",
+  "author": { "name": "Segundo Cérebro" },
+  "license": "MIT",
+  "defaultEnabled": true,
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "vault": {
+      "type": "string",
+      "title": "Pasta do vault",
+      "description": "Opcional. Raiz do vault, quando a sessão abre fora dela. Vazio: usa a pasta da sessão."
+    }
+  }
+}

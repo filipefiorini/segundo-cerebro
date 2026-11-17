@@ -1,0 +1,89 @@
+filters:
+  and:
+    - file.inFolder("05 - GALÁXIA")
+    - 'file.ext == "md"'
+    - 'file.name != "_INDICE"'
+properties:
+  tipo_nota:
+    displayName: "Tipo"
+  fonte_tipo:
+    displayName: "Tipo de fonte"
+  confianca:
+    displayName: "Confiança"
+  validade:
+    displayName: "Validade"
+  data_verificacao:
+    displayName: "Verificada em"
+views:
+  - type: table
+    name: "Todas"
+    groupBy:
+      property: camada
+      direction: ASC
+    order:
+      - file.name
+      - tipo_nota
+      - fonte_tipo
+      - confianca
+      - validade
+      - data_verificacao
+  - type: table
+    name: "Filosofias"
+    filters:
+      and:
+        - 'camada == "Filosofias"'
+    order:
+      - file.name
+      - tipo_nota
+      - fonte_tipo
+      - confianca
+      - validade
+      - data_verificacao
+  - type: table
+    name: "Conceitos"
+    filters:
+      and:
+        - 'camada == "Conceitos"'
+    order:
+      - file.name
+      - tipo_nota
+      - fonte_tipo
+      - confianca
+      - validade
+      - data_verificacao
+  - type: table
+    name: "Frameworks"
+    filters:
+      and:
+        - 'camada == "Frameworks"'
+    order:
+      - file.name
+      - tipo_nota
+      - fonte_tipo
+      - confianca
+      - validade
+      - data_verificacao
+  - type: table
+    name: "Metodologias"
+    filters:
+      and:
+        - 'camada == "Metodologias"'
+    order:
+      - file.name
+      - tipo_nota
+      - fonte_tipo
+      - confianca
+      - validade
+      - data_verificacao
+  - type: table
+    name: "Táticas"
+    filters:
+      and:
+        - 'camada == "Táticas"'
+    order:
+      - file.name
+      - tipo_nota
+      - fonte_tipo
+      - confianca
+      - validade
+      - data_verificacao

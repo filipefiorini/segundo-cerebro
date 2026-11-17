@@ -1,0 +1,11 @@
+{
+  "name": "segundo-cerebro",
+  "owner": { "name": "Segundo Cérebro" },
+  "plugins": [
+    {
+      "name": "guarda-constituicao",
+      "source": "./.claude/skills/guarda-constituicao",
+      "description": "Faz valer no Claude Code as regras da Constituição do Segundo Cérebro: pede confirmação em governança, sobrescrita, comando destrutivo e escrita em conector; recusa CPF, tarefa sem prazo, telefone em arquivo lido em toda sessão, credencial e push forçado."
+    }
+  ]
+}

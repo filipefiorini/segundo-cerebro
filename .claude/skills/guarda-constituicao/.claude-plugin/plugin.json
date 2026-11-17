@@ -1,0 +1,30 @@
+{
+  "name": "guarda-constituicao",
+  "version": "1.0.0",
+  "description": "Faz valer no Claude Code as regras da Constituição do Segundo Cérebro: pede confirmação em governança, sobrescrita, comando destrutivo e escrita em conector; recusa CPF, tarefa sem prazo, telefone em arquivo lido em toda sessão, credencial e push forçado.",
+  "author": { "name": "Segundo Cérebro" },
+  "license": "MIT",
+  "defaultEnabled": true,
+  "userConfig": {
+    "vault": {
+      "type": "string",
+      "title": "Pasta do vault",
+      "description": "Raiz do vault. No vault completo do Segundo Cérebro é opcional (vazio: usa a pasta da sessão). Fora dele, é esta opção que liga a Guarda: ela age só nas sessões abertas nesta pasta ou dentro dela."
+    },
+    "governanca": {
+      "type": "string",
+      "title": "Arquivos de governança",
+      "description": "Só fora do vault completo. Caminhos relativos à raiz do vault cuja escrita pede confirmação, separados por ponto e vírgula; terminado em / é pasta. CLAUDE.md e .claude/ ficam sempre, somados à lista. Vazio: CLAUDE.md; AGENTS.md; .claude/"
+    },
+    "sempre_lidos": {
+      "type": "string",
+      "title": "Arquivos lidos em toda sessão",
+      "description": "Só fora do vault completo. Caminhos onde telefone é recusado, separados por ponto e vírgula; terminado em / é pasta. Vazio: CLAUDE.md"
+    },
+    "pasta_tarefas": {
+      "type": "string",
+      "title": "Pasta de tarefas",
+      "description": "Só fora do vault completo. Pasta das notas de tarefa, relativa à raiz do vault; tarefa aberta gravada nela sem due é recusada. Vazio: a regra não vale."
+    }
+  }
+}

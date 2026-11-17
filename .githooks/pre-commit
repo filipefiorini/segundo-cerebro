@@ -1,0 +1,4 @@
+#!/bin/sh
+# Runs the repository checks before every commit.
+cd "$(git rev-parse --show-toplevel)" || exit 1
+uv run --no-project python scripts/verificar.py || exit 1

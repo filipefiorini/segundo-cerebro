@@ -1,0 +1,3 @@
+user@host
+usuario@servidor
+filipefiorini/segundo-cerebro

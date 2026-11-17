@@ -1,0 +1,829 @@
+{
+  "versao_schema": 1,
+  "versao": "1.0.0-rc.1",
+  "arquivos": [
+    {
+      "caminho": ".claude/settings.json",
+      "tipo": "semente",
+      "sha256": "153f27f02f453c4a38f1aa468500f9fce96809ef6c25274839022fe22bd062b8"
+    },
+    {
+      "caminho": ".claude/skills/LEIA-ME.md",
+      "tipo": "fixo",
+      "sha256": "4bf0e89990b2460d1e490699b44f7c4e8fea0458b8a9dbf5a2b8edaa67bf5fd3"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "37fe8185760ed74ae4a2d5741b5f54a041bf89fd9e9ef824a3ce99e8f25a172f"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/aplicar.ps1",
+      "tipo": "fixo",
+      "sha256": "ad7493400d284bb48cce05753c9065b18623b222dfcecf597ae30048b41e13e1"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/comparar.ps1",
+      "tipo": "fixo",
+      "sha256": "064ebe9b072eccee879c0610288798f758283835f14cd4693436af4684b9b1e4"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/desfazer.ps1",
+      "tipo": "fixo",
+      "sha256": "6ab168f2322ff64be8b39dde0b626093b38fba49282693eb0b88eb3e2d78f14e"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/exemplos.md",
+      "tipo": "fixo",
+      "sha256": "e12a804bf84690710df7fcf3d707a98d9da41207ce103f52452e7867e916022c"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/reference.md",
+      "tipo": "fixo",
+      "sha256": "b191e2bcaca9248b67ac41247de091ad231dcde3b83f0e0b524eec2dbe815b1c"
+    },
+    {
+      "caminho": ".claude/skills/auditar-vault/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "2eb595c72c5355e9944f26cb368b47ccb3aa7f0a08109eff706a107d7e73f220"
+    },
+    {
+      "caminho": ".claude/skills/auditar-vault/exemplos.md",
+      "tipo": "fixo",
+      "sha256": "6ae2bc46cdda473bc58c25ac62324c076467e861adaf11ec9a5380b4c5adc8e4"
+    },
+    {
+      "caminho": ".claude/skills/auditar-vault/reference.md",
+      "tipo": "fixo",
+      "sha256": "9e148220c17bd5b1130862b1b4f201bf36171de2c9ecc50abb802fd67c2d9aa8"
+    },
+    {
+      "caminho": ".claude/skills/deliberar/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "fcf810fb9d057ffc5e53da107917964e3dfb205c416d24e6c3545858e35fa576"
+    },
+    {
+      "caminho": ".claude/skills/deliberar/exemplos.md",
+      "tipo": "fixo",
+      "sha256": "508d98fcb3d1bb752b0e7debe30e1140872e259756b00a4c55a3770408097bf5"
+    },
+    {
+      "caminho": ".claude/skills/guarda-constituicao/.claude-plugin/plugin.json",
+      "tipo": "fixo",
+      "sha256": "3961256e4b570ed344a149be587f218d2c5870cd7c122b8d108bcb3c2544ecfa"
+    },
+    {
+      "caminho": ".claude/skills/guarda-constituicao/README.md",
+      "tipo": "fixo",
+      "sha256": "4fa7a81e69a18e258ac9db5bde4d37f0c4e3587dae88abc455c7acee72ecf225"
+    },
+    {
+      "caminho": ".claude/skills/guarda-constituicao/hooks/hooks.json",
+      "tipo": "fixo",
+      "sha256": "c835c92d8e1159d20a40ca78ad654da7433942c3694ffeda0b376b0c4dfd52cf"
+    },
+    {
+      "caminho": ".claude/skills/guarda-constituicao/hooks/register.ts",
+      "tipo": "fixo",
+      "sha256": "251b45556b7be7c316165dea882f97108427f00a09917239f8bdb0d13c709b51"
+    },
+    {
+      "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
+      "tipo": "fixo",
+      "sha256": "c7f6a04581ea6ad2114dcfbbb035e8c51efe171e0388b7c1031365e474df9a16"
+    },
+    {
+      "caminho": ".claude/skills/instalar/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "f1a219ad71d799f0280ce9ee8dc98c151e101e3866ed47e591cfce205913a50e"
+    },
+    {
+      "caminho": ".claude/skills/instalar/exemplos.md",
+      "tipo": "fixo",
+      "sha256": "ea9f09d1d104a5de5a55920ae129c794974779facf4e40a5da00a51601ea9cc3"
+    },
+    {
+      "caminho": ".claude/skills/instalar/plugins.ps1",
+      "tipo": "fixo",
+      "sha256": "5ce4f3245602530f519d68c02fee2edb7fd4a6bbd6957035cea26af00392506c"
+    },
+    {
+      "caminho": ".claude/skills/instalar/reference.md",
+      "tipo": "fixo",
+      "sha256": "673c8094e0bc6379b879e2682ecb37dab479ec577ddaf1384c6de4208d738d9b"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/.claude-plugin/plugin.json",
+      "tipo": "fixo",
+      "sha256": "76d3089bef5e26ab37c9bd0a3b475a3f379fb21d2621ee9b4b51d05e78cab537"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/README.md",
+      "tipo": "fixo",
+      "sha256": "e02fdcf6d46419d270f68a35202131d03d35b1d56ba18dc1ab54a6ee5bf1397f"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/hooks/hooks.json",
+      "tipo": "fixo",
+      "sha256": "d842d789476d67282d0f04b7e5fdc68a3d981ccec65dd79cfa2d11eed13fb828"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/hooks/register.tsx",
+      "tipo": "fixo",
+      "sha256": "f9a50382356ca2c9e8493d4d6109d01e898ba05f2a1b596c9f76c5e1e14c4452"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/hooks/tarefas.ts",
+      "tipo": "fixo",
+      "sha256": "2ea52e8eb36893f6add6a8358c8965791c182cabb858324a86a9cb0028a0fc96"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/tests/painel.test.tsx",
+      "tipo": "fixo",
+      "sha256": "4195eb8b77202489fafcb72b16bb4354d77e694a40ec9f3b0e9b46b8fe9b5853"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/types/index.d.ts",
+      "tipo": "fixo",
+      "sha256": "bd3b5365e751a69b8bb422f316ee98736aa588808a488846d8edaec0de1344a9"
+    },
+    {
+      "caminho": ".claude/skills/processar-conteudo/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "f0e2be7fd92f0478476c919ae3e0713ef0bf6ffa17d4d33f5de76f0599455363"
+    },
+    {
+      "caminho": ".claude/skills/processar-conteudo/exemplos.md",
+      "tipo": "fixo",
+      "sha256": "712fe538bfa0b3736e60600dbc444e237fa74262f043a349c357a96072e11683"
+    },
+    {
+      "caminho": ".claude/skills/processar-conteudo/reference.md",
+      "tipo": "fixo",
+      "sha256": "21e6f45d6876b7e8ae2b1e48b479a2f5dde2e5df1634174124054c1d7b30e96b"
+    },
+    {
+      "caminho": ".claude/skills/processar-inbox/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "8627cf018d676a4d4e20c91019d1ef6b2cd3e8fcf4f5b0df8fd8c3912f7ee397"
+    },
+    {
+      "caminho": ".claude/skills/processar-reuniao/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "646a36b91013ec73f0796862de22d744711a60c5bc31954e7b0e51d69dd62618"
+    },
+    {
+      "caminho": ".claude/skills/revisar-memoria/SKILL.md",
+      "tipo": "fixo",
+      "sha256": "fe980c1a0e05fecbb16209baf012cbcd13f57c7aa017c9287aa654ccac133aa4"
+    },
+    {
+      "caminho": ".obsidian/app.json",
+      "tipo": "semente",
+      "sha256": "4374eeac1712a41b47890b4ffff2a54ecce4223c02a1d83816087c03f1ba1ad8"
+    },
+    {
+      "caminho": ".obsidian/appearance.json",
+      "tipo": "semente",
+      "sha256": "af528ab56726737e8e3d11bb49b7bf67aca17d980db574119db150cdea0ba428"
+    },
+    {
+      "caminho": ".obsidian/community-plugins.json",
+      "tipo": "semente",
+      "sha256": "592873a827b65eab6b4450fa44b6ddf2b67c9dcbde706ee3b9301f8525db7f81"
+    },
+    {
+      "caminho": ".obsidian/core-plugins.json",
+      "tipo": "semente",
+      "sha256": "6accf63ea9e47cabaee493e20473eb7ead8fb97324120c5b3d44c90f844f9cfe"
+    },
+    {
+      "caminho": ".obsidian/graph.json",
+      "tipo": "semente",
+      "sha256": "eec7dfc34cfe6a06fcff30690d0d0940cc66e4462a8de25f596083432a4bfd03"
+    },
+    {
+      "caminho": ".obsidian/themes/Dracula Official/LICENSE",
+      "tipo": "fixo",
+      "sha256": "4cdad101db975232dfef7ae7aa4058f676da365cabb45a19579f5e99aead9f30"
+    },
+    {
+      "caminho": ".obsidian/themes/Dracula Official/manifest.json",
+      "tipo": "fixo",
+      "sha256": "d568fe8b5c5436b7452ee696b3cbd16913cdaefb1cf97c1cd59aff921c04d8cd"
+    },
+    {
+      "caminho": ".obsidian/themes/Dracula Official/theme.css",
+      "tipo": "fixo",
+      "sha256": "51eb1195d12bd0e515e1c32d291b50d6fa6b4767603ef3c3e43e03ac7b50375a"
+    },
+    {
+      "caminho": "00 - INBOX/.gitkeep",
+      "tipo": "semente",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "caminho": "01 - PROJETOS/Em Andamento/.gitkeep",
+      "tipo": "semente",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "caminho": "01 - PROJETOS/Em Espera/.gitkeep",
+      "tipo": "semente",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "caminho": "02 - ÁREAS/Segundo Cérebro/_CONTEXTO.md",
+      "tipo": "semente",
+      "sha256": "a8366338d1cbbf4275a89f542c169894a1ce1c9d2c077818c3934ae56ac4bc16"
+    },
+    {
+      "caminho": "02 - ÁREAS/Segundo Cérebro/_DECISOES.md",
+      "tipo": "semente",
+      "sha256": "cde4c82bffdb04bf41b855dfe6542888c275b056b0905190906740651569ccac"
+    },
+    {
+      "caminho": "02 - ÁREAS/Segundo Cérebro/_HISTORICO.md",
+      "tipo": "semente",
+      "sha256": "8fcbea0d48a259445f6d5976c2a462cedaff472387b3bf6e8fd46b1c55376be4"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Artigos/500-AI-Agents-Projects - ashishpatel26.md",
+      "tipo": "exemplo",
+      "sha256": "f38a524b023d888626cadfc169b25cbbdbb270439c84e672075033b8fddcba86"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Artigos/LLM Wiki - Andrej Karpathy.md",
+      "tipo": "exemplo",
+      "sha256": "8b5d9489f8047bd8ded7d84c2dd9bbf2d188d908be972b889f804d2ddbc4bcfc"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Artigos/awesome-claude-code - hesreallyhim.md",
+      "tipo": "exemplo",
+      "sha256": "e3c2233701f6af927ed8d17d364e4a71c821ff42ec60651b6ed3ce3388c5c946"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Artigos/notebooklm-py - teng-lin.md",
+      "tipo": "exemplo",
+      "sha256": "c91630a118378f38ddb84572ad416fd7bdb997b5ac454eb354c1474903a40ac7"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Livros/A Psicologia Financeira - Morgan Housel.md",
+      "tipo": "exemplo",
+      "sha256": "1841dfbcc1e0d364cb42056f85d5744f4d354948e7ca289906c68e965323f833"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Livros/Casais Inteligentes Enriquecem Juntos - Gustavo Cerbasi.md",
+      "tipo": "exemplo",
+      "sha256": "39b4eec62b3b58875caebf7ffda07a4dfbc92c9dd1cade5a4a85bbca3e6b76cc"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Livros/Criando um Segundo Cérebro - Tiago Forte.md",
+      "tipo": "exemplo",
+      "sha256": "a40b81e2e2b78ad74e1094bb146f3717f2b8b80a107c3979dcae1cb71b3b4463"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Livros/Do mil ao milhão - Thiago Nigro.md",
+      "tipo": "exemplo",
+      "sha256": "0904c52d0242a0fe6eb89162b4444ddb2c2bf194045256446bb1564b6e697fad"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Livros/O Investidor Inteligente - Benjamin Graham.md",
+      "tipo": "exemplo",
+      "sha256": "0c2a98b08654754430f30a5d47a01e61007bca53c8e276720390b61f61e77d50"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Livros/O Rei dos Dividendos - Luiz Barsi Filho.md",
+      "tipo": "exemplo",
+      "sha256": "f8e0d5c43d9b2b97a20f95482427dd402cae4628b7e4663ddfcfc1d93a2990b7"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/Reflexões/Ecossistema Second Brain com IA.md",
+      "tipo": "exemplo",
+      "sha256": "b863d77361052f2897ecae3cbfd7edfb563382bb176d46c064c9812c77d57931"
+    },
+    {
+      "caminho": "03 - RECURSOS/Fontes/_INDICE.md",
+      "tipo": "semente",
+      "sha256": "5e78a1e2782729eb78b97008796013e9ce8c1f7f6ac1126928963bf1e7050574"
+    },
+    {
+      "caminho": "03 - RECURSOS/Procedimentos/.gitkeep",
+      "tipo": "semente",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "caminho": "04 - ARQUIVO/.gitkeep",
+      "tipo": "semente",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Capture pelo critério da ressonância, não por completude.md",
+      "tipo": "exemplo",
+      "sha256": "fa08e5b00329cb2616411d1bc911e0f19093c9e6292b6bbc82c441c324bf5111"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Da captura à Galáxia — o caminho de uma nota.md",
+      "tipo": "exemplo",
+      "sha256": "e37b821bdef40cf2f4043da3275fd5fa31ff21fe4a1b07392bb0a13a2d0f1939"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Dividendos de setores perenes com aporte todo mês.md",
+      "tipo": "exemplo",
+      "sha256": "fe8be429f8a5a3718478de2bcad26a2d5b4287ff8a5b5d45a37cd064febf4545"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Ficar rico e continuar rico são habilidades diferentes.md",
+      "tipo": "exemplo",
+      "sha256": "5b04ac0d57e515d6b331bc27a376cc19ff89e4568b05359904a69825d614947c"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Galáxia.base",
+      "tipo": "fixo",
+      "sha256": "ea67bc3cc0d23db50d11faad264f0eee9ac93e121bc21fa6fb1008506fe89573"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Gastar bem, poupar mais, investir melhor.md",
+      "tipo": "exemplo",
+      "sha256": "340e4ee2ac1ad93c74480b4c36c3337ca6c637947ee6a0d5a1681871ba8e2efc"
+    },
+    {
+      "caminho": "05 - GALÁXIA/IPARAG — sete pastas, uma pergunta cada.md",
+      "tipo": "exemplo",
+      "sha256": "8b90e8706ceadfe916582bdadc0357b6de9c95c9b855b697657de328384c0b4b"
+    },
+    {
+      "caminho": "05 - GALÁXIA/LLM Wiki Pattern.md",
+      "tipo": "exemplo",
+      "sha256": "5a8a29eedb4605f4e5117a766d630578b02d7ab4d02f8b46a59c5117fe5f7678"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Lethal Trifecta — Framework de Segurança para Agentes de IA.md",
+      "tipo": "exemplo",
+      "sha256": "483d1778e6d355837184b07eff76a8813a03133fa18e3f4674531a94b2dbea3e"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Mapa de Responsabilidade — cada arquivo tem dono e escopo.md",
+      "tipo": "exemplo",
+      "sha256": "0ff695724f08f10002a9b739a7ffd016566fb9a226720c8d86af4a4acec3b3ee"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Margem de segurança.md",
+      "tipo": "exemplo",
+      "sha256": "4162570647b6b776002c7c8bb6610c18ed67d31e30aed97b720c7d9c622dca83"
+    },
+    {
+      "caminho": "05 - GALÁXIA/O Segundo Cérebro transforma consumidores em criadores.md",
+      "tipo": "exemplo",
+      "sha256": "ac4c4b175538d650d1d2db539090a359af2fde92ef3ad7ffea7474bc20e84f9f"
+    },
+    {
+      "caminho": "05 - GALÁXIA/O agente só faz o que está escrito.md",
+      "tipo": "exemplo",
+      "sha256": "faad4108d659291181b66a6522ce361214504ec43e371d153699a8766fda411c"
+    },
+    {
+      "caminho": "05 - GALÁXIA/O cérebro é para ter ideias, não para guardá-las.md",
+      "tipo": "exemplo",
+      "sha256": "c8d1c50886b16042cb28a076d4eda409aebec14b232f0b757e08a0f78d269284"
+    },
+    {
+      "caminho": "05 - GALÁXIA/O método CODE — Capturar, Organizar, Destilar, Expressar.md",
+      "tipo": "exemplo",
+      "sha256": "fe616c80fd613709aae80e8e12c134de07eb9c77f23f16b5640d71afd0a0c2f3"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Organize pelo que vai fazer, não pelo assunto.md",
+      "tipo": "exemplo",
+      "sha256": "597d6084fe522666cdffd46cc0757c682dbcf279966bb5dc287d1bc149997f2a"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Pacotes Intermediários — nada do que você cria precisa ser descartado.md",
+      "tipo": "exemplo",
+      "sha256": "18130b922f4bdd1057e4e5659c4787980799bb4a1a3300ea1012381ea4297dc4"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Perfis do casal diante do dinheiro.md",
+      "tipo": "exemplo",
+      "sha256": "0b3a65a3bf11e14ed1c011dc639d818dd4fd62a7554055f2b7a7acb95153f510"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Self-Healing de Cross-References.md",
+      "tipo": "exemplo",
+      "sha256": "e0cae40dc7d4cf1d530a80c147e182bbd55faabd7dc366014d36c095d6e353c0"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Separação Framework e Conteúdo com Update System.md",
+      "tipo": "exemplo",
+      "sha256": "262f403ff3ab3135e739d415e62ebb3d87e529262690d9970b4727958a5d8ab2"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Sumarização Progressiva — ler em camadas.md",
+      "tipo": "exemplo",
+      "sha256": "c25d3cf9fbeedede474c24efcb6b4884bb4e6041f336649c9eba77af5e96be25"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Toda tarefa nasce com prazo.md",
+      "tipo": "exemplo",
+      "sha256": "c66d5c53bffb3df368b90911c0abf8bfcf1032cb19e8521e6f21ada2958023a0"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Tríade AGENTS + SOUL + TOOLS.md",
+      "tipo": "exemplo",
+      "sha256": "5cbcdb40feb995a677756bf0bda5841819aecf963c2015a80796e4989584a4ee"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Verification-First — Conhecimento com Fonte e Frescor.md",
+      "tipo": "exemplo",
+      "sha256": "4de8edcbc0dfadd9e4b2cf65affcd9d58a65196d416b5f6cf2ace78c843d220b"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Vibe Coding.md",
+      "tipo": "exemplo",
+      "sha256": "e1ead9a0c2ad235ec1391ae1805c88575783ee0ccfd3155553cb4a50978ebd0e"
+    },
+    {
+      "caminho": "05 - GALÁXIA/Zero Trust em Permissões de Agente.md",
+      "tipo": "exemplo",
+      "sha256": "40e512900359f4b022534b593d072260de58fb251c2cf1c15e68d79181d38079"
+    },
+    {
+      "caminho": "05 - GALÁXIA/_INDICE.md",
+      "tipo": "semente",
+      "sha256": "bb71d3dc4400edb1e9e55c44dadec85b2c76fbcb3b64c1af50389406a5a1ee97"
+    },
+    {
+      "caminho": "06 - TAREFAS/Tarefas/.gitkeep",
+      "tipo": "semente",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/Aguardando.base",
+      "tipo": "fixo",
+      "sha256": "7566f1afdcdb5f91b139a9a0fb7929d3c4f82341a0f270de5c816ce55ffd6b54"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/Concluídas.base",
+      "tipo": "fixo",
+      "sha256": "6468d28723b596a9640309927ef2650e5a1c65f40e656046a1fa213fbd4f525f"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/Hoje.base",
+      "tipo": "fixo",
+      "sha256": "8b1abe11754ff0529be3151aef176dc107b75d675ac34cc3b97b90fe32582db4"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/Kanban.base",
+      "tipo": "fixo",
+      "sha256": "3d8bfe689df5cbdba92282349b58fdf45ddd24404bae5ebae13ee2f2cbb266a1"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/Por projeto.base",
+      "tipo": "fixo",
+      "sha256": "f48a02b6b9dac539dc6a93a9e292ddbfa29fc8497daa2b35b9cdd3fc245f6d7e"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/Semana.base",
+      "tipo": "fixo",
+      "sha256": "51945482c2bf5e8736fb6ee1ecdfd35a02308c1288e8aea6a961628e0c69c52f"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/agenda-default.base",
+      "tipo": "fixo",
+      "sha256": "43eeba1a5b90a0bc8e8f487c667f62721ba4781d3ca53558d753ae7610abbda2"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/calendar-default.base",
+      "tipo": "fixo",
+      "sha256": "047e5040753635481420afac05adcdc7c5d1edd495fd1c7981c40e0c367d244f"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/kanban-default.base",
+      "tipo": "fixo",
+      "sha256": "29d88127c57fb6d9e5b8ac66866571abe2519246942d354a807c33a465cb027b"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/mini-calendar-default.base",
+      "tipo": "fixo",
+      "sha256": "293e5beb1c4bfe212cbd5e3f77715df34c77e638c623a6c17fdb86564b109193"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/pomodoro-stats.base",
+      "tipo": "fixo",
+      "sha256": "1d9bbd631351a72ccbae9c8eb24337241feee818b45e1fd2147dd76a759e929a"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/relationships.base",
+      "tipo": "fixo",
+      "sha256": "6776d26d42840054134524761134bd46f46d95bbba9f5623b75b6c3c2e09fb43"
+    },
+    {
+      "caminho": "06 - TAREFAS/Views/tasks-default.base",
+      "tipo": "fixo",
+      "sha256": "23c4425cb32844f5f12dfd051a9fd32dea1eaae270b4ed485caa8719de570b51"
+    },
+    {
+      "caminho": "06 - TAREFAS/_INDICE.md",
+      "tipo": "fixo",
+      "sha256": "22e4c32b11fee95fabf33db2eefc666d67dbecec0a8fc29d5ca41ea6399fe1c8"
+    },
+    {
+      "caminho": "BEM-VINDO.md",
+      "tipo": "fixo",
+      "sha256": "168e670b8cc4a1adc6b19ff9f8fa68c0b90b05a363f06c75cec6cb11275cdd16"
+    },
+    {
+      "caminho": "CLAUDE.md",
+      "tipo": "fixo",
+      "sha256": "b3d80f552b44325818ad9649fc5f74b4c0431732a4b18bf694baea46a930135e"
+    },
+    {
+      "caminho": "Homepage.md",
+      "tipo": "semente",
+      "sha256": "d7aefe50c75a97dbd45c9632a206773e439dc62e62128597faa1ffd9ad880f53"
+    },
+    {
+      "caminho": "_assets/LEIA-ME.md",
+      "tipo": "fixo",
+      "sha256": "25c4454e31372b6967538c6bbc73f31590666318ce4a9a5a580c5a85077f1dbf"
+    },
+    {
+      "caminho": "_assets/banner-area.png",
+      "tipo": "fixo",
+      "sha256": "f78e8c3e669ff49b55521160657d320b49901f04ac74f0520c51bc157eb337a7"
+    },
+    {
+      "caminho": "_assets/banner-conteudo-longo.png",
+      "tipo": "fixo",
+      "sha256": "9c497cd08b2ca16cc0c991da156a7013f704da869887f693e761791e66fb4c03"
+    },
+    {
+      "caminho": "_assets/banner-conteudo-semanal.png",
+      "tipo": "fixo",
+      "sha256": "e0d8fb4e4c9ec87cb7573e182fb65dad79b92e4e076e7a0f7489450520faa405"
+    },
+    {
+      "caminho": "_assets/banner-copywriting.png",
+      "tipo": "fixo",
+      "sha256": "72ea4fbde13858909298ad6c279541e89f22e8e0e2e3d4a430038ffc970766e3"
+    },
+    {
+      "caminho": "_assets/banner-dashboard-metricas.png",
+      "tipo": "fixo",
+      "sha256": "79ed7d1dd4c1de8d8128ae38e5f19414ce49739570b16fc30ae0e3e414bd5b3d"
+    },
+    {
+      "caminho": "_assets/banner-fontes.png",
+      "tipo": "fixo",
+      "sha256": "d8d3c19ecca492707326ad0eff65dc5645aa34b5fd63f08ffa68d18f387e96ff"
+    },
+    {
+      "caminho": "_assets/banner-galaxia.png",
+      "tipo": "fixo",
+      "sha256": "01362d07ad1bd1f57f4fe8190cbf2f89475e15eea427597e6018c13214f51045"
+    },
+    {
+      "caminho": "_assets/banner-homepage.png",
+      "tipo": "fixo",
+      "sha256": "1178c531e3862cc4e8f66c61cc9259cebbe4acf21134d3adaeb1cf7ba0ddc25b"
+    },
+    {
+      "caminho": "_assets/banner-literatura-artigo.png",
+      "tipo": "fixo",
+      "sha256": "50855bcc337da9aabe3904d62d8dd4ef9a8342fd94989be03f7ddbcf466e8418"
+    },
+    {
+      "caminho": "_assets/banner-literatura-curso.png",
+      "tipo": "fixo",
+      "sha256": "3568d57383eaba43e537b5e2a28a09a13b2a710837af1e3181b69eb0c1de7cf4"
+    },
+    {
+      "caminho": "_assets/banner-literatura-livro.png",
+      "tipo": "fixo",
+      "sha256": "28be89e2519b91738baca763c0211303fb570dcb8781e4fa0f550d46ac2415a6"
+    },
+    {
+      "caminho": "_assets/banner-literatura-podcast.png",
+      "tipo": "fixo",
+      "sha256": "260a5a7954283bd22fff462b43daa630a71ebf688eae3eeebeb64b137f273112"
+    },
+    {
+      "caminho": "_assets/banner-literatura-video.png",
+      "tipo": "fixo",
+      "sha256": "48ca264e3381234c9d1e4f5346078b3fd9236b55660c3aa8f94716d1b567f3ef"
+    },
+    {
+      "caminho": "_assets/banner-nota-permanente.png",
+      "tipo": "fixo",
+      "sha256": "478900231f7fcb38b4962e66e9d8687bac3aba855824df4815c74e8bba247ace"
+    },
+    {
+      "caminho": "_assets/banner-pessoas.png",
+      "tipo": "fixo",
+      "sha256": "e65fe22c6e55d7de3cf5522e807d88ee896a35cc4e32993e9c8507f082bb14ac"
+    },
+    {
+      "caminho": "_assets/banner-procedimentos.png",
+      "tipo": "fixo",
+      "sha256": "a452fa2f20a077daa0b9348217ecae1a3dbee6b88cb35c797b15cbe33260e71a"
+    },
+    {
+      "caminho": "_assets/banner-projeto.png",
+      "tipo": "fixo",
+      "sha256": "52baa93289b5d3f186e0f1e3f0890784fa5dbe8b220ed381733c2c388e365ab3"
+    },
+    {
+      "caminho": "_assets/banner-prompts-ia.png",
+      "tipo": "fixo",
+      "sha256": "2374fcd42721fa6195285e4c6223aac30fbd42d53f555a95b47444865fecfb0b"
+    },
+    {
+      "caminho": "_assets/banner-reuniao.png",
+      "tipo": "fixo",
+      "sha256": "471a64a64362b9e7ddc1cda10b014973a69078b67a45b531410f552f805f0ab5"
+    },
+    {
+      "caminho": "_assets/banner-segundo-cerebro.png",
+      "tipo": "fixo",
+      "sha256": "6ecb2374b716a70d669aabf62b85e70958aaeac946e626a83c7ceed8502fdd4f"
+    },
+    {
+      "caminho": "_assets/banner-video-youtube.png",
+      "tipo": "fixo",
+      "sha256": "376b01652af10a760bb7281616178750302fc18ca6ec82b9ed63bc2a3c1a1d90"
+    },
+    {
+      "caminho": "_docs/CHANGELOG.md",
+      "tipo": "fixo",
+      "sha256": "7850c912051daaa46e16a7ff02a650c16afcccb337afdb7993ddd69f87634264"
+    },
+    {
+      "caminho": "_docs/Como o Autor Opera em Casa.md",
+      "tipo": "fixo",
+      "sha256": "5fbed02e7e99d6e07b107773ce8f7f149902f5d42c8d68c4acf1b8a31c8ff0b1"
+    },
+    {
+      "caminho": "_docs/Configuração de Plugins/LEIA-ME.md",
+      "tipo": "fixo",
+      "sha256": "568eda72a59fddb393e34976aab574f18c5d6bc56ad85643bd7cd4e10f774c21"
+    },
+    {
+      "caminho": "_docs/Configuração de Plugins/dataview.data.json",
+      "tipo": "fixo",
+      "sha256": "87b441310cfaedb911bde72acff978c263b750753c3ac32faeaa102c3c356d1f"
+    },
+    {
+      "caminho": "_docs/Configuração de Plugins/homepage.data.json",
+      "tipo": "fixo",
+      "sha256": "be109039fa1a29902bfddefcb04fd57ff034c490cfe1e36c17f8c5ef0e6fb2c9"
+    },
+    {
+      "caminho": "_docs/Configuração de Plugins/obsidian-git.data.json",
+      "tipo": "fixo",
+      "sha256": "8001a4c795774f5ac4815017f74e5e0487aa3efaadf823043bfb61ec6a4435ee"
+    },
+    {
+      "caminho": "_docs/Configuração de Plugins/tasknotes.data.json",
+      "tipo": "fixo",
+      "sha256": "b2baf554008476495b3431d9e6f3db48499e67c2e4a7fc26a47dc5c152126375"
+    },
+    {
+      "caminho": "_docs/Configuração de Plugins/templater-obsidian.data.json",
+      "tipo": "fixo",
+      "sha256": "15aa20e845bf2ab61a28f44e2153cc00694473617cf691623c9df215d818bfd9"
+    },
+    {
+      "caminho": "_docs/Ferramentas.md",
+      "tipo": "fixo",
+      "sha256": "f2230e6ae41eff4fbf291cbdd2f8534bcd596dcc8a69934d648ca188db6edee2"
+    },
+    {
+      "caminho": "_docs/Manual do Segundo Cérebro.md",
+      "tipo": "fixo",
+      "sha256": "a237a3c22ea7f756a1c053a4e8ae0d35238cfac0b834f5904083eff99aef4236"
+    },
+    {
+      "caminho": "_docs/O Método.md",
+      "tipo": "fixo",
+      "sha256": "9cb50e8b4bc5c4075b0c47f3ef2de74fcdd65bef586b957e62978f8affaba1f0"
+    },
+    {
+      "caminho": "_docs/Roadmap.md",
+      "tipo": "semente",
+      "sha256": "63720a9c9e501903b96adf7aa0fad46a5fec8108f68629539ec4b8c5d37ae534"
+    },
+    {
+      "caminho": "_docs/Taxonomia de Tags.md",
+      "tipo": "fixo",
+      "sha256": "b6b55bf8e2ee5b020fb1ca7798827bdf3e4f0501b86ad88fe6df2652a756511e"
+    },
+    {
+      "caminho": "_logs/.gitkeep",
+      "tipo": "semente",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "caminho": "_templates/Template de Dashboard de Métricas.md",
+      "tipo": "fixo",
+      "sha256": "492a7dac884a31ce77b2d464c6ced6244ec8a02a2e011d80cbf9cce467fe2d1a"
+    },
+    {
+      "caminho": "_templates/Template de Deliberação.md",
+      "tipo": "fixo",
+      "sha256": "8ca1bae5b4c3a5c3ef10c90abe3dc086adddeef98252a0dda6590d120b9ce072"
+    },
+    {
+      "caminho": "_templates/Template de Livro.md",
+      "tipo": "fixo",
+      "sha256": "4cf1df0c6e73937fac7a83d8123378bb6a4678f3a32d34221988147d639abe5d"
+    },
+    {
+      "caminho": "_templates/Template de Nota da Galáxia.md",
+      "tipo": "fixo",
+      "sha256": "0602355e08c58d099e0ce2309afd45a79770c6ae75e70ef2a73d323c9ed70576"
+    },
+    {
+      "caminho": "_templates/Template de Nota de Literatura - Artigo.md",
+      "tipo": "fixo",
+      "sha256": "5f9c566bcd7aa7aa9828ca1c639cb8a8f09b456faccebf34c483958a371b475e"
+    },
+    {
+      "caminho": "_templates/Template de Nota de Literatura - Curso.md",
+      "tipo": "fixo",
+      "sha256": "18825e0332d14a71fe74f1557dfb61d4ff3dd391e1aa306898907a606892c102"
+    },
+    {
+      "caminho": "_templates/Template de Nota de Literatura - Livro.md",
+      "tipo": "fixo",
+      "sha256": "d63498154109f520caaecc354d3a1263ba93e4b878baf157a816269770cc9584"
+    },
+    {
+      "caminho": "_templates/Template de Nota de Literatura - Podcast.md",
+      "tipo": "fixo",
+      "sha256": "9c7554d5d42f1a6caef22495246ebddf3be4e0eed21881d2e71bb6a96d8d2b22"
+    },
+    {
+      "caminho": "_templates/Template de Nota de Literatura - Vídeo.md",
+      "tipo": "fixo",
+      "sha256": "630ec936043f5af8126aa23b57a6d427d592b0500ed20f2b9e28d46ac9727680"
+    },
+    {
+      "caminho": "_templates/Template de Pessoa.md",
+      "tipo": "fixo",
+      "sha256": "93a5ffa1da96393f2c5c7f07aaee8a68b82373d9e5da86c528979858ddc65919"
+    },
+    {
+      "caminho": "_templates/Template de Projeto (_CONTEXTO).md",
+      "tipo": "fixo",
+      "sha256": "4a34f112a27b9d23b5d250147949a39c620156cb620ee7a848fa0b6530851a95"
+    },
+    {
+      "caminho": "_templates/Template de Reunião.md",
+      "tipo": "fixo",
+      "sha256": "894aa3b973aca2eff9be0dccea00f50ccbcb3b52c1708a18263bf7f1dca8bf50"
+    },
+    {
+      "caminho": "_templates/Template de Tarefa.md",
+      "tipo": "fixo",
+      "sha256": "d056c1a4707db829966218388c0e7fed6bc4dd8fdc26d626c9622256884e557a"
+    },
+    {
+      "caminho": "_templates/Template de Tarefas.md",
+      "tipo": "fixo",
+      "sha256": "26cce626979ec27c7a2d85a12752c6af28939d8f4ae7ebe35ed7dba6955d7943"
+    },
+    {
+      "caminho": "_templates/Template de Área (_CONTEXTO).md",
+      "tipo": "fixo",
+      "sha256": "efd0501bb44a3ddd117154d8ccc066aa663a43cbfd8a4ba92650b6d838381a9d"
+    },
+    {
+      "caminho": "memory.md",
+      "tipo": "fixo",
+      "sha256": "9be60ff7324fea287ee787110f456725fc00c87343990d8d337fcd3d6c4ebda3"
+    },
+    {
+      "caminho": "memory/aprendizados.md",
+      "tipo": "semente",
+      "sha256": "c9d0aa2826293d2956dbc8454e9096a66783a20faef06964a3b0a3d43c3d9ab7"
+    },
+    {
+      "caminho": "memory/fatos.md",
+      "tipo": "semente",
+      "sha256": "8d4c6e6f46d771201ca6d42a9252da34e46516c7b59036c23c06b0e6d62d1708"
+    },
+    {
+      "caminho": "memory/sessoes.md",
+      "tipo": "semente",
+      "sha256": "9a78de97395e978c2ba8385a3962ed52a75d4add12b71c67ade73a2579b61a3e"
+    }
+  ],
+  "historico": [
+    {
+      "versao": "1.0.0-rc.1",
+      "removidos": [],
+      "renomeados": [],
+      "migracoes": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": 4,
+  "homepages": {
+    "Main Homepage": {
+      "version": "2",
+      "openOnStartup": true,
+      "openMode": "replace",
+      "manualOpenMode": "retain",
+      "commands": [],
+      "alwaysApply": false,
+      "hasRibbonIcon": true,
+      "ribbonIcon": "home",
+      "separateMobile": false,
+      "mobileDefaultNote": "",
+      "mobileOpenOnStartup": false,
+      "mobileOpenMode": "replace",
+      "value": "Homepage",
+      "kind": "File"
+    }
+  },
+  "separateMobile": false
+}

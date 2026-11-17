@@ -1,0 +1,42 @@
+# Environment variables - NEVER commit
+.env
+.env.local
+.env.*
+
+# Cache and temporary assets
+_assets/cache/
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Dependencies
+node_modules/
+
+# Obsidian: compiled plugin binaries (install via community plugins)
+.obsidian/plugins/
+
+# Obsidian: window layout (changes on every click, not content)
+.obsidian/workspace*.json
+
+# Local Claude Code config - do not version
+.claude/settings.local.json
+
+# Python: venvs and bytecode
+**/.venv/
+**/.venv-*/
+__pycache__/
+*.pyc
+
+# Claude Code superpowers: planos e relatórios locais
+.superpowers/
+
+# Release e atualização: artefatos locais
+dist/
+.segundo-cerebro/backup/
+.segundo-cerebro/preparo/
