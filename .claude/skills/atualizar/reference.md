@@ -194,7 +194,7 @@ Sem `.segundo-cerebro-version`:
 
 **Abertura** (atualização nova):
 
-> Vou atualizar o seu Segundo Cérebro, hoje na versão <de>. Funciona assim: você me passa o zip da versão nova, eu confiro, mostro o que mudou e o que vou fazer com cada arquivo, e só então gravo tudo de uma vez, com um backup antes.
+> Vou atualizar o seu Segundo Cérebro, hoje na versão <de>. Funciona assim: eu baixo o zip da versão nova (ou você me passa um que já baixou), confiro, mostro o que mudou e o que vou fazer com cada arquivo, e só então gravo tudo de uma vez, com um backup antes.
 >
 > Três coisas antes de começar:
 > - Suas notas, tarefas e áreas não mudam. Só os arquivos do framework (regras, skills, templates, documentação). Os trechos que são seus, como o seu bloco no `CLAUDE.md`, passam para a versão nova.
@@ -225,9 +225,31 @@ Deixar de lado: Edit no log antigo, `abandonado: <hoje>` e uma linha em `## Pend
 
 ## Etapa 1 — Release
 
-**De onde baixar:**
+**Oferecer o download:**
 
-> Agora preciso do zip da versão nova. Baixe pela página de releases do repositório oficial do Segundo Cérebro (a mesma página de onde você baixou o vault): na versão mais recente, o arquivo que termina em `.zip`. Não use zip de outro lugar, recebido por mensagem ou montado por alguém: eu confiro cada arquivo contra a lista da própria release, e um zip diferente é recusado. Quando baixar, me diga onde ele está (por exemplo, na pasta Downloads). Se você já extraiu o zip, pode me indicar a pasta.
+> Agora preciso do zip da versão nova. Eu baixo para você, direto das releases do repositório oficial do Segundo Cérebro, e confiro o arquivo antes de usar. Posso baixar? Se preferir baixar você mesmo, ou se já tem o zip, é só me dizer onde ele está.
+
+**Baixar** (aceito; grava só o zip em `.segundo-cerebro/preparo/`):
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File .claude/skills/atualizar/baixar.ps1 -Destino .segundo-cerebro/preparo
+```
+
+Sem `-Versao`, o script pergunta ao GitHub qual é a versão mais recente publicada; a pessoa pediu uma versão específica: `-Versao <x.y.z>`. A origem é o endereço oficial, fixo no script. O Code nunca passa `-Origem` (só os testes usam, com uma pasta local). O script baixa o zip e o `.sha256` da release e confere um contra o outro: um zip corrompido ou incompleto é recusado.
+
+- Código 0: a última linha impressa é o caminho do zip conferido. Segue em "Ler a versão nova sem extrair" com esse caminho.
+- Código 2: recusou. A versão não tem release (também quando a página só tem versões de teste), o arquivo baixado não é um zip (uma página de erro no lugar) ou o zip não bate com o hash publicado. O arquivo recusado já foi apagado.
+- Código 1: falha de rede. Oferece tentar de novo antes do caminho manual.
+
+Código 2 ou 1, dizer o motivo (lido na mensagem do script) e passar ao caminho manual:
+
+> Não consegui usar o download: <motivo, em uma frase>. Nada foi preparado. Você pode baixar o zip pela página de releases, como explico a seguir.
+
+**Caminho manual** (a pessoa prefere baixar, ou o download não serviu):
+
+> Baixe pela página de releases do repositório oficial do Segundo Cérebro (a mesma página de onde você baixou o vault): na versão mais recente, o arquivo que termina em `.zip`. Não use zip de outro lugar, recebido por mensagem ou montado por alguém: eu confiro cada arquivo contra a lista da própria release, e um zip diferente é recusado. Quando baixar, me diga onde ele está (por exemplo, na pasta Downloads). Se você já extraiu o zip, pode me indicar a pasta.
+
+Indicar um zip já baixado vale a qualquer momento, com ou sem a oferta de download: daí em diante o caminho é o mesmo.
 
 **Ler a versão nova sem extrair** (zip; só lê):
 

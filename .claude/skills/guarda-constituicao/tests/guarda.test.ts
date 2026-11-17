@@ -104,6 +104,9 @@ const CASOS: Caso[] = [
     { nome: `desfazer.ps1 pergunta (${tool})`, tool, input: { command: `${PS} ${DESFAZER} -Raiz .` }, espera: 'ask', motivo: 'ATUALIZAÇÃO' },
     { nome: `aplicar.ps1 -GravarBase pergunta (${tool})`, tool, input: { command: `${PS} ${APLICAR} -Raiz . -GravarBase` }, espera: 'ask', motivo: 'ATUALIZAÇÃO' },
     { nome: `comparar.ps1 passa (${tool})`, tool, input: { command: `${PS} .claude/skills/atualizar/comparar.ps1 -Raiz . -Origem .segundo-cerebro/preparo/v1.1.0/origem` }, espera: 'allow' },
+    // baixar só grava o zip no preparo: nem ATUALIZAÇÃO nem recusa
+    { nome: `baixar.ps1 passa (${tool})`, tool, input: { command: `${PS} .claude/skills/atualizar/baixar.ps1 -Destino .segundo-cerebro/preparo` }, espera: 'allow' },
+    { nome: `baixar.ps1 com -Versao passa (${tool})`, tool, input: { command: `${PS} .claude/skills/atualizar/baixar.ps1 -Destino .segundo-cerebro/preparo -Versao 1.1.0` }, espera: 'allow' },
   ]),
   { nome: 'aplicar.ps1 com .\\ e barra invertida pergunta', tool: 'PowerShell', input: { command: 'pwsh -File .\\.claude\\skills\\atualizar\\aplicar.ps1 -Raiz .' }, espera: 'ask', motivo: 'ATUALIZAÇÃO' },
   { nome: 'desfazer.ps1 com ./ pergunta', tool: 'Bash', input: { command: 'pwsh -File ./.claude/skills/atualizar/desfazer.ps1 -Raiz .' }, espera: 'ask', motivo: 'ATUALIZAÇÃO' },

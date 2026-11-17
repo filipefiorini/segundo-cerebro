@@ -1,10 +1,12 @@
-"""Testes dos scripts PowerShell do /atualizar: comparar, aplicar e desfazer."""
+"""Testes dos scripts PowerShell do /atualizar: baixar, comparar, aplicar e desfazer."""
 import hashlib
+import io
 import json
 import os
 import re
 import shutil
 import subprocess
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -91,7 +93,7 @@ def backups(raiz: Path) -> list:
 
 
 def test_scripts_tem_bom():
-    for nome in ("comparar.ps1", "aplicar.ps1", "desfazer.ps1"):
+    for nome in ("baixar.ps1", "comparar.ps1", "aplicar.ps1", "desfazer.ps1"):
         assert (DIR_SCRIPTS / nome).read_bytes()[:3] == b"\xef\xbb\xbf", nome
 
 
@@ -581,3 +583,114 @@ def test_desfazer_erro_em_utf8(tmp_path):
     r = rodar("desfazer.ps1", "-Raiz", str(tmp_path), "-Backup", ".segundo-cerebro/backup/não-existe")
     assert r.returncode != 0
     assert "não" in r.stderr.decode("utf-8")
+
+
+# --- baixar -----------------------------------------------------------------
+# Os testes usam -Origem com uma pasta local: nada vai à rede.
+
+MANUAL = "página de releases"
+
+
+def zip_de_teste() -> bytes:
+    memoria = io.BytesIO()
+    with zipfile.ZipFile(memoria, "w") as z:
+        z.writestr("segundo-cerebro-v1.1.0/segundo-cerebro.release.json", '{"versao": "1.1.0"}')
+    return memoria.getvalue()
+
+
+def publicar(origem: Path, versao: str, conteudo: bytes, sha=None, latest=None) -> None:
+    """Simula os arquivos de uma release na pasta `origem`."""
+    origem.mkdir(parents=True, exist_ok=True)
+    nome = f"segundo-cerebro-v{versao}.zip"
+    (origem / nome).write_bytes(conteudo)
+    sha = sha or hashlib.sha256(conteudo).hexdigest()
+    (origem / (nome + ".sha256")).write_bytes(f"{sha} *{nome}\n".encode("ascii"))
+    if latest:
+        (origem / "latest.json").write_text(json.dumps({"tag_name": f"v{latest}"}), encoding="utf-8")
+
+
+def baixar(destino: Path, origem: Path, *extra):
+    return rodar("baixar.ps1", "-Destino", str(destino), "-Origem", str(origem), *extra)
+
+
+def test_baixar_hash_certo(tmp_path):
+    conteudo = zip_de_teste()
+    publicar(tmp_path / "origem", "1.1.0", conteudo)
+    destino = tmp_path / "preparo"
+    r = baixar(destino, tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    zip_baixado = destino / "segundo-cerebro-v1.1.0.zip"
+    assert zip_baixado.read_bytes() == conteudo
+    assert str(zip_baixado) in r.stdout.decode("utf-8").strip().splitlines()
+    assert sorted(p.name for p in destino.iterdir()) == ["segundo-cerebro-v1.1.0.zip"]
+
+
+def test_baixar_sem_versao_usa_a_mais_recente(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste(), latest="1.1.0")
+    r = baixar(tmp_path / "preparo", tmp_path / "origem")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert (tmp_path / "preparo" / "segundo-cerebro-v1.1.0.zip").is_file()
+
+
+def test_baixar_hash_maiusculo_confere(tmp_path):
+    conteudo = zip_de_teste()
+    publicar(tmp_path / "origem", "1.1.0", conteudo, sha=hashlib.sha256(conteudo).hexdigest().upper())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+
+
+def test_baixar_hash_diferente(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste(), sha="0" * 64)
+    destino = tmp_path / "preparo"
+    r = baixar(destino, tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+    assert not destino.is_dir() or list(destino.iterdir()) == []
+
+
+def test_baixar_resposta_html(tmp_path):
+    # um HTML no lugar do zip, com o .sha256 batendo com ele: a conferência de zip recusa
+    html = b"<!DOCTYPE html><html><body>Not Found</body></html>"
+    publicar(tmp_path / "origem", "1.1.0", html)
+    destino = tmp_path / "preparo"
+    r = baixar(destino, tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    erro = r.stderr.decode("utf-8")
+    assert "não é um zip" in erro and MANUAL in erro
+    assert not destino.is_dir() or list(destino.iterdir()) == []
+
+
+def test_baixar_arquivo_vazio(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", b"")
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+
+
+def test_baixar_versao_inexistente(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", "9.9.9")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+
+
+def test_baixar_sem_release_publicada(tmp_path):
+    # a API devolve 404 enquanto só há pre-release; aqui, a falta do latest.json
+    publicar(tmp_path / "origem", "1.0.0-rc.1", zip_de_teste())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+
+
+@pytest.mark.parametrize("versao", ["1.1", "1.1.0/../x", "latest"])
+def test_baixar_recusa_versao_mal_formada(tmp_path, versao):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", versao)
+    assert r.returncode == 2
+
+
+def test_baixar_origem_so_pasta_local(tmp_path):
+    r = rodar("baixar.ps1", "-Destino", str(tmp_path / "preparo"), "-Origem",
+              "https://exemplo.test/releases", "-Versao", "1.1.0")
+    assert r.returncode == 1
+    assert "pasta" in r.stderr.decode("utf-8")

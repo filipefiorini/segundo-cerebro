@@ -175,7 +175,7 @@ Compartilhe de volta por issue (um relato no repositório) ou pull request (uma 
 - Versão `1.0.0-rc.1`: candidata, em validação antes da 1.0.0.
 - Só Windows.
 - Só português.
-- A atualização é pelo `/atualizar`: você baixa o zip da versão nova na página de releases do repositório e indica o arquivo ao Claude, que confere os hashes, mostra o plano arquivo por arquivo e só aplica com a sua aprovação, depois de um backup. Não atualize por `git pull`.
+- A atualização é pelo `/atualizar`: o Claude baixa sozinho o zip da versão nova na página de releases do repositório (indicar um zip que você já baixou continua valendo), confere os hashes, mostra o plano arquivo por arquivo e só aplica com a sua aprovação, depois de um backup. Não atualize por `git pull`.
 - Esta versão não traz rotinas agendadas: o Claude trabalha quando você abre uma sessão, e você pode criar as suas livremente, com a ajuda dele. Como o autor roda rotinas em casa está em [`_docs/Como o Autor Opera em Casa.md`](_docs/Como%20o%20Autor%20Opera%20em%20Casa.md), como ideia, não como instalação.
 - Sem busca semântica (busca pelo sentido das palavras): a busca é por texto, tags e links.
 

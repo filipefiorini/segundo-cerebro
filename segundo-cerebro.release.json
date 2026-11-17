@@ -15,12 +15,17 @@
     {
       "caminho": ".claude/skills/atualizar/SKILL.md",
       "tipo": "fixo",
-      "sha256": "37fe8185760ed74ae4a2d5741b5f54a041bf89fd9e9ef824a3ce99e8f25a172f"
+      "sha256": "6fafd2d49a9b2b4ca4ce5c80c7dee81257c8558706945b1f9d1753f138b0722e"
     },
     {
       "caminho": ".claude/skills/atualizar/aplicar.ps1",
       "tipo": "fixo",
       "sha256": "ad7493400d284bb48cce05753c9065b18623b222dfcecf597ae30048b41e13e1"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/baixar.ps1",
+      "tipo": "fixo",
+      "sha256": "b55874c18b66cdad176af237f291488dc4104d1401d54cf84f1a765a73b38578"
     },
     {
       "caminho": ".claude/skills/atualizar/comparar.ps1",
@@ -40,7 +45,7 @@
     {
       "caminho": ".claude/skills/atualizar/reference.md",
       "tipo": "fixo",
-      "sha256": "b191e2bcaca9248b67ac41247de091ad231dcde3b83f0e0b524eec2dbe815b1c"
+      "sha256": "6236ca6d6cd29524169860f59cbb0cd08d5d6ea7826ca3ae0dd57b3f356240fd"
     },
     {
       "caminho": ".claude/skills/auditar-vault/SKILL.md",
@@ -90,7 +95,7 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
       "tipo": "fixo",
-      "sha256": "c7f6a04581ea6ad2114dcfbbb035e8c51efe171e0388b7c1031365e474df9a16"
+      "sha256": "a3e7fa5b8aceb09f1289cce53e8d4fc396db1210a123de82c95639a4c85d6725"
     },
     {
       "caminho": ".claude/skills/instalar/SKILL.md",

@@ -266,11 +266,13 @@ def _cmd_empacotar(args, raiz: Path) -> int:
         print(f"a tag {tag} já existe", file=sys.stderr)
         return 1
     zip_caminho = raiz / "dist" / f"segundo-cerebro-{tag}.zip"
+    sha_caminho = zip_caminho.with_name(zip_caminho.name + ".sha256")
     zip_caminho.parent.mkdir(exist_ok=True)
 
     def desfazer() -> None:
         _git(raiz, "tag", "-d", tag)
         zip_caminho.unlink(missing_ok=True)
+        sha_caminho.unlink(missing_ok=True)
 
     if _git(raiz, "tag", tag).returncode != 0:
         print(f"não foi possível criar a tag {tag}", file=sys.stderr)
@@ -295,7 +297,16 @@ def _cmd_empacotar(args, raiz: Path) -> int:
         for caminho in diferentes:
             print(caminho)
         return 1
+    # formato do sha256sum, o mesmo que o baixar.ps1 do /atualizar lê
+    sha = hashlib.sha256(zip_caminho.read_bytes()).hexdigest()
+    try:
+        sha_caminho.write_bytes(f"{sha} *{zip_caminho.name}\n".encode("ascii"))
+    except OSError as e:
+        desfazer()
+        print(f"não foi possível gravar {sha_caminho.name}: {e}", file=sys.stderr)
+        return 1
     print(f"{zip_caminho.relative_to(raiz).as_posix()} conferido contra {release.ARQUIVO_RELEASE}")
+    print(f"{sha_caminho.relative_to(raiz).as_posix()} gravado")
     return 0
 
 
@@ -335,7 +346,7 @@ def _parser() -> argparse.ArgumentParser:
     s.add_argument("--registro", default=None)
     s.set_defaults(func=_cmd_preparar)
 
-    s = sub.add_parser("empacotar", help="cria a tag e o zip da versão e confere os hashes")
+    s = sub.add_parser("empacotar", help="cria a tag e o zip da versão, confere os hashes e grava o .sha256")
     s.add_argument("--versao", required=True)
     s.set_defaults(func=_cmd_empacotar)
     return p
