@@ -238,10 +238,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .claude/skills/atualizar/bai
 Sem `-Versao`, o script pergunta ao GitHub qual é a versão mais recente publicada; a pessoa pediu uma versão específica: `-Versao <x.y.z>`. A origem é o endereço oficial, fixo no script. O Code nunca passa `-Origem` (só os testes usam, com uma pasta local). O script baixa o zip e o `.sha256` da release e confere um contra o outro: um zip corrompido ou incompleto é recusado.
 
 - Código 0: a última linha impressa é o caminho do zip conferido. Segue em "Ler a versão nova sem extrair" com esse caminho.
-- Código 2: recusou. A versão não tem release (também quando a página só tem versões de teste), o arquivo baixado não é um zip (uma página de erro no lugar) ou o zip não bate com o hash publicado. O arquivo recusado já foi apagado.
-- Código 1: falha de rede. Oferece tentar de novo antes do caminho manual.
+- Código 2: recusou. A versão não tem release (também quando a página só tem versões de teste), o arquivo baixado não é um zip (uma página de erro no lugar), o zip não bate com o hash publicado, ou o GitHub recusou o pedido (inclusive por limitar as consultas). O arquivo recusado já foi apagado. Vai direto ao caminho manual, sem tentar de novo.
+- Código 1: falha de rede (sem conexão, ou erro do lado do GitHub). Oferece tentar de novo uma vez; se falhar outra vez, caminho manual.
 
-Código 2 ou 1, dizer o motivo (lido na mensagem do script) e passar ao caminho manual:
+Ao ir para o caminho manual, dizer o motivo (lido na mensagem do script):
 
 > Não consegui usar o download: <motivo, em uma frase>. Nada foi preparado. Você pode baixar o zip pela página de releases, como explico a seguir.
 

@@ -177,7 +177,7 @@ Share back through an issue (a report on the repository) or a pull request (a pr
 - Version `1.0.0-rc.1`: release candidate, under validation before 1.0.0.
 - Windows only.
 - Portuguese only.
-- Updates go through `/atualizar`: Claude downloads the zip of the new version from the repository's releases page by itself (pointing it to a zip you already downloaded still works); it checks the hashes, shows the plan file by file and only applies it with your approval, after a backup. Do not update with `git pull`.
+- Updates go through `/atualizar`: from version 1.0.0 on, Claude downloads the zip of the new version from the repository's releases page by itself (pointing it to a zip you already downloaded still works; if you are on 1.0.0-rc.1, update once by downloading the zip yourself and pointing Claude to it); it checks the hashes, shows the plan file by file and only applies it with your approval, after a backup. Do not update with `git pull`.
 - This version ships no scheduled routines: Claude works when you open a session, and you can freely create your own, with its help. How the author runs routines at home is in [`_docs/Como o Autor Opera em Casa.md`](_docs/Como%20o%20Autor%20Opera%20em%20Casa.md), as an idea, not as an installation.
 - No semantic search (search by the meaning of words): search is by text, tags and links.
 

@@ -17,10 +17,12 @@
   4. Imprime o caminho completo do zip conferido, numa linha, e sai com 0.
 
   Saídas: 0 ok; 2 recusa (versão sem release, versão mal formada, arquivo que não é zip,
-  hash diferente); 1 falha de rede ou uso errado. As mensagens de recusa e de falha
+  hash diferente, resposta 4xx do GitHub, inclusive o limite de consultas, 403 e 429;
+  -Origem com caminho de rede); 1 falha de rede (sem conexão, resposta 5xx) ou uso errado. As mensagens de recusa e de falha
   apontam o caminho manual (página de releases).
 
-  -Origem existe só para os testes: aceita uma pasta local, nunca um endereço de rede.
+  -Origem existe só para os testes: aceita uma pasta local, nunca um endereço de rede
+  (caminho UNC, \\servidor\pasta, sai com 2).
   Nela o script lê segundo-cerebro-v<versão>.zip e segundo-cerebro-v<versão>.zip.sha256
   e, sem -Versao, o latest.json, que simula a resposta da API ({"tag_name": "v<versão>"});
   sem latest.json, é como a API responder 404.
@@ -65,8 +67,24 @@ function Cliente-Http {
   return $script:Http
 }
 
+# Código de saída para uma resposta HTTP: 2xx, 0; 4xx, 2 (recusa: 404, limite de
+# consultas, pedido recusado); o resto (5xx e outros), 1.
+function Codigo-Saida-Http([int]$status) {
+  if ($status -ge 200 -and $status -le 299) { return 0 }
+  if ($status -ge 400 -and $status -le 499) { return 2 }
+  return 1
+}
+
+function Mensagem-Http([int]$status, [string]$url) {
+  if ($status -eq 403 -or $status -eq 429) {
+    return "O GitHub limitou as consultas (resposta $status); tente mais tarde ou siga o caminho manual: baixe o zip pela página de releases do repositório oficial ($PaginaReleases) e me diga onde ele ficou."
+  }
+  if ((Codigo-Saida-Http $status) -eq 2) { return "O GitHub recusou o pedido de $url (resposta $status). $Manual" }
+  return "O GitHub respondeu com erro em $url (resposta $status). Tente de novo daqui a pouco. $Manual"
+}
+
 # Grava em $alvo o arquivo $nome da origem (pasta local) ou de $url. $true: gravou;
-# $false: não existe (404). Outra falha sai com 1.
+# $false: não existe (404). Outra resposta sai pelo Codigo-Saida-Http; falha de conexão, 1.
 function Obter([string]$url, [string]$nome, [string]$alvo) {
   if ($null -ne $Local) {
     $fonte = Join-Path $Local $nome
@@ -75,13 +93,16 @@ function Obter([string]$url, [string]$nome, [string]$alvo) {
     return $true
   }
   $resposta = $null
+  $status = 0
   try {
     $resposta = (Cliente-Http).GetAsync($url).GetAwaiter().GetResult()
-    if ([int]$resposta.StatusCode -eq 404) { return $false }
-    if (-not $resposta.IsSuccessStatusCode) { throw "o servidor respondeu $([int]$resposta.StatusCode)" }
-    $saida = [IO.File]::Create($alvo)
-    try { $resposta.Content.CopyToAsync($saida).GetAwaiter().GetResult() } finally { $saida.Dispose() }
-    return $true
+    $status = [int]$resposta.StatusCode
+    if ($status -eq 404) { return $false }
+    if ((Codigo-Saida-Http $status) -eq 0) {
+      $saida = [IO.File]::Create($alvo)
+      try { $resposta.Content.CopyToAsync($saida).GetAwaiter().GetResult() } finally { $saida.Dispose() }
+      return $true
+    }
   } catch {
     if (Test-Path -LiteralPath $alvo) { Remove-Item -LiteralPath $alvo -Force -ErrorAction SilentlyContinue }
     $motivo = $_.Exception.Message
@@ -90,6 +111,7 @@ function Obter([string]$url, [string]$nome, [string]$alvo) {
   } finally {
     if ($null -ne $resposta) { $resposta.Dispose() }
   }
+  Sair (Mensagem-Http $status $url) (Codigo-Saida-Http $status)
 }
 
 # Conteúdo de texto do arquivo $nome, ou $null se não existe.
@@ -112,14 +134,18 @@ function Comeca-Com-PK([string]$caminho) {
   } finally { $f.Dispose() }
 }
 
+# Carregado com ". baixar.ps1" (os testes chamam as funções acima isoladas): para aqui.
+if ($MyInvocation.InvocationName -eq '.') { return }
+
 if ([string]::IsNullOrWhiteSpace($Destino)) { Sair 'Uso: baixar.ps1 -Destino <pasta> [-Versao <x.y.z>]' 1 }
 $Local = $null
 if (-not [string]::IsNullOrWhiteSpace($Origem)) {
+  if ($Origem.StartsWith('\\') -or $Origem.StartsWith('//')) { Sair "-Origem recusa caminho de rede (UNC): $Origem. Use uma pasta local." 2 }
   if (-not (Test-Path -LiteralPath $Origem -PathType Container)) { Sair "-Origem aceita só uma pasta local, usada nos testes: $Origem" 1 }
   $Local = (Resolve-Path -LiteralPath $Origem).ProviderPath
 }
 
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 # 1. Versão
 if ([string]::IsNullOrWhiteSpace($Versao)) {

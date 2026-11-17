@@ -689,6 +689,44 @@ def test_baixar_recusa_versao_mal_formada(tmp_path, versao):
     assert r.returncode == 2
 
 
+@pytest.mark.parametrize("status, codigo", [
+    (200, 0), (204, 0), (400, 2), (403, 2), (404, 2), (429, 2), (451, 2),
+    (500, 1), (502, 1), (503, 1), (301, 1), (0, 1),
+])
+def test_baixar_traduz_status_http(status, codigo):
+    # a função é chamada isolada, com o script carregado por ". baixar.ps1": sem rede
+    script = str(DIR_SCRIPTS / "baixar.ps1").replace("'", "''")
+    r = subprocess.run(
+        [POWERSHELL, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
+         f". '{script}'; Codigo-Saida-Http {status}"],
+        capture_output=True,
+    )
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert r.stdout.decode("utf-8").strip() == str(codigo)
+
+
+def test_baixar_mensagem_do_limite_de_consultas():
+    script = str(DIR_SCRIPTS / "baixar.ps1").replace("'", "''")
+    for status in (403, 429):
+        r = subprocess.run(
+            [POWERSHELL, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
+             f"[Console]::OutputEncoding = New-Object Text.UTF8Encoding $false; "
+             f". '{script}'; Mensagem-Http {status} 'https://exemplo.test/x'"],
+            capture_output=True,
+        )
+        saida = r.stdout.decode("utf-8")
+        assert "limitou as consultas" in saida and "tente mais tarde" in saida
+        assert MANUAL in saida
+
+
+def test_baixar_recusa_origem_unc(tmp_path):
+    r = rodar("baixar.ps1", "-Destino", str(tmp_path / "preparo"), "-Origem",
+              "\\\\exemplo.test\\releases", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    assert "UNC" in r.stderr.decode("utf-8")
+    assert not (tmp_path / "preparo").exists()
+
+
 def test_baixar_origem_so_pasta_local(tmp_path):
     r = rodar("baixar.ps1", "-Destino", str(tmp_path / "preparo"), "-Origem",
               "https://exemplo.test/releases", "-Versao", "1.1.0")
