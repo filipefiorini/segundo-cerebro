@@ -125,6 +125,17 @@ function Ler-Texto([string]$url, [string]$nome) {
   }
 }
 
+# SHA-256 em hex maiúsculo, por .NET e não pelo Get-FileHash: este vem de um módulo com
+# autoload, que falha no Windows PowerShell 5.1 aberto de dentro do pwsh (PSModulePath herdado).
+function Hash-Arquivo([string]$caminho) {
+  $sha = [Security.Cryptography.SHA256]::Create()
+  try {
+    $f = [IO.File]::OpenRead($caminho)
+    try { return ([BitConverter]::ToString($sha.ComputeHash($f)) -replace '-', '') }
+    finally { $f.Dispose() }
+  } finally { $sha.Dispose() }
+}
+
 function Comeca-Com-PK([string]$caminho) {
   $f = [IO.File]::OpenRead($caminho)
   try {
@@ -179,7 +190,7 @@ if (-not (Comeca-Com-PK $parcial)) {
   Remove-Item -LiteralPath $parcial -Force
   Sair "O arquivo baixado não é um zip (pode ter vindo uma página de erro no lugar). Apaguei o arquivo. $Manual" 2
 }
-$hashBaixado = (Get-FileHash -LiteralPath $parcial -Algorithm SHA256).Hash
+$hashBaixado = Hash-Arquivo $parcial
 if (-not [string]::Equals($hashBaixado, $hashPublicado, [StringComparison]::OrdinalIgnoreCase)) {
   Remove-Item -LiteralPath $parcial -Force
   Sair "O zip baixado não confere com o hash publicado na release: veio corrompido ou incompleto. Apaguei o arquivo. $Manual" 2

@@ -25,7 +25,7 @@
     {
       "caminho": ".claude/skills/atualizar/baixar.ps1",
       "tipo": "fixo",
-      "sha256": "b5e450f3d6ebc5b3f7880e3318266822932ae668daad1b5d1d7462f429cca95c"
+      "sha256": "f422c6efa031135d9067a8c6a4f561f6eed8e72a300b8eaea58eaefe257eeb11"
     },
     {
       "caminho": ".claude/skills/atualizar/comparar.ps1",
