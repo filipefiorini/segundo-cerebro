@@ -313,6 +313,17 @@ def test_empacotar_zip_bate_com_os_hashes(repo):
         assert z.read("segundo-cerebro-v1.1.0/CLAUDE.md") == b"regras\nde teste\n"
 
 
+def test_empacotar_grava_sha256(repo):
+    _preparada(repo)
+    assert exportar.main(["empacotar", "--versao", "1.1.0"], raiz=repo) == 0
+    zip_caminho = repo / "dist" / "segundo-cerebro-v1.1.0.zip"
+    sha_caminho = repo / "dist" / "segundo-cerebro-v1.1.0.zip.sha256"
+    assert sha_caminho.is_file()
+    esperado = hashlib.sha256(zip_caminho.read_bytes()).hexdigest()
+    # formato do sha256sum: "<hash> *<nome do arquivo>", uma linha
+    assert sha_caminho.read_bytes() == f"{esperado} *segundo-cerebro-v1.1.0.zip\n".encode("ascii")
+
+
 def test_empacotar_recusa_zip_com_hash_diferente(repo, capsys):
     _preparada(repo)
     dados = _release_json(repo)
@@ -323,6 +334,7 @@ def test_empacotar_recusa_zip_com_hash_diferente(repo, capsys):
     assert dados["arquivos"][0]["caminho"] in capsys.readouterr().out
     assert _tags(repo) == []
     assert not (repo / "dist" / "segundo-cerebro-v1.1.0.zip").exists()
+    assert not (repo / "dist" / "segundo-cerebro-v1.1.0.zip.sha256").exists()
 
 
 def test_help_lista_os_seis_subcomandos(capsys):
