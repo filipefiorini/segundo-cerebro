@@ -255,6 +255,122 @@ def test_comparar_historico_so_de_versoes_maiores(tmp_path):
     assert dados["migracoes"] == [{"id": "m1", "descricao": "d", "instrucoes": "i"}]
 
 
+def _volta_na_12(raiz: Path, historico_11: dict) -> tuple:
+    """Instância na 1.0 com volta.md; a 1.1 tira o arquivo e a 1.2 o traz de volta."""
+    gravar(raiz, ".segundo-cerebro-version", "1.0.0\n")
+    gravar(raiz, "volta.md", "da 1.0")
+    gravar(raiz, f"{ORIGEM}/volta.md", "da 1.2")
+    historico = [historico_11,
+                 {"versao": "1.2.0", "removidos": [], "renomeados": [], "migracoes": []}]
+    gravar_release(raiz / ORIGEM, "1.2.0", {"volta.md": "fixo"}, historico)
+    return comparar(raiz)
+
+
+def _aplicar_pela_comparacao(raiz: Path, dados: dict):
+    """Monta o plano como o Code faz: cópias da tabela, remoções e renomeações da comparação."""
+    plano = {
+        "de": dados["de"], "para": "1.1.0",
+        "copiar": [{"de": f"{ORIGEM}/{a['caminho']}", "para": a["caminho"]}
+                   for a in dados["arquivos"] if a["acao"] in ("perguntar", "copiar", "substituir")],
+        "remover": dados["removidos"],
+        "renomear": dados["renomeados"],
+    }
+    gravar_plano(raiz, plano)
+    return aplicar(raiz)
+
+
+def test_removido_e_recriado_fica(tmp_path):
+    r, dados = _volta_na_12(tmp_path, {"versao": "1.1.0", "removidos": ["volta.md"],
+                                       "renomeados": [], "migracoes": []})
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["removidos"] == []
+    r = _aplicar_pela_comparacao(tmp_path, dados)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, "volta.md") == "da 1.2"
+
+
+def test_renomeado_e_recriado_fica(tmp_path):
+    r, dados = _volta_na_12(tmp_path, {"versao": "1.1.0", "removidos": [],
+                                       "renomeados": [{"de": "volta.md", "para": "outro.md"}],
+                                       "migracoes": []})
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["renomeados"] == []
+    r = _aplicar_pela_comparacao(tmp_path, dados)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, "volta.md") == "da 1.2"
+    assert not (tmp_path / "outro.md").exists()
+
+
+def test_aplicar_recusa_remover_arquivo_da_release(tmp_path):
+    gravar(tmp_path, "volta.md", "da 1.0")
+    historico = [{"versao": "1.1.0", "removidos": ["volta.md"], "renomeados": [], "migracoes": []}]
+    montar_aplicacao(tmp_path, {"volta.md": "nova"}, {"volta.md": "fixo"}, historico,
+                     remover=["volta.md"])
+    r = aplicar(tmp_path)
+    assert r.returncode == 2
+    assert ler(tmp_path, "volta.md") == "da 1.0"
+
+
+LINHAS_PREPARO = [".segundo-cerebro/backup/", ".segundo-cerebro/preparo/"]
+
+
+def test_comparar_lista_linhas_que_faltam_no_gitignore(tmp_path):
+    gravar(tmp_path, ".segundo-cerebro-version", "1.0.0\n")
+    gravar(tmp_path, ".gitignore", ".env\n.segundo-cerebro/backup/\n")
+    gravar(tmp_path, f"{ORIGEM}/a.md", "a")
+    gravar_release(tmp_path / ORIGEM, "1.1.0", {"a.md": "fixo"})
+    r, dados = comparar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["gitignore"] == [".segundo-cerebro/preparo/"]
+
+
+def test_comparar_sem_gitignore_nao_lista(tmp_path):
+    gravar(tmp_path, ".segundo-cerebro-version", "1.0.0\n")
+    gravar(tmp_path, f"{ORIGEM}/a.md", "a")
+    gravar_release(tmp_path / ORIGEM, "1.1.0", {"a.md": "fixo"})
+    r, dados = comparar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["gitignore"] == []
+
+
+def test_gitignore_recebe_linhas_da_atualizacao(tmp_path):
+    antes = "# meu\r\n.env\r\nnotas-privadas/"
+    gravar(tmp_path, ".gitignore", antes)
+    gravar(tmp_path, "CLAUDE.md", "velho")
+    montar_aplicacao(tmp_path, {"CLAUDE.md": "novo"}, {"CLAUDE.md": "fixo"})
+    r = aplicar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, ".gitignore") == antes + "\r\n" + "\r\n".join(LINHAS_PREPARO) + "\r\n"
+    assert ".gitignore" in r.stdout.decode("utf-8", "replace")
+    (nome,) = backups(tmp_path)
+    pasta = tmp_path / ".segundo-cerebro" / "backup" / nome
+    assert (pasta / "arquivos" / ".gitignore").read_bytes() == antes.encode("utf-8")
+
+    r = rodar("desfazer.ps1", "-Raiz", str(tmp_path), "-Backup", f".segundo-cerebro/backup/{nome}")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, ".gitignore") == antes
+
+
+def test_gitignore_completo_fica_igual(tmp_path):
+    antes = ".env\n/.segundo-cerebro/backup\n.segundo-cerebro/preparo/\n"
+    gravar(tmp_path, ".gitignore", antes)
+    montar_aplicacao(tmp_path, {"CLAUDE.md": "novo"}, {"CLAUDE.md": "fixo"})
+    r = aplicar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, ".gitignore") == antes
+    (nome,) = backups(tmp_path)
+    info = json.loads((tmp_path / ".segundo-cerebro/backup" / nome / "backup.json")
+                      .read_text(encoding="utf-8"))
+    assert [a["caminho"] for a in info["arquivos"]] == ["CLAUDE.md"]
+
+
+def test_sem_gitignore_nao_cria(tmp_path):
+    montar_aplicacao(tmp_path, {"CLAUDE.md": "novo"}, {"CLAUDE.md": "fixo"})
+    r = aplicar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert not (tmp_path / ".gitignore").exists()
+
+
 def test_comparar_versoes_que_nao_se_comparam(tmp_path):
     gravar(tmp_path, ".segundo-cerebro-version", "1.1.0-dev\n")
     gravar(tmp_path, f"{ORIGEM}/a.md", "a")

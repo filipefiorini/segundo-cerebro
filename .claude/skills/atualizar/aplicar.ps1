@@ -9,10 +9,13 @@
      .segundo-cerebro/preparo/; copiar.para que não seja arquivo listado na release,
      .segundo-cerebro/base/<fixo listado>, .segundo-cerebro-version ou
      segundo-cerebro.release.json; remover e renomear fora de removidos e renomeados do
-     historico da release (ou da cópia deles em .segundo-cerebro/base/).
+     historico da release (ou da cópia deles em .segundo-cerebro/base/); remover ou
+     renomear arquivo que a release nova lista.
   3. Cria .segundo-cerebro/backup/<yyyyMMdd-HHmmss>-v<de>-para-v<para>/, guarda em
      arquivos/<rel> todo alvo que existe e grava backup.json.
-  4. Renomeia, copia e remove, criando as pastas.
+  4. Renomeia, copia e remove, criando as pastas. Se o .gitignore existe e não ignora
+     .segundo-cerebro/backup/ e .segundo-cerebro/preparo/, acrescenta as linhas no fim
+     (com backup, como os outros alvos).
   5. Se algo falhar, restaura deste backup e sai com 1 (a pasta do backup fica, com falha.txt).
   6. Apaga os backups mais antigos além de -ManterBackups e sai com 0.
   Recusa antes de gravar sai com 2.
@@ -203,6 +206,32 @@ function Renomear-Autorizado([string]$de, [string]$para) {
   return ($null -ne $deSem -and $null -ne $paraSem -and $RenomeadosRel.Contains($deSem + "`n" + $paraSem))
 }
 
+# Removido ou renomeado numa versão e de volta na release nova: fica.
+function Esta-Na-Release([string]$rel) {
+  if ($Listados.Contains($rel)) { return $true }
+  $semBase = Sem-Prefixo-Base $rel
+  return ($null -ne $semBase -and $Listados.Contains($semBase))
+}
+
+# Conteúdo novo do .gitignore com as linhas do preparo e do backup que faltam; $null se
+# não há .gitignore ou nada falta. Mantém BOM e fim de linha do arquivo.
+function Gitignore-Novo([string]$caminho) {
+  if (-not [IO.File]::Exists($caminho)) { return $null }
+  $bytes = [IO.File]::ReadAllBytes($caminho)
+  $bom = ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF)
+  $texto = $Utf8SemBom.GetString($bytes).TrimStart([char]0xFEFF)
+  $presentes = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+  foreach ($l in ($texto -split '\r?\n')) { [void]$presentes.Add($l.Trim().TrimStart('/').TrimEnd('/')) }
+  $faltam = @(@('.segundo-cerebro/backup/', '.segundo-cerebro/preparo/') | Where-Object { -not $presentes.Contains($_.TrimEnd('/')) })
+  if ($faltam.Count -eq 0) { return $null }
+  if ($texto.Contains("`r`n")) { $fim = "`r`n" } else { $fim = "`n" }
+  if ($texto.Length -gt 0 -and -not $texto.EndsWith("`n")) { $texto += $fim }
+  foreach ($f in $faltam) { $texto += $f + $fim }
+  $novo = $Utf8SemBom.GetBytes($texto)
+  if ($bom) { $novo = [byte[]](@(0xEF, 0xBB, 0xBF) + $novo) }
+  return @{ Bytes = $novo; Linhas = $faltam }
+}
+
 # 1 e 2. Validação inteira antes de gravar qualquer coisa
 $Erros = New-Object System.Collections.Generic.List[string]
 $Copias = New-Object System.Collections.ArrayList
@@ -228,6 +257,7 @@ foreach ($r in @($PlanoLido.renomear)) {
   $paraCheio = Validar-Caminho $para 'renomear.para'
   if ($null -eq $deCheio -or $null -eq $paraCheio) { continue }
   if (-not (Renomear-Autorizado $de $para)) { $Erros.Add("renomear '$de' -> '$para' não consta dos renomeados da release"); continue }
+  if (Esta-Na-Release $de) { $Erros.Add("renomear '$de': o arquivo está na release nova"); continue }
   [void]$Renomes.Add(@($deCheio, $paraCheio))
   Anotar-Alvo $de $deCheio
   Anotar-Alvo $para $paraCheio
@@ -254,6 +284,7 @@ foreach ($x in @($PlanoLido.remover)) {
   $cheio = Validar-Caminho $rel 'remover'
   if ($null -eq $cheio) { continue }
   if (-not (Remover-Autorizado $rel)) { $Erros.Add("remover '$rel' não consta dos removidos da release"); continue }
+  if (Esta-Na-Release $rel) { $Erros.Add("remover '$rel': o arquivo está na release nova"); continue }
   [void]$Remocoes.Add($cheio)
   Anotar-Alvo $rel $cheio
 }
@@ -263,6 +294,10 @@ if ($Erros.Count -gt 0) {
   foreach ($e in $Erros) { Write-Output "  $e" }
   Sair 'O plano.json tem caminho fora da raiz ou alvo que a release não autoriza.' 2
 }
+
+$ArqGitignore = Join-Path $RaizCheia '.gitignore'
+$GitignoreNovo = Gitignore-Novo $ArqGitignore
+if ($null -ne $GitignoreNovo) { Anotar-Alvo '.gitignore' $ArqGitignore }
 
 # 3. Backup
 $DirBackups = Join-Path $RaizCheia '.segundo-cerebro\backup'
@@ -302,6 +337,7 @@ try {
   }
   foreach ($c in $Copias) { Copiar-Arquivo $c[0] $c[1] }
   foreach ($x in $Remocoes) { if ([IO.File]::Exists($x)) { [IO.File]::Delete($x) } }
+  if ($null -ne $GitignoreNovo) { [IO.File]::WriteAllBytes($ArqGitignore, $GitignoreNovo.Bytes) }
 } catch {
   # 5. Restaura do backup
   $falha = $_.Exception.Message
@@ -342,5 +378,6 @@ try {
 }
 
 Write-Output "Atualização aplicada: $($Renomes.Count) renomeados, $($Copias.Count) copiados, $($Remocoes.Count) removidos."
+if ($null -ne $GitignoreNovo) { Write-Output "Linhas acrescentadas ao .gitignore: $($GitignoreNovo.Linhas -join ', ')." }
 Write-Output "Backup em .segundo-cerebro/backup/$Nome."
 exit 0
