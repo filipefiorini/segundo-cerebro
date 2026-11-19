@@ -91,7 +91,7 @@ decisao:
 Para cada ideia que passar no filtro ("eu buscaria isto fora de qualquer projeto?"), no máximo três:
 - **<título proposto>** — camada: <Filosofias | Conceitos | Frameworks | Metodologias | Táticas> — por quê: <uma frase>. Origem: [[<nota processada>]].
 Se nenhuma passar: "Nenhum candidato à Galáxia nesta deliberação."
-Nada é gravado aqui; o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem.
+Nenhuma nota da Galáxia é gravada aqui: o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem. Em sessão, cada candidato oferecido entra em `05 - GALÁXIA/_CANDIDATOS.md` e segue as regras escritas lá.
 ```
 
 ## Fontes Consultadas

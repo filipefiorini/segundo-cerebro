@@ -9,9 +9,9 @@ description: |
   em `_logs/inbox-planos/`, apresentado ao usuário para validar.
   USE WHEN o usuário digitar "/processar-inbox", "processar inbox", "processa o INBOX",
   "o que tem no INBOX", "planos pendentes do INBOX", "validar planos do INBOX".
-version: 1.1.1
+version: 1.2.0
 created: 2026-11-07
-updated: 2026-11-10
+updated: 2026-11-19
 tags: [skill]
 ---
 
@@ -138,14 +138,14 @@ Fonte única de tarefas: `06 - TAREFAS/Tarefas/`, uma nota por tarefa, criada a 
 
 ### Passo 4d — Candidatos à Galáxia
 
-Roda uma vez por rodada, no fim: depois de todas as gravações (Passo 4 e, quando houver, planos aplicados no Passo 7) e antes do resumo final ao usuário. Sem Passo 7 na rodada, roda logo depois do Passo 4. Aplicar o bloco padrão ao conjunto da rodada: no máximo três candidatos no total, e "Nenhum candidato à Galáxia nesta rodada." aparece uma vez só. Entram só as notas de conteúdo e de reunião gravadas na rodada, com `Origem` apontando para cada uma; notas de tarefa (`06 - TAREFAS`) e capturas retidas com plano ficam de fora. Como o Passo 7 vem depois do log, o Passo 6 deixa a linha `- candidatos_galaxia: pendente` e, depois do Passo 4d, ela é preenchida com N (candidatos listados, de 0 a 3). Sem Passo 7, o 4d já rodou antes do log e a linha sai com N direto.
+Roda uma vez por rodada, no fim: depois de todas as gravações (Passo 4 e, quando houver, planos aplicados no Passo 7) e antes do resumo final ao usuário. Sem Passo 7 na rodada, roda logo depois do Passo 4. Aplicar o bloco padrão ao conjunto da rodada: no máximo três candidatos no total, e "Nenhum candidato à Galáxia nesta rodada." aparece uma vez só. Entram só as notas de conteúdo e de reunião gravadas na rodada, com `Origem` apontando para cada uma; notas de tarefa (`06 - TAREFAS`) e capturas retidas com plano ficam de fora. Como o Passo 7 vem depois do log, o Passo 6 deixa a linha `- candidatos_galaxia: pendente` e, depois do Passo 4d, ela é preenchida com N (candidatos listados, de 0 a 3). Sem Passo 7, o 4d já rodou antes do log e a linha sai com N direto. Depois de mostrar os candidatos, gravar a linha de cada um na tabela "Pendentes" de `05 - GALÁXIA/_CANDIDATOS.md` (data de hoje, título, camada, por quê, origem), menos os de área sensível e os de título que já está na lista ou na Galáxia; se a pessoa aprovar ou negar de forma expressa na mesma sessão, tirar a linha. Sem manifestação, a linha fica para a próxima revisão (regras no próprio arquivo).
 
 ```markdown
 ### Candidatos à Galáxia
 Para cada ideia que passar no filtro ("eu buscaria isto fora de qualquer projeto?"), no máximo três:
 - **<título proposto>** — camada: <Filosofias | Conceitos | Frameworks | Metodologias | Táticas> — por quê: <uma frase>. Origem: [[<nota processada>]].
 Se nenhuma passar: "Nenhum candidato à Galáxia nesta rodada."
-Nada é gravado aqui; o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem.
+Nenhuma nota da Galáxia é gravada aqui: o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem. Em sessão, cada candidato oferecido entra em `05 - GALÁXIA/_CANDIDATOS.md` e segue as regras escritas lá.
 ```
 
 Exemplo, nenhuma ideia passa:
@@ -240,6 +240,7 @@ Registrar o resultado no log do mês.
 
 ## Changelog
 
+- 1.2.0 (2026-11-19) — Passo 4d: cada candidato oferecido entra em `05 - GALÁXIA/_CANDIDATOS.md`; aprovado ou negado de forma expressa, sai; sem manifestação, fica para a próxima revisão.
 - 1.1.1 (2026-11-10) — a tabela de origens descreve a captura do Claude.ai pelo comportamento (gravada direto no INBOX, com o frontmatter padrão), sem citar regra que o `CLAUDE.md` público não tem.
 - 1.1.0 (2026-11-08) — novo Passo 4d, Candidatos à Galáxia: roda uma vez por rodada, depois de todas as gravações (inclusive planos aplicados no Passo 7), e lista no máximo três ideias no total, das notas de conteúdo e de reunião gravadas (tarefas ficam de fora), com a camada sugerida; nada é gravado. O log ganha a linha `candidatos_galaxia: N` (0 a 3), deixada `pendente` no Passo 6 quando há Passo 7 e preenchida depois do 4d.
 - 1.0.0 (2026-11-07) — derivada da skill privada v1.7.1, neutralizada para o framework público: só o modo interativo, com proposta e aprovação antes de gravar; arquivamento, tarefa e nota de reunião feitos pelo próprio Code; áreas sensíveis pela marca `sensivel: true`.

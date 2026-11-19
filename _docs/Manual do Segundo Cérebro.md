@@ -135,6 +135,8 @@ Se a nota responde a mais de uma pergunta, recebe a camada da pergunta que você
 
 **Filtro de graduação** (orientação). Antes de levar um insight para a Galáxia, perguntar: *"Eu buscaria essa ideia de forma independente, fora de qualquer projeto?"* Se não, ele fica no contexto de origem. Protocolo completo na skill `processar-conteudo`.
 
+**Candidatos sem resposta.** Todo candidato à Galáxia oferecido numa sessão entra em `05 - GALÁXIA/_CANDIDATOS.md` na hora da oferta. Aprovado, vira nota e sai da lista; negado de forma expressa, sai; sem manifestação, fica. A `revisar-memoria` lista os pendentes, e a decisão acontece numa sessão ("revisar candidatos"). Candidato com mais de 60 dias sai da lista.
+
 **Evolução de conteúdo** (opcional). Quando uma nota nova expande um conceito já existente na Galáxia, ela referencia a original por `[[wikilink]]` e a original pode ganhar `desenvolvido_em: [[nova-nota]]` no frontmatter. Aplicar a pedido ou quando `processar-conteudo` detectar sobreposição.
 
 ### Fontes → Galáxia
