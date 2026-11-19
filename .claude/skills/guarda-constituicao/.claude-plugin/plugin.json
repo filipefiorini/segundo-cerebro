@@ -1,6 +1,6 @@
 {
   "name": "guarda-constituicao",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Faz valer no Claude Code as regras da Constituição do Segundo Cérebro: pede confirmação em governança, sobrescrita, comando destrutivo e escrita em conector; recusa CPF, tarefa sem prazo, telefone em arquivo lido em toda sessão, credencial e push forçado.",
   "author": { "name": "Segundo Cérebro" },
   "license": "MIT",

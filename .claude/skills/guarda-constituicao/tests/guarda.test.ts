@@ -63,6 +63,16 @@ const CASOS: Caso[] = [
   { nome: 'tarefa concluída sem due passa', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\y.md`, content: tarefa('status: done\ncompletedDate: 2026-11-06') }, espera: 'allow' },
   { nome: 'Edit que esvazia o due bloqueia', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'due: 2026-11-09', new_string: 'due:' }, espera: 'deny' },
   { nome: 'Edit que muda o due passa', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'due: 2026-11-09', new_string: 'due: 2026-11-10' }, espera: 'allow' },
+  { nome: 'Edit que apaga a linha due bloqueia', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'due: 2026-11-09\n', new_string: '' }, espera: 'deny' },
+  { nome: 'Edit que apaga a linha due com tags em fluxo bloqueia', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'status: open\ndue: 2026-11-09\ntags: [task]', new_string: 'status: open\ntags: [task]' }, espera: 'deny' },
+  { nome: 'Edit que apaga a linha due de tarefa recorrente bloqueia', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\Teste — recorrência.md`, old_string: 'due: 2026-12-01\nrecurrence: X\n', new_string: 'recurrence: X\n' }, espera: 'deny' },
+  { nome: 'Edit que apaga o due de tarefa em bloco bloqueia', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\Teste — recorrência.md`, old_string: 'due: 2026-12-01\ntags:\n  - task\n', new_string: 'tags:\n  - task\n' }, espera: 'deny' },
+  { nome: 'Edit que apaga o due de tarefa concluída passa', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\y.md`, old_string: 'status: done\ndue: 2026-11-09', new_string: 'status: done' }, espera: 'allow' },
+  { nome: 'Edit que cancela e apaga o due passa', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'status: open\ndue: 2026-11-09', new_string: 'status: cancelled' }, espera: 'allow' },
+  { nome: 'Edit que reabre e apaga o due bloqueia', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\y.md`, old_string: 'status: done\ndue: 2026-11-09', new_string: 'status: open' }, espera: 'deny' },
+  { nome: 'Edit que apaga due de nota sem tag task (fluxo) passa', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\_rascunho.md`, old_string: 'tags: [nota]\ndue: 2026-11-09', new_string: 'tags: [nota]' }, espera: 'allow' },
+  { nome: 'Edit que apaga due de nota sem tag task (bloco) passa', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\_rascunho.md`, old_string: 'tags:\n  - nota\ndue: 2026-11-09', new_string: 'tags:\n  - nota' }, espera: 'allow' },
+  { nome: 'Edit que apaga due fora da pasta de tarefas passa', tool: 'Edit', input: { file_path: `${V}02 - ÁREAS\\Trabalho\\nota existente.md`, old_string: 'due: 2026-11-09\n', new_string: '' }, espera: 'allow' },
   { nome: 'aceita Write de tarefa recorrente com due', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\Teste — recorrência.md`, content: REGRAVADA }, espera: 'allow' },
   { nome: 'Write de tarefa recorrente sem a linha due bloqueia', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\Teste — recorrência.md`, content: REGRAVADA.replace(/^due:.*\n/m, '') }, espera: 'deny' },
   { nome: 'nota sem tag task na pasta passa', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\_rascunho.md`, content: '---\ntags: [nota]\n---\nx' }, espera: 'allow' },
@@ -205,6 +215,13 @@ test('veredito puro: raiz com barra final e caminho em barra invertida', () => {
   expect(v?.decision).toBe('ask')
   const d = veredito('Write', { file_path: `${V}00 - INBOX\\c.md`, content: `CPF ${CPF_VALIDO}` }, RAIZ, 0)
   expect(d?.decision).toBe('deny')
+})
+
+test('recusa do Edit que apaga o due diz como contornar', () => {
+  const v = veredito('Edit', { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'due: 2026-11-09\n', new_string: '' }, RAIZ, 0)
+  expect(v?.decision).toBe('deny')
+  expect(v?.reason ?? '').toContain('FONTE-DE-TAREFAS')
+  expect(v?.reason ?? '').toContain('inclua a linha `status` no trecho ou edite pelo painel/Obsidian')
 })
 
 test('/guarda liberar suspende ask por 1 hora, não suspende deny; travar encerra', () => {
