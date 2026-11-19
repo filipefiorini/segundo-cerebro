@@ -6,9 +6,9 @@ description: |
   Tudo pelo chat, grava só com aprovação, pode retomar. Num vault instalado, revisa ou liga
   uma peça. USE WHEN "/instalar", "instalar o vault", "retomar a instalação" ou sem
   `.segundo-cerebro-version`.
-version: 1.4.3
+version: 1.4.4
 created: 2026-11-07
-updated: 2026-11-12
+updated: 2026-11-18
 tags: [skill]
 ---
 
@@ -117,6 +117,7 @@ Cada uma acrescenta uma linha à seção "Depois da instalação" do log. `.segu
 
 ## Changelog
 
+- 1.4.4 (2026-11-18) — achados do teste de instalação: a etapa 0 avisa que a conferência leva um ou dois minutos antes de ler e, com o vault dentro do OneDrive, explica o risco e deixa a pessoa decidir se segue ali; a etapa 1 diz quanto tempo os plugins levam; a etapa 5 tira os CPFs do material antes de propor a gravação e diz quantos tirou.
 - 1.4.3 (2026-11-12) — achados do ensaio: na etapa 2, quando a pessoa dá só os nomes das áreas, o Code propõe uma frase por área a partir do que ela contou, para aprovar ou ajustar, em vez de pedir as frases. Nova regra 11: resposta que não casa com nenhuma opção da pergunta volta como pergunta, sem palpite e sem proposta de gravação.
 - 1.4.2 (2026-11-11) — apagar os exemplos (etapa 9 e opção 7) usa exatamente os caminhos que o Code listou e a pessoa aprovou, num `Remove-Item -LiteralPath` com a lista explícita, em vez de buscar de novo; a listagem conta só `exemplo: true` no frontmatter, sensível a maiúsculas. A linha do `_HISTORICO.md` omite "e N área(s) sensível(is)" quando N = 0. O caso de `ausente:` passa a ser um `fixo` apagado pela pessoa (exemplo recusado não é `fixo`).
 - 1.4.1 (2026-11-11) — a etapa 9 fecha com a base gravada mesmo quando o script lista arquivos `fixo` ausentes (um `fixo` que a pessoa apagou antes, por exemplo): cada ausente vira pendência no log e na mensagem de Pronto. A linha do `_HISTORICO.md` lista só os `_CONTEXTO.md` das áreas não sensíveis e fecha com "e N área(s) sensível(is)", sem caminho. A descrição do frontmatter encurta para menos de 400 caracteres e cita os exemplos opcionais.

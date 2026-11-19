@@ -10,10 +10,13 @@
   2. Lê a versão instalada em .segundo-cerebro-version. Versões que não se comparam (dois
      sufixos diferentes sobre os mesmos números, ou formato inválido): sai com 3.
   3. Classifica cada arquivo listado comparando a instância, .segundo-cerebro/base/ e a
-     origem. Em arquivo com blocos <!-- usuario:inicio --> / <!-- usuario:fim -->, o
+     origem. Removido ou renomeado no histórico e de volta na release nova não entra em
+     removidos nem em renomeados. Em arquivo com blocos <!-- usuario:inicio --> / <!-- usuario:fim -->, o
      conteúdo de cada bloco é trocado por vazio nos três lados antes do hash (marcador só
      vale na linha inteira e fora de cerca de código). Instância igual à nova: nada.
-  4. Grava o comparacao.json (UTF-8 sem BOM) e sai com 0.
+  4. Lista em gitignore as linhas do preparo e do backup que faltam no .gitignore da
+     instância (o aplicar.ps1 as acrescenta). Sem .gitignore, a lista fica vazia.
+  5. Grava o comparacao.json (UTF-8 sem BOM) e sai com 0.
 
   Funciona no Windows PowerShell 5.1 e no PowerShell 7.
 
@@ -194,13 +197,17 @@ if ($null -eq (Comparar-Versao $De $Para)) { Sair "As versões $De (instalada) e
 $Removidos = New-Object System.Collections.ArrayList
 $Renomeados = New-Object System.Collections.ArrayList
 $Migracoes = New-Object System.Collections.ArrayList
+# Arquivo removido ou renomeado numa versão e de volta na release nova fica: não entra
+# em removidos nem em renomeados (o de).
+$NaRelease = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+foreach ($a in $Arquivos) { [void]$NaRelease.Add([string]$a.caminho) }
 foreach ($h in @($Release.historico)) {
   $acimaDaInstalada = Comparar-Versao ([string]$h.versao) $De
   $ateNova = Comparar-Versao ([string]$h.versao) $Para
   if ($null -eq $acimaDaInstalada -or $null -eq $ateNova) { Sair "A versão $($h.versao) do histórico não se compara com $De ou $Para." 3 }
   if ($acimaDaInstalada -gt 0 -and $ateNova -le 0) {
-    foreach ($x in @($h.removidos)) { if ($null -ne $x) { [void]$Removidos.Add($x) } }
-    foreach ($x in @($h.renomeados)) { if ($null -ne $x) { [void]$Renomeados.Add($x) } }
+    foreach ($x in @($h.removidos)) { if ($null -ne $x -and -not $NaRelease.Contains([string]$x)) { [void]$Removidos.Add($x) } }
+    foreach ($x in @($h.renomeados)) { if ($null -ne $x -and -not $NaRelease.Contains([string]$x.de)) { [void]$Renomeados.Add($x) } }
     foreach ($x in @($h.migracoes)) { if ($null -ne $x) { [void]$Migracoes.Add($x) } }
   }
 }
@@ -253,6 +260,19 @@ foreach ($a in $Arquivos) {
   })
 }
 
+# Linhas que o aplicar.ps1 vai acrescentar ao .gitignore (vazio se não há .gitignore).
+$Gitignore = New-Object System.Collections.ArrayList
+$ArqGitignore = Join-Path $RaizCheia '.gitignore'
+if ([IO.File]::Exists($ArqGitignore)) {
+  $presentes = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+  foreach ($l in ($Utf8SemBom.GetString([IO.File]::ReadAllBytes($ArqGitignore)).TrimStart([char]0xFEFF) -split '\r?\n')) {
+    [void]$presentes.Add($l.Trim().TrimStart('/').TrimEnd('/'))
+  }
+  foreach ($linha in @('.segundo-cerebro/backup/', '.segundo-cerebro/preparo/')) {
+    if (-not $presentes.Contains($linha.TrimEnd('/'))) { [void]$Gitignore.Add($linha) }
+  }
+}
+
 # 4. Saída
 $Resultado = [ordered]@{
   de         = $De
@@ -262,6 +282,7 @@ $Resultado = [ordered]@{
   removidos  = $Removidos.ToArray()
   renomeados = $Renomeados.ToArray()
   migracoes  = $Migracoes.ToArray()
+  gitignore  = $Gitignore.ToArray()
 }
 $Json = ConvertTo-Json -InputObject $Resultado -Depth 10
 [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($ArqSaida))

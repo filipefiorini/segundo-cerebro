@@ -1,6 +1,6 @@
 {
   "versao_schema": 1,
-  "versao": "1.0.0-rc.1",
+  "versao": "1.0.0",
   "arquivos": [
     {
       "caminho": ".claude/settings.json",
@@ -15,17 +15,22 @@
     {
       "caminho": ".claude/skills/atualizar/SKILL.md",
       "tipo": "fixo",
-      "sha256": "37fe8185760ed74ae4a2d5741b5f54a041bf89fd9e9ef824a3ce99e8f25a172f"
+      "sha256": "6f7cefeada4ae9f73469f70cfdf473c07e432e8d77e660de51e00a0d14ff6ce3"
     },
     {
       "caminho": ".claude/skills/atualizar/aplicar.ps1",
       "tipo": "fixo",
-      "sha256": "ad7493400d284bb48cce05753c9065b18623b222dfcecf597ae30048b41e13e1"
+      "sha256": "d80ff3ad119f87a0d5ee64627997985bb05c3b24b4add967d8fcfa062138733e"
+    },
+    {
+      "caminho": ".claude/skills/atualizar/baixar.ps1",
+      "tipo": "fixo",
+      "sha256": "f422c6efa031135d9067a8c6a4f561f6eed8e72a300b8eaea58eaefe257eeb11"
     },
     {
       "caminho": ".claude/skills/atualizar/comparar.ps1",
       "tipo": "fixo",
-      "sha256": "064ebe9b072eccee879c0610288798f758283835f14cd4693436af4684b9b1e4"
+      "sha256": "28bf5fc184862f77c31801de9ed8994dcb6459b2bc27e1cfc30f7899547ddd33"
     },
     {
       "caminho": ".claude/skills/atualizar/desfazer.ps1",
@@ -40,7 +45,7 @@
     {
       "caminho": ".claude/skills/atualizar/reference.md",
       "tipo": "fixo",
-      "sha256": "b191e2bcaca9248b67ac41247de091ad231dcde3b83f0e0b524eec2dbe815b1c"
+      "sha256": "7a2b2fd4e284560db954a2fead144872bd8fb1bf0c41c0ab9589661a54ef081f"
     },
     {
       "caminho": ".claude/skills/auditar-vault/SKILL.md",
@@ -90,12 +95,12 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
       "tipo": "fixo",
-      "sha256": "c7f6a04581ea6ad2114dcfbbb035e8c51efe171e0388b7c1031365e474df9a16"
+      "sha256": "a3e7fa5b8aceb09f1289cce53e8d4fc396db1210a123de82c95639a4c85d6725"
     },
     {
       "caminho": ".claude/skills/instalar/SKILL.md",
       "tipo": "fixo",
-      "sha256": "f1a219ad71d799f0280ce9ee8dc98c151e101e3866ed47e591cfce205913a50e"
+      "sha256": "14197f8116d95f7b5d1eccfe3fbf4c8ca0ab14ddcce4ee3749bbb1f0eaed2160"
     },
     {
       "caminho": ".claude/skills/instalar/exemplos.md",
@@ -110,7 +115,7 @@
     {
       "caminho": ".claude/skills/instalar/reference.md",
       "tipo": "fixo",
-      "sha256": "673c8094e0bc6379b879e2682ecb37dab479ec577ddaf1384c6de4208d738d9b"
+      "sha256": "dcb5fb44c49a0a38ee83c25b8c978d698820cce578d9bcd28a733bc42e77057d"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/.claude-plugin/plugin.json",
@@ -655,7 +660,7 @@
     {
       "caminho": "_docs/CHANGELOG.md",
       "tipo": "fixo",
-      "sha256": "7850c912051daaa46e16a7ff02a650c16afcccb337afdb7993ddd69f87634264"
+      "sha256": "ba692860c358c21489a5403b4d8d8f869306d028ba599dc9eb99b1e841bbbbe2"
     },
     {
       "caminho": "_docs/Como o Autor Opera em Casa.md",
@@ -821,6 +826,12 @@
   "historico": [
     {
       "versao": "1.0.0-rc.1",
+      "removidos": [],
+      "renomeados": [],
+      "migracoes": []
+    },
+    {
+      "versao": "1.0.0",
       "removidos": [],
       "renomeados": [],
       "migracoes": []

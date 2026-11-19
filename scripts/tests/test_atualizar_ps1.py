@@ -1,10 +1,12 @@
-"""Testes dos scripts PowerShell do /atualizar: comparar, aplicar e desfazer."""
+"""Testes dos scripts PowerShell do /atualizar: baixar, comparar, aplicar e desfazer."""
 import hashlib
+import io
 import json
 import os
 import re
 import shutil
 import subprocess
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -91,7 +93,7 @@ def backups(raiz: Path) -> list:
 
 
 def test_scripts_tem_bom():
-    for nome in ("comparar.ps1", "aplicar.ps1", "desfazer.ps1"):
+    for nome in ("baixar.ps1", "comparar.ps1", "aplicar.ps1", "desfazer.ps1"):
         assert (DIR_SCRIPTS / nome).read_bytes()[:3] == b"\xef\xbb\xbf", nome
 
 
@@ -251,6 +253,122 @@ def test_comparar_historico_so_de_versoes_maiores(tmp_path):
     assert dados["removidos"] == ["r110.md", "r120.md"]
     assert dados["renomeados"] == [{"de": "x.md", "para": "y.md"}]
     assert dados["migracoes"] == [{"id": "m1", "descricao": "d", "instrucoes": "i"}]
+
+
+def _volta_na_12(raiz: Path, historico_11: dict) -> tuple:
+    """Instância na 1.0 com volta.md; a 1.1 tira o arquivo e a 1.2 o traz de volta."""
+    gravar(raiz, ".segundo-cerebro-version", "1.0.0\n")
+    gravar(raiz, "volta.md", "da 1.0")
+    gravar(raiz, f"{ORIGEM}/volta.md", "da 1.2")
+    historico = [historico_11,
+                 {"versao": "1.2.0", "removidos": [], "renomeados": [], "migracoes": []}]
+    gravar_release(raiz / ORIGEM, "1.2.0", {"volta.md": "fixo"}, historico)
+    return comparar(raiz)
+
+
+def _aplicar_pela_comparacao(raiz: Path, dados: dict):
+    """Monta o plano como o Code faz: cópias da tabela, remoções e renomeações da comparação."""
+    plano = {
+        "de": dados["de"], "para": "1.1.0",
+        "copiar": [{"de": f"{ORIGEM}/{a['caminho']}", "para": a["caminho"]}
+                   for a in dados["arquivos"] if a["acao"] in ("perguntar", "copiar", "substituir")],
+        "remover": dados["removidos"],
+        "renomear": dados["renomeados"],
+    }
+    gravar_plano(raiz, plano)
+    return aplicar(raiz)
+
+
+def test_removido_e_recriado_fica(tmp_path):
+    r, dados = _volta_na_12(tmp_path, {"versao": "1.1.0", "removidos": ["volta.md"],
+                                       "renomeados": [], "migracoes": []})
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["removidos"] == []
+    r = _aplicar_pela_comparacao(tmp_path, dados)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, "volta.md") == "da 1.2"
+
+
+def test_renomeado_e_recriado_fica(tmp_path):
+    r, dados = _volta_na_12(tmp_path, {"versao": "1.1.0", "removidos": [],
+                                       "renomeados": [{"de": "volta.md", "para": "outro.md"}],
+                                       "migracoes": []})
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["renomeados"] == []
+    r = _aplicar_pela_comparacao(tmp_path, dados)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, "volta.md") == "da 1.2"
+    assert not (tmp_path / "outro.md").exists()
+
+
+def test_aplicar_recusa_remover_arquivo_da_release(tmp_path):
+    gravar(tmp_path, "volta.md", "da 1.0")
+    historico = [{"versao": "1.1.0", "removidos": ["volta.md"], "renomeados": [], "migracoes": []}]
+    montar_aplicacao(tmp_path, {"volta.md": "nova"}, {"volta.md": "fixo"}, historico,
+                     remover=["volta.md"])
+    r = aplicar(tmp_path)
+    assert r.returncode == 2
+    assert ler(tmp_path, "volta.md") == "da 1.0"
+
+
+LINHAS_PREPARO = [".segundo-cerebro/backup/", ".segundo-cerebro/preparo/"]
+
+
+def test_comparar_lista_linhas_que_faltam_no_gitignore(tmp_path):
+    gravar(tmp_path, ".segundo-cerebro-version", "1.0.0\n")
+    gravar(tmp_path, ".gitignore", ".env\n.segundo-cerebro/backup/\n")
+    gravar(tmp_path, f"{ORIGEM}/a.md", "a")
+    gravar_release(tmp_path / ORIGEM, "1.1.0", {"a.md": "fixo"})
+    r, dados = comparar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["gitignore"] == [".segundo-cerebro/preparo/"]
+
+
+def test_comparar_sem_gitignore_nao_lista(tmp_path):
+    gravar(tmp_path, ".segundo-cerebro-version", "1.0.0\n")
+    gravar(tmp_path, f"{ORIGEM}/a.md", "a")
+    gravar_release(tmp_path / ORIGEM, "1.1.0", {"a.md": "fixo"})
+    r, dados = comparar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert dados["gitignore"] == []
+
+
+def test_gitignore_recebe_linhas_da_atualizacao(tmp_path):
+    antes = "# meu\r\n.env\r\nnotas-privadas/"
+    gravar(tmp_path, ".gitignore", antes)
+    gravar(tmp_path, "CLAUDE.md", "velho")
+    montar_aplicacao(tmp_path, {"CLAUDE.md": "novo"}, {"CLAUDE.md": "fixo"})
+    r = aplicar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, ".gitignore") == antes + "\r\n" + "\r\n".join(LINHAS_PREPARO) + "\r\n"
+    assert ".gitignore" in r.stdout.decode("utf-8", "replace")
+    (nome,) = backups(tmp_path)
+    pasta = tmp_path / ".segundo-cerebro" / "backup" / nome
+    assert (pasta / "arquivos" / ".gitignore").read_bytes() == antes.encode("utf-8")
+
+    r = rodar("desfazer.ps1", "-Raiz", str(tmp_path), "-Backup", f".segundo-cerebro/backup/{nome}")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, ".gitignore") == antes
+
+
+def test_gitignore_completo_fica_igual(tmp_path):
+    antes = ".env\n/.segundo-cerebro/backup\n.segundo-cerebro/preparo/\n"
+    gravar(tmp_path, ".gitignore", antes)
+    montar_aplicacao(tmp_path, {"CLAUDE.md": "novo"}, {"CLAUDE.md": "fixo"})
+    r = aplicar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert ler(tmp_path, ".gitignore") == antes
+    (nome,) = backups(tmp_path)
+    info = json.loads((tmp_path / ".segundo-cerebro/backup" / nome / "backup.json")
+                      .read_text(encoding="utf-8"))
+    assert [a["caminho"] for a in info["arquivos"]] == ["CLAUDE.md"]
+
+
+def test_sem_gitignore_nao_cria(tmp_path):
+    montar_aplicacao(tmp_path, {"CLAUDE.md": "novo"}, {"CLAUDE.md": "fixo"})
+    r = aplicar(tmp_path)
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert not (tmp_path / ".gitignore").exists()
 
 
 def test_comparar_versoes_que_nao_se_comparam(tmp_path):
@@ -581,3 +699,152 @@ def test_desfazer_erro_em_utf8(tmp_path):
     r = rodar("desfazer.ps1", "-Raiz", str(tmp_path), "-Backup", ".segundo-cerebro/backup/não-existe")
     assert r.returncode != 0
     assert "não" in r.stderr.decode("utf-8")
+
+
+# --- baixar -----------------------------------------------------------------
+# Os testes usam -Origem com uma pasta local: nada vai à rede.
+
+MANUAL = "página de releases"
+
+
+def zip_de_teste() -> bytes:
+    memoria = io.BytesIO()
+    with zipfile.ZipFile(memoria, "w") as z:
+        z.writestr("segundo-cerebro-v1.1.0/segundo-cerebro.release.json", '{"versao": "1.1.0"}')
+    return memoria.getvalue()
+
+
+def publicar(origem: Path, versao: str, conteudo: bytes, sha=None, latest=None) -> None:
+    """Simula os arquivos de uma release na pasta `origem`."""
+    origem.mkdir(parents=True, exist_ok=True)
+    nome = f"segundo-cerebro-v{versao}.zip"
+    (origem / nome).write_bytes(conteudo)
+    sha = sha or hashlib.sha256(conteudo).hexdigest()
+    (origem / (nome + ".sha256")).write_bytes(f"{sha} *{nome}\n".encode("ascii"))
+    if latest:
+        (origem / "latest.json").write_text(json.dumps({"tag_name": f"v{latest}"}), encoding="utf-8")
+
+
+def baixar(destino: Path, origem: Path, *extra):
+    return rodar("baixar.ps1", "-Destino", str(destino), "-Origem", str(origem), *extra)
+
+
+def test_baixar_hash_certo(tmp_path):
+    conteudo = zip_de_teste()
+    publicar(tmp_path / "origem", "1.1.0", conteudo)
+    destino = tmp_path / "preparo"
+    r = baixar(destino, tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    zip_baixado = destino / "segundo-cerebro-v1.1.0.zip"
+    assert zip_baixado.read_bytes() == conteudo
+    assert str(zip_baixado) in r.stdout.decode("utf-8").strip().splitlines()
+    assert sorted(p.name for p in destino.iterdir()) == ["segundo-cerebro-v1.1.0.zip"]
+
+
+def test_baixar_sem_versao_usa_a_mais_recente(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste(), latest="1.1.0")
+    r = baixar(tmp_path / "preparo", tmp_path / "origem")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert (tmp_path / "preparo" / "segundo-cerebro-v1.1.0.zip").is_file()
+
+
+def test_baixar_hash_maiusculo_confere(tmp_path):
+    conteudo = zip_de_teste()
+    publicar(tmp_path / "origem", "1.1.0", conteudo, sha=hashlib.sha256(conteudo).hexdigest().upper())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+
+
+def test_baixar_hash_diferente(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste(), sha="0" * 64)
+    destino = tmp_path / "preparo"
+    r = baixar(destino, tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+    assert not destino.is_dir() or list(destino.iterdir()) == []
+
+
+def test_baixar_resposta_html(tmp_path):
+    # um HTML no lugar do zip, com o .sha256 batendo com ele: a conferência de zip recusa
+    html = b"<!DOCTYPE html><html><body>Not Found</body></html>"
+    publicar(tmp_path / "origem", "1.1.0", html)
+    destino = tmp_path / "preparo"
+    r = baixar(destino, tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    erro = r.stderr.decode("utf-8")
+    assert "não é um zip" in erro and MANUAL in erro
+    assert not destino.is_dir() or list(destino.iterdir()) == []
+
+
+def test_baixar_arquivo_vazio(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", b"")
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+
+
+def test_baixar_versao_inexistente(tmp_path):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", "9.9.9")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+
+
+def test_baixar_sem_release_publicada(tmp_path):
+    # a API devolve 404 enquanto só há pre-release; aqui, a falta do latest.json
+    publicar(tmp_path / "origem", "1.0.0-rc.1", zip_de_teste())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem")
+    assert r.returncode == 2
+    assert MANUAL in r.stderr.decode("utf-8")
+
+
+@pytest.mark.parametrize("versao", ["1.1", "1.1.0/../x", "latest"])
+def test_baixar_recusa_versao_mal_formada(tmp_path, versao):
+    publicar(tmp_path / "origem", "1.1.0", zip_de_teste())
+    r = baixar(tmp_path / "preparo", tmp_path / "origem", "-Versao", versao)
+    assert r.returncode == 2
+
+
+@pytest.mark.parametrize("status, codigo", [
+    (200, 0), (204, 0), (400, 2), (403, 2), (404, 2), (429, 2), (451, 2),
+    (500, 1), (502, 1), (503, 1), (301, 1), (0, 1),
+])
+def test_baixar_traduz_status_http(status, codigo):
+    # a função é chamada isolada, com o script carregado por ". baixar.ps1": sem rede
+    script = str(DIR_SCRIPTS / "baixar.ps1").replace("'", "''")
+    r = subprocess.run(
+        [POWERSHELL, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
+         f". '{script}'; Codigo-Saida-Http {status}"],
+        capture_output=True,
+    )
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert r.stdout.decode("utf-8").strip() == str(codigo)
+
+
+def test_baixar_mensagem_do_limite_de_consultas():
+    script = str(DIR_SCRIPTS / "baixar.ps1").replace("'", "''")
+    for status in (403, 429):
+        r = subprocess.run(
+            [POWERSHELL, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
+             f"[Console]::OutputEncoding = New-Object Text.UTF8Encoding $false; "
+             f". '{script}'; Mensagem-Http {status} 'https://exemplo.test/x'"],
+            capture_output=True,
+        )
+        saida = r.stdout.decode("utf-8")
+        assert "limitou as consultas" in saida and "tente mais tarde" in saida
+        assert MANUAL in saida
+
+
+def test_baixar_recusa_origem_unc(tmp_path):
+    r = rodar("baixar.ps1", "-Destino", str(tmp_path / "preparo"), "-Origem",
+              "\\\\exemplo.test\\releases", "-Versao", "1.1.0")
+    assert r.returncode == 2
+    assert "UNC" in r.stderr.decode("utf-8")
+    assert not (tmp_path / "preparo").exists()
+
+
+def test_baixar_origem_so_pasta_local(tmp_path):
+    r = rodar("baixar.ps1", "-Destino", str(tmp_path / "preparo"), "-Origem",
+              "https://exemplo.test/releases", "-Versao", "1.1.0")
+    assert r.returncode == 1
+    assert "pasta" in r.stderr.decode("utf-8")

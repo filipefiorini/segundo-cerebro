@@ -2,7 +2,7 @@
 
 # Segundo Cérebro
 
-> **Release candidate for 1.0.0, under validation.** Stuck during installation? [Tell us here](https://github.com/filipefiorini/segundo-cerebro/issues/new?template=instalei-e-travei.yml). We reply within 48 hours.
+> Stuck during installation? [Tell us here](https://github.com/filipefiorini/segundo-cerebro/issues/new?template=instalei-e-travei.yml). We reply within 48 hours.
 
 > The framework, skills and modules speak Brazilian Portuguese; this page mirrors the Portuguese README.
 
@@ -120,8 +120,8 @@ You do not use the terminal. You will approve one command once: it installs the 
 
 ### Quick path (15 to 20 minutes)
 
-1. **Download.** Open the [page for this release](https://github.com/filipefiorini/segundo-cerebro/releases/tag/v1.0.0-rc.1) and, under **Assets**, click the file that starts with segundo-cerebro-v and ends in .zip. A ZIP is a compressed file with all the folders inside.
-2. **Extract.** In File Explorer, right-click the ZIP › **Extract All** and pick a folder of yours. The vault folder is the one that has `CLAUDE.md`.
+1. **Download.** Open the [page for the latest release](https://github.com/filipefiorini/segundo-cerebro/releases/latest) and, under **Assets**, click the file that starts with segundo-cerebro-v and ends in .zip. A ZIP is a compressed file with all the folders inside.
+2. **Extract.** In File Explorer, right-click the ZIP › **Extract All**. In the dialog, change the destination to a folder outside OneDrive, for example `C:\vaults` (through the **Browse** button, which can also create a new folder), and delete the `\segundo-cerebro-v…` Windows appends to the end of the path: the ZIP already contains that folder. Desktop and Documents are often inside OneDrive, whose syncing fights Obsidian and Claude over the files. The vault folder is the one that has `CLAUDE.md` directly inside it.
 3. **Open it in Claude Code.** In Claude Desktop, go to the Code tab and choose that folder as the working folder.
 4. **Accept folder trust.** Claude Desktop asks whether you trust it. Accepting lets the vault's two modules run, the Guard and the Panel. Only accept for a vault downloaded from a source you know.
 5. **Call `/instalar`.** The assistant talks with you, one question at a time: it installs the Obsidian plugins (you approve the command), asks you to open the folder in Obsidian, gets to know you, creates your areas and projects, brings in your projects from other AIs and, if you want, sets up connectors and backup. Nothing is written without your ok, and you can stop and resume later by calling `/instalar` again.
@@ -133,7 +133,7 @@ The vault comes with example notes in the Galaxy and in Fontes. They are optiona
 For people who want backup from the start. Here the vault comes as a clone, a copy of the repository linked to its origin.
 
 1. Install [GitHub Desktop](https://desktop.github.com) and [Git for Windows](https://git-scm.com/download/win), which the backup uses (in the installer, click Next until Install).
-2. On this page, green **Code** button › **Open with GitHub Desktop**. Pick a folder of yours and click **Clone**.
+2. On this page, green **Code** button › **Open with GitHub Desktop**. Pick a folder of yours, outside OneDrive, and click **Clone**.
 3. Follow steps 3 to 5 of the quick path. At the end, `/instalar` walks you through the backup, window by window, and swaps the link to this repository for a private repository of yours.
 
 ## 🗂️ The folders
@@ -174,10 +174,10 @@ Share back through an issue (a report on the repository) or a pull request (a pr
 
 ## 🚧 Status and limits
 
-- Version `1.0.0-rc.1`: release candidate, under validation before 1.0.0.
+- Version `1.0.0`.
 - Windows only.
 - Portuguese only.
-- Updates go through `/atualizar`: you download the zip of the new version from the repository's releases page and point Claude to the file; it checks the hashes, shows the plan file by file and only applies it with your approval, after a backup. Do not update with `git pull`.
+- Updates go through `/atualizar`: Claude downloads the zip of the new version from the repository's releases page by itself (pointing it to a zip you already downloaded still works); it checks the hashes, shows the plan file by file and only applies it with your approval, after a backup. Do not update with `git pull`.
 - This version ships no scheduled routines: Claude works when you open a session, and you can freely create your own, with its help. How the author runs routines at home is in [`_docs/Como o Autor Opera em Casa.md`](_docs/Como%20o%20Autor%20Opera%20em%20Casa.md), as an idea, not as an installation.
 - No semantic search (search by the meaning of words): search is by text, tags and links.
 
