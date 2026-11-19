@@ -90,12 +90,12 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/hooks/register.ts",
       "tipo": "fixo",
-      "sha256": "b6c1318a2acd6ba867bb02dc011b9d5096feb857be4d8fcab7fe019b2348f83c"
+      "sha256": "e6a015354b691183bdec785a251e6768bcc062d0c20295a2aab06fc8bebb7469"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
       "tipo": "fixo",
-      "sha256": "03ce65d5171f14417dee7e8186bbbfbd3be95ff7049aa53165f466963e8ed311"
+      "sha256": "e835a29ba7ae485c2e17e0c45f082d68a112fc8b7b02830b40fcc7464fce4419"
     },
     {
       "caminho": ".claude/skills/instalar/SKILL.md",

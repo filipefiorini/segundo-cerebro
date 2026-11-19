@@ -280,7 +280,8 @@ function editApagaDue(antigo: string, novo: string): boolean {
 export function tarefaSemPrazo(tool: string, texto: string, antigo = ''): string | null {
   if (tool === 'Edit') {
     if (DUE_VAZIO.test(texto)) return 'o Edit deixa a tarefa sem `due`; toda tarefa tem prazo.'
-    return editApagaDue(antigo, texto) ? 'o Edit apaga a linha `due` da tarefa; toda tarefa tem prazo.' : null
+    return editApagaDue(antigo, texto) ? 'o Edit apaga a linha `due` da tarefa; toda tarefa tem prazo. Se a tarefa já está done ou '
+      + 'cancelled, inclua a linha `status` no trecho ou edite pelo painel/Obsidian.' : null
   }
   if (tool !== 'Write') return null
   if (!texto.startsWith('---')) return null

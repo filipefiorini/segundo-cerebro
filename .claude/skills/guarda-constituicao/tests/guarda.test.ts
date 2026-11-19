@@ -217,6 +217,13 @@ test('veredito puro: raiz com barra final e caminho em barra invertida', () => {
   expect(d?.decision).toBe('deny')
 })
 
+test('recusa do Edit que apaga o due diz como contornar', () => {
+  const v = veredito('Edit', { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'due: 2026-11-09\n', new_string: '' }, RAIZ, 0)
+  expect(v?.decision).toBe('deny')
+  expect(v?.reason ?? '').toContain('FONTE-DE-TAREFAS')
+  expect(v?.reason ?? '').toContain('inclua a linha `status` no trecho ou edite pelo painel/Obsidian')
+})
+
 test('/guarda liberar suspende ask por 1 hora, não suspende deny; travar encerra', () => {
   const t0 = Date.UTC(2026, 9, 27, 15, 0)
   const editar = { file_path: `${V}CLAUDE.md`, old_string: 'a', new_string: 'b' }
