@@ -50,7 +50,7 @@
     {
       "caminho": ".claude/skills/auditar-vault/SKILL.md",
       "tipo": "fixo",
-      "sha256": "2eb595c72c5355e9944f26cb368b47ccb3aa7f0a08109eff706a107d7e73f220"
+      "sha256": "76292a7a53d8a752244f57a2e2a2a4f35ab06bb80a5f4ae021c15e2842b3790e"
     },
     {
       "caminho": ".claude/skills/auditar-vault/exemplos.md",
@@ -60,7 +60,7 @@
     {
       "caminho": ".claude/skills/auditar-vault/reference.md",
       "tipo": "fixo",
-      "sha256": "9e148220c17bd5b1130862b1b4f201bf36171de2c9ecc50abb802fd67c2d9aa8"
+      "sha256": "4e074b24ef341c8258f93a673ddba29764823cae9f5f45e1473d6d1e0208b020"
     },
     {
       "caminho": ".claude/skills/deliberar/SKILL.md",
@@ -560,7 +560,7 @@
     {
       "caminho": "CLAUDE.md",
       "tipo": "fixo",
-      "sha256": "fb727bb72efd275d1879137fa5e36042ccf8a0405ed15ed73c9c81c4bf0bf9be"
+      "sha256": "b82d6c22859e3cb6973a3da9cca1a074d88a5a1541812981de2da1258fbc5484"
     },
     {
       "caminho": "Homepage.md",
@@ -720,12 +720,12 @@
     {
       "caminho": "_docs/Ferramentas.md",
       "tipo": "fixo",
-      "sha256": "711b5c5220bfba2db42cc96a0ce8d2f3bb242d4c5b1a6d05916009888cdbe1ee"
+      "sha256": "52ad6950cffdcea38ef52f2b58e7e94c938ab1889db732282331027c4c1725cc"
     },
     {
       "caminho": "_docs/Manual do Segundo Cérebro.md",
       "tipo": "fixo",
-      "sha256": "2b0763ef43a7bbcd8f5b46fbc09fa71dc3af866d997775ec63fd6f44283d0f26"
+      "sha256": "6fd599f050b2bfaa7ca2267e39d1590e130fd1f9b081ef695323d43c890ba939"
     },
     {
       "caminho": "_docs/O Método.md",
@@ -810,7 +810,7 @@
     {
       "caminho": "_templates/Template de Tarefa.md",
       "tipo": "fixo",
-      "sha256": "d056c1a4707db829966218388c0e7fed6bc4dd8fdc26d626c9622256884e557a"
+      "sha256": "918a4ad69415812841af5db9b67b74c532a940e0058544512568a454d8b03de5"
     },
     {
       "caminho": "_templates/Template de Tarefas.md",

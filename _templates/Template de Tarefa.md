@@ -16,7 +16,8 @@ tags: [task]
 status: open | in-progress | waiting | done · priority: none | low | normal | high
 projects: ["[[caminho/_CONTEXTO|Escopo]]"] · executor: eu | code
 due obrigatório: o template põe o dia útil seguinte com prazo_padrao: true; prazo combinado → troque a data e apague a marca.
-Dado pessoal nunca no título. -->
+Dado pessoal nunca no título.
+Recorrente: acrescente `scheduled` (= `due`), `recurrence` e `recurrence_anchor: scheduled`. Regras do painel: 1º dia de semana do mês `FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1` · toda segunda `FREQ=WEEKLY;BYDAY=MO` · todo dia 10 `FREQ=MONTHLY;BYMONTHDAY=10`. O feriado não conta: ajuste a data à mão. No painel, o campo Repete do + Nova faz isso sozinho. -->
 
 Contexto suficiente para retomar sem o chat.
 
