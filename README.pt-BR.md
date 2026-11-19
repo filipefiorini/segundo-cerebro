@@ -2,7 +2,7 @@
 
 # Segundo Cérebro
 
-> **Versão candidata à 1.0.0, em validação.** Travou na instalação? [Conte aqui](https://github.com/filipefiorini/segundo-cerebro/issues/new?template=instalei-e-travei.yml). A resposta sai em até 48 horas.
+> Travou na instalação? [Conte aqui](https://github.com/filipefiorini/segundo-cerebro/issues/new?template=instalei-e-travei.yml). A resposta sai em até 48 horas.
 
 [Read in English](README.md)
 
@@ -118,7 +118,7 @@ Você não usa o terminal. Você vai aprovar um comando uma vez: ele instala os 
 
 ### Caminho rápido (15 a 20 minutos)
 
-1. **Baixe.** Abra a [página desta versão](https://github.com/filipefiorini/segundo-cerebro/releases/tag/v1.0.0-rc.1) e, em **Assets**, clique no arquivo que começa com segundo-cerebro-v e termina em .zip. ZIP é um arquivo compactado com todas as pastas dentro.
+1. **Baixe.** Abra a [página da última versão](https://github.com/filipefiorini/segundo-cerebro/releases/latest) e, em **Assets**, clique no arquivo que começa com segundo-cerebro-v e termina em .zip. ZIP é um arquivo compactado com todas as pastas dentro.
 2. **Extraia.** No Explorador de Arquivos, clique com o botão direito no ZIP › **Extrair tudo**. Na janela, troque o destino por uma pasta fora do OneDrive, por exemplo `C:\vaults` (pelo botão **Procurar**, que também cria pasta nova), e apague do fim do caminho o `\segundo-cerebro-v…` que o Windows acrescenta: o ZIP já traz essa pasta. Área de Trabalho e Documentos costumam ficar no OneDrive, cuja sincronização disputa os arquivos com o Obsidian e o Claude. A pasta do vault é a que tem o `CLAUDE.md` logo dentro dela.
 3. **Abra no Claude Code.** No Claude Desktop, entre na aba Code e escolha essa pasta como pasta de trabalho.
 4. **Aceite a confiança da pasta.** O Claude Desktop pergunta se você confia nela. Aceitar deixa rodar os dois módulos do vault, a Guarda e o Painel. Só aceite num vault baixado de fonte que você conhece.
@@ -172,10 +172,10 @@ Compartilhe de volta por issue (um relato no repositório) ou pull request (uma 
 
 ## 🚧 Estado e limites
 
-- Versão `1.0.0-rc.1`: candidata, em validação antes da 1.0.0.
+- Versão `1.0.0`.
 - Só Windows.
 - Só português.
-- A atualização é pelo `/atualizar`: da 1.0.0 em diante, o Claude baixa sozinho o zip da versão nova na página de releases do repositório (indicar um zip que você já baixou continua valendo; quem está na 1.0.0-rc.1 atualiza uma vez baixando o zip e indicando o arquivo ao Claude), confere os hashes, mostra o plano arquivo por arquivo e só aplica com a sua aprovação, depois de um backup. Não atualize por `git pull`.
+- A atualização é pelo `/atualizar`: o Claude baixa sozinho o zip da versão nova na página de releases do repositório (indicar um zip que você já baixou continua valendo), confere os hashes, mostra o plano arquivo por arquivo e só aplica com a sua aprovação, depois de um backup. Não atualize por `git pull`.
 - Esta versão não traz rotinas agendadas: o Claude trabalha quando você abre uma sessão, e você pode criar as suas livremente, com a ajuda dele. Como o autor roda rotinas em casa está em [`_docs/Como o Autor Opera em Casa.md`](_docs/Como%20o%20Autor%20Opera%20em%20Casa.md), como ideia, não como instalação.
 - Sem busca semântica (busca pelo sentido das palavras): a busca é por texto, tags e links.
 
