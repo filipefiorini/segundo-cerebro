@@ -305,6 +305,55 @@ test('nova tarefa nasce sem projeto e aceita data escolhida', async ($, on) => {
   await ui.unmount()
 })
 
+test('dentro do grupo, a lista segue a prioridade: alta, normal, baixa e sem prioridade', async ($, on) => {
+  const arquivos: Record<string, string> = {}
+  const t = (titulo: string, prioridade: string, due: string) =>
+    nota(`title: "${titulo}"\nstatus: open\npriority: ${prioridade}\ndue: ${due}\nprojects: [${TRABALHO}]\nexecutor: eu`)
+  arquivos['Sem prioridade antiga.md'] = t('Sem prioridade antiga', 'none', '2026-10-20')
+  arquivos['Baixa de hoje.md'] = t('Baixa de hoje', 'low', '2026-10-27')
+  arquivos['Normal atrasada.md'] = t('Normal atrasada', 'normal', '2026-10-25')
+  arquivos['Alta de hoje.md'] = t('Alta de hoje', 'high', '2026-10-27')
+  arquivos['Normal de hoje.md'] = t('Normal de hoje', 'normal', '2026-10-27')
+  engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  const titulos = (await ui.findAll({ type: 'Text', text: /^(Alta|Normal|Baixa|Sem prioridade) / })).map(x => x.text)
+  expect(titulos).toEqual(['Alta de hoje', 'Normal atrasada', 'Normal de hoje', 'Baixa de hoje', 'Sem prioridade antiga'])
+  await ui.unmount()
+})
+
+test('nova tarefa nasce com prioridade normal', async ($, on) => {
+  const arquivos = vault()
+  engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 'nova' })
+  await ui.input({ key: 'nova-0', text: 'Pagar conta de luz' })
+  expect(arquivos['Pagar conta de luz.md']).toContain('priority: normal')
+  await ui.unmount()
+})
+
+test('digitar no título não devolve texto velho ao campo', async ($, on) => {
+  const arquivos = vault()
+  engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 'nova' })
+  for (const texto of ['E', 'En', 'Env', 'Enviar']) {
+    await ui.input({ key: 'nova-0', text: texto, kind: 'change' })
+    // Campo não controlado: o redesenho não carrega texto, então nunca troca o que a pessoa digitou.
+    const campo = await ui.find({ type: 'Input', key: 'nova-0' })
+    expect(campo).toBeTruthy()
+    expect((campo as { props?: { value?: unknown } }).props?.value).toBeUndefined()
+  }
+  await ui.input({ key: 'nova-0', text: 'Enviar proposta' })
+  expect(arquivos['Enviar proposta.md']).toContain('title: "Enviar proposta"')
+  await ui.unmount()
+})
+
 test('nomeArquivo: reticências e pontos nas pontas', () => {
   expect(nomeArquivo('Ligar para o banco...')).toBe('Ligar para o banco')
   expect(nomeArquivo('Ver... depois')).toBe('Ver. depois')

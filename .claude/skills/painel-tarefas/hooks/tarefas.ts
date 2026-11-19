@@ -116,16 +116,19 @@ export function emFoco(t: Tarefa, hoje: string): boolean {
 }
 
 const PESO: Record<Faixa, number> = { atrasada: 0, hoje: 1, semana: 2, depois: 3, 'sem-data': 4 }
+const PESO_PRIORIDADE: Record<string, number> = { high: 0, normal: 1, low: 2, none: 3 }
 
 export function ordenar(lista: Tarefa[], hoje: string): Tarefa[] {
   return [...lista].sort((a, b) => {
     if (ativa(a) !== ativa(b)) return ativa(a) ? -1 : 1
     if ((a.status === 'waiting') !== (b.status === 'waiting')) return a.status === 'waiting' ? 1 : -1
+    // Prioridade primeiro: alta, normal, baixa, sem prioridade; depois a data.
+    const pa = PESO_PRIORIDADE[a.prioridade] ?? 3, pb = PESO_PRIORIDADE[b.prioridade] ?? 3
+    if (pa !== pb) return pa - pb
     const fa = PESO[faixa(a, hoje)], fb = PESO[faixa(b, hoje)]
     if (fa !== fb) return fa - fb
     const da = dataDe(a) ?? '9999', db = dataDe(b) ?? '9999'
     if (da !== db) return da < db ? -1 : 1
-    if ((a.prioridade === 'high') !== (b.prioridade === 'high')) return a.prioridade === 'high' ? -1 : 1
     return a.titulo.localeCompare(b.titulo, 'pt-BR')
   })
 }
