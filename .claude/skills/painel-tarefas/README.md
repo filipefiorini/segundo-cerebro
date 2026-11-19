@@ -4,11 +4,11 @@ Módulo do Claude Code que abre, ao lado do chat, um painel com as tarefas de `0
 
 ## O que mostra
 
-- Dois blocos: "Minhas tarefas" (executor `eu`) e "Tarefas do Code" (executor `code`, recolhido), cada um agrupado por projeto em ordem alfabética, com "Sem projeto" por último.
+- Dois blocos: "Minhas tarefas" (executor `eu`) e "Tarefas do Code" (executor `code`, recolhido), cada um agrupado por projeto em ordem alfabética, com "Sem projeto" por último. Dentro de cada grupo, a ordem é a prioridade (alta, normal, baixa, sem prioridade) e, nela, a data.
 - Filtros Hoje, Semana, Aguardando, Concluídas e Todas, e filtro de prioridade.
 - Resumo do dia: atrasadas, em aberto e concluídas hoje.
 - No cartão de cada tarefa: concluir, adiar (amanhã, segunda ou outra data), marcar aguardando, trocar prioridade, status e projeto, "Fazer agora" (tarefas do Code: preenche o pedido no campo do chat, para você revisar e enviar) e abrir a nota no Obsidian.
-- "+ Nova" cria a nota pelo mesmo esquema do `_templates/Template de Tarefa.md`, sempre com prazo, executor `eu` e o projeto escolhido. Título com CPF é recusado.
+- "+ Nova" cria a nota pelo mesmo esquema do `_templates/Template de Tarefa.md`, sempre com prazo, executor `eu`, o projeto escolhido e prioridade normal (dá para trocar no formulário). Título com CPF é recusado.
 
 ## O que lê e grava
 

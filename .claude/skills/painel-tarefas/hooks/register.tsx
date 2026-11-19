@@ -36,7 +36,7 @@ const RASCUNHO_PADRAO: Rascunho = {
   projeto: SEM_PROJETO,
   prazo: 'hoje',
   dataLivre: '',
-  prioridade: 'none',
+  prioridade: 'normal',
   versao: 0,
 }
 const visao = atom({ plugin: 'painel-tarefas', key: 'visao' } as const, VISAO_PADRAO)
@@ -459,7 +459,6 @@ export const register: Register = (on, options) => {
             key={`nova-${r.versao}`}
             label="Título"
             placeholder="O que precisa ser feito"
-            value={r.titulo}
             rows={2}
             autoFocus
             onInput={(texto: string) => void update($, rascunho, x => ({ ...x, titulo: texto }))}
@@ -489,7 +488,6 @@ export const register: Register = (on, options) => {
                   key={`nova-data-${r.versao}`}
                   label="Data"
                   placeholder="dd/mm, dd/mm/aaaa, +10, sex"
-                  value={r.dataLivre}
                   onInput={(texto: string) => void update($, rascunho, x => ({ ...x, dataLivre: texto }))}
                   onSubmit={(texto: string) => void update($, rascunho, x => ({ ...x, dataLivre: texto }))}
                 />

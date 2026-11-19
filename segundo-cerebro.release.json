@@ -120,12 +120,12 @@
     {
       "caminho": ".claude/skills/painel-tarefas/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "76d3089bef5e26ab37c9bd0a3b475a3f379fb21d2621ee9b4b51d05e78cab537"
+      "sha256": "f06f3b0d6bffcc21d28b45d20aea98f7d3a7d82e646f19044ca14e39abef1ec7"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/README.md",
       "tipo": "fixo",
-      "sha256": "e02fdcf6d46419d270f68a35202131d03d35b1d56ba18dc1ab54a6ee5bf1397f"
+      "sha256": "bfae443e209a15c374a7dbdd73ff89fa72cd67d6cc848527dee7849d0a4c4fdb"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/hooks.json",
@@ -135,17 +135,17 @@
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/register.tsx",
       "tipo": "fixo",
-      "sha256": "f9a50382356ca2c9e8493d4d6109d01e898ba05f2a1b596c9f76c5e1e14c4452"
+      "sha256": "928aa8c12c409fe9001772f483c7c8313cb60ccce4da7688a388654c2fdc260f"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/tarefas.ts",
       "tipo": "fixo",
-      "sha256": "2ea52e8eb36893f6add6a8358c8965791c182cabb858324a86a9cb0028a0fc96"
+      "sha256": "2acc3d8539da0518d2e48fd6a51ff22941ab16cc6c7186d0defaf6412f8f4ef3"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/tests/painel.test.tsx",
       "tipo": "fixo",
-      "sha256": "4195eb8b77202489fafcb72b16bb4354d77e694a40ec9f3b0e9b46b8fe9b5853"
+      "sha256": "bb69c97d61bf9f8abd39e0b2459a973b80be5d99b8fbcefabd0bd5308df5b8dc"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/types/index.d.ts",
