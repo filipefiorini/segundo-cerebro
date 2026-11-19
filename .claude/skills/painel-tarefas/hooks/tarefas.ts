@@ -2,9 +2,11 @@
 // por data e reescrever só os campos que o painel trata.
 
 import type { Projeto, Tarefa } from '../types'
+import { primeiraOcorrencia, regraDa, regraParaTexto } from './recorrencia'
+import type { Regra } from './recorrencia'
 
 // prazo_padrao só é apagado (quando a pessoa escolhe a data), nunca escrito.
-export const CAMPOS_EDITAVEIS = ['status', 'due', 'scheduled', 'priority', 'completedDate', 'dateModified', 'projects', 'prazo_padrao']
+export const CAMPOS_EDITAVEIS = ['status', 'due', 'scheduled', 'priority', 'completedDate', 'dateModified', 'projects', 'prazo_padrao', 'complete_instances', 'skipped_instances']
 const CPF = /\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/
 
 const DIAS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb']
@@ -116,16 +118,19 @@ export function emFoco(t: Tarefa, hoje: string): boolean {
 }
 
 const PESO: Record<Faixa, number> = { atrasada: 0, hoje: 1, semana: 2, depois: 3, 'sem-data': 4 }
+const PESO_PRIORIDADE: Record<string, number> = { high: 0, normal: 1, low: 2, none: 3 }
 
 export function ordenar(lista: Tarefa[], hoje: string): Tarefa[] {
   return [...lista].sort((a, b) => {
     if (ativa(a) !== ativa(b)) return ativa(a) ? -1 : 1
     if ((a.status === 'waiting') !== (b.status === 'waiting')) return a.status === 'waiting' ? 1 : -1
+    // Prioridade primeiro: alta, normal, baixa, sem prioridade; depois a data.
+    const pa = PESO_PRIORIDADE[a.prioridade] ?? 3, pb = PESO_PRIORIDADE[b.prioridade] ?? 3
+    if (pa !== pb) return pa - pb
     const fa = PESO[faixa(a, hoje)], fb = PESO[faixa(b, hoje)]
     if (fa !== fb) return fa - fb
     const da = dataDe(a) ?? '9999', db = dataDe(b) ?? '9999'
     if (da !== db) return da < db ? -1 : 1
-    if ((a.prioridade === 'high') !== (b.prioridade === 'high')) return a.prioridade === 'high' ? -1 : 1
     return a.titulo.localeCompare(b.titulo, 'pt-BR')
   })
 }
@@ -156,34 +161,60 @@ function nomeProjeto(link: string): string {
   return partes[partes.length - 1] ?? caminho
 }
 
-export function lerTarefa(arquivo: string, texto: string, mtime: number): Tarefa | null {
+// Lê o frontmatter: lista em bloco ("chave:" + linhas "  - item") vira string[];
+// os demais campos ficam como texto bruto (inclusive a lista em fluxo "[a, b]").
+export function lerCampos(texto: string): Record<string, string | string[]> {
   const b = bloco(texto)
-  if (!b) return null
-  const campos: Record<string, string> = {}
+  if (!b) return {}
+  const campos: Record<string, string | string[]> = {}
+  let lista: string[] | null = null
   for (const linha of b.linhas.slice(1, b.fim)) {
+    const item = linha.match(/^\s+-\s+(.*)$/)
+    if (item && lista) {
+      lista.push(valor(item[1] ?? ''))
+      continue
+    }
+    lista = null
     const m = linha.match(/^([A-Za-z_]+):\s?(.*)$/)
-    if (m?.[1]) campos[m[1]] = m[2] ?? ''
+    if (!m?.[1]) continue
+    if ((m[2] ?? '').trim() === '') {
+      lista = []
+      campos[m[1]] = lista
+    } else {
+      campos[m[1]] = m[2] ?? ''
+    }
   }
-  if (!/\btask\b/.test(campos.tags ?? '')) return null
-  const projetos: Projeto[] = [...(campos.projects ?? '').matchAll(/"([^"]+)"/g)].map(m => ({
-    link: m[1] ?? '',
-    nome: nomeProjeto(m[1] ?? ''),
-  }))
+  // "chave:" vazia sem itens é texto vazio, não lista
+  for (const [k, v] of Object.entries(campos)) if (Array.isArray(v) && v.length === 0) campos[k] = ''
+  return campos
+}
+
+const txt = (v: string | string[] | undefined): string => (Array.isArray(v) ? v.join(' ') : v ?? '')
+
+export function lerTarefa(arquivo: string, textoNota: string, mtime: number): Tarefa | null {
+  const campos = lerCampos(textoNota)
+  if (!Object.keys(campos).length) return null
+  if (!/\btask\b/.test(txt(campos.tags))) return null
+  const links = Array.isArray(campos.projects)
+    ? campos.projects
+    : [...(campos.projects ?? '').matchAll(/"([^"]+)"/g)].map(m => m[1] ?? '')
+  const projetos: Projeto[] = links.map(l => ({ link: l, nome: nomeProjeto(l) }))
   const dia = (k: string) => {
-    const v = valor(campos[k] ?? '').slice(0, 10)
+    const v = valor(txt(campos[k])).slice(0, 10)
     return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null
   }
   return {
     arquivo,
-    titulo: valor(campos.title ?? '') || arquivo.replace(/\.md$/, ''),
-    status: valor(campos.status ?? 'open') || 'open',
-    prioridade: valor(campos.priority ?? 'none') || 'none',
+    titulo: valor(txt(campos.title)) || arquivo.replace(/\.md$/, ''),
+    status: valor(txt(campos.status) || 'open') || 'open',
+    prioridade: valor(txt(campos.priority) || 'none') || 'none',
     prazo: dia('due'),
     agendada: dia('scheduled'),
     projetos,
-    executor: valor(campos.executor ?? 'eu') || 'eu',
+    executor: valor(txt(campos.executor) || 'eu') || 'eu',
     concluidaEm: dia('completedDate'),
-    recorrente: valor(campos.recurrence ?? '') !== '',
+    recorrente: valor(txt(campos.recurrence)) !== '',
+    regraValida: regraDa(campos) !== null,
     // Preenchida depois, pelo `sensivel` do _CONTEXTO.md de cada projeto (ver areaSensivel).
     privada: false,
     mtime,
@@ -220,25 +251,27 @@ export function candidatosContexto(link: string): string[] {
   return lista
 }
 
-// Reescreve só os campos pedidos; null apaga a linha. Recusa campo fora da lista.
-export function definirCampos(texto: string, mudar: Record<string, string | null>): string {
-  const b = bloco(texto)
+// Reescreve só os campos pedidos; null apaga a linha (e os itens em bloco dela).
+// string[] grava lista em bloco, ou "chave: []" se vazia. Recusa campo fora da lista.
+export function definirCampos(textoNota: string, mudar: Record<string, string | string[] | null>): string {
+  const b = bloco(textoNota)
   if (!b) throw new Error('nota sem frontmatter')
   const linhas = [...b.linhas]
   let fim = b.fim
   for (const [chave, novo] of Object.entries(mudar)) {
     if (!CAMPOS_EDITAVEIS.includes(chave)) throw new Error(`campo fora do escopo: ${chave}`)
     const i = linhas.slice(0, fim).findIndex((l, n) => n > 0 && l.startsWith(`${chave}:`))
-    if (novo === null) {
-      if (i > 0) {
-        linhas.splice(i, 1)
-        fim--
-      }
-    } else if (i > 0) {
-      linhas[i] = `${chave}: ${novo}`
-    } else {
-      linhas.splice(fim, 0, `${chave}: ${novo}`)
-      fim++
+    let itens = 0
+    if (i > 0) while (/^\s+-(\s|$)/.test(linhas[i + 1 + itens] ?? '') && i + 1 + itens < fim) itens++
+    const nova = novo === null ? [] : Array.isArray(novo)
+      ? (novo.length ? [`${chave}:`, ...novo.map(x => `  - ${x}`)] : [`${chave}: []`])
+      : [`${chave}: ${novo}`]
+    if (i > 0) {
+      linhas.splice(i, 1 + itens, ...nova)
+      fim += nova.length - (1 + itens)
+    } else if (novo !== null) {
+      linhas.splice(fim, 0, ...nova)
+      fim += nova.length
     }
   }
   return linhas.join(b.eol)
@@ -260,14 +293,26 @@ export function nomeArquivo(titulo: string): string {
 export const PRIORIDADES = ['none', 'low', 'normal', 'high']
 export const NOME_PRIORIDADE: Record<string, string> = { none: 'Sem', low: 'Baixa', normal: 'Normal', high: 'Alta' }
 
-export function novaNota(titulo: string, projeto: Projeto | null, prazo: string | null, hoje: string, prioridade = 'none'): string {
+/** Nota nova. Com `regra`, recorrente: `scheduled` e `due` na primeira ocorrência (hoje incluído); `prazo` não conta. */
+export function novaNota(
+  titulo: string, projeto: Projeto | null, prazo: string | null, hoje: string, prioridade = 'none', regra: Regra | null = null,
+): string {
   const [a, m, d] = hoje.split('-')
+  const primeira = regra ? primeiraOcorrencia(regra, hoje) : null
   return [
     '---',
     `title: "${titulo.replace(/"/g, "'")}"`,
     'status: open',
     `priority: ${PRIORIDADES.includes(prioridade) ? prioridade : 'none'}`,
-    ...(prazo ? [`due: ${prazo}`] : []),
+    ...(regra && primeira
+      ? [
+        `scheduled: ${primeira}`,
+        `due: ${primeira}`,
+        `recurrence: "${regraParaTexto(regra)}"`,
+        'recurrence_anchor: scheduled',
+        'complete_instances: []',
+      ]
+      : prazo ? [`due: ${prazo}`] : []),
     `projects: [${projeto ? `"${projeto.link}"` : ''}]`,
     'contexts: []',
     'executor: eu',

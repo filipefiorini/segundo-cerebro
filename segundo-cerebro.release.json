@@ -1,6 +1,6 @@
 {
   "versao_schema": 1,
-  "versao": "1.0.0",
+  "versao": "1.0.1",
   "arquivos": [
     {
       "caminho": ".claude/settings.json",
@@ -50,7 +50,7 @@
     {
       "caminho": ".claude/skills/auditar-vault/SKILL.md",
       "tipo": "fixo",
-      "sha256": "2eb595c72c5355e9944f26cb368b47ccb3aa7f0a08109eff706a107d7e73f220"
+      "sha256": "906abd03deefb9b7f34274bb7caca3e7b1ae5f711f5e5d50b80c8d6a9f367509"
     },
     {
       "caminho": ".claude/skills/auditar-vault/exemplos.md",
@@ -60,12 +60,12 @@
     {
       "caminho": ".claude/skills/auditar-vault/reference.md",
       "tipo": "fixo",
-      "sha256": "9e148220c17bd5b1130862b1b4f201bf36171de2c9ecc50abb802fd67c2d9aa8"
+      "sha256": "4e074b24ef341c8258f93a673ddba29764823cae9f5f45e1473d6d1e0208b020"
     },
     {
       "caminho": ".claude/skills/deliberar/SKILL.md",
       "tipo": "fixo",
-      "sha256": "fcf810fb9d057ffc5e53da107917964e3dfb205c416d24e6c3545858e35fa576"
+      "sha256": "cb231a0a01b5524ae6c76984e0a70121784187b883b8483757fc0f16e381caa5"
     },
     {
       "caminho": ".claude/skills/deliberar/exemplos.md",
@@ -75,7 +75,7 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "3961256e4b570ed344a149be587f218d2c5870cd7c122b8d108bcb3c2544ecfa"
+      "sha256": "74f98b64daf88d9f395fcd9beca8522ec30cff6ba55f2f6df1397fb78534726a"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/README.md",
@@ -90,12 +90,12 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/hooks/register.ts",
       "tipo": "fixo",
-      "sha256": "251b45556b7be7c316165dea882f97108427f00a09917239f8bdb0d13c709b51"
+      "sha256": "e6a015354b691183bdec785a251e6768bcc062d0c20295a2aab06fc8bebb7469"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
       "tipo": "fixo",
-      "sha256": "a3e7fa5b8aceb09f1289cce53e8d4fc396db1210a123de82c95639a4c85d6725"
+      "sha256": "e835a29ba7ae485c2e17e0c45f082d68a112fc8b7b02830b40fcc7464fce4419"
     },
     {
       "caminho": ".claude/skills/instalar/SKILL.md",
@@ -120,12 +120,12 @@
     {
       "caminho": ".claude/skills/painel-tarefas/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "76d3089bef5e26ab37c9bd0a3b475a3f379fb21d2621ee9b4b51d05e78cab537"
+      "sha256": "d17c251dbd7f0ef0952c50ee82b4d99c860387666800040470508106be7a53d1"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/README.md",
       "tipo": "fixo",
-      "sha256": "e02fdcf6d46419d270f68a35202131d03d35b1d56ba18dc1ab54a6ee5bf1397f"
+      "sha256": "25dd7ae37ff7c514a439b6428abad5dbfd32786857cc10bad49f54c11bfa6923"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/hooks.json",
@@ -133,24 +133,39 @@
       "sha256": "d842d789476d67282d0f04b7e5fdc68a3d981ccec65dd79cfa2d11eed13fb828"
     },
     {
+      "caminho": ".claude/skills/painel-tarefas/hooks/recorrencia.ts",
+      "tipo": "fixo",
+      "sha256": "cf34742c7504647b7a06963a8fa554a67e244866e89f20f55d1efc07971c599d"
+    },
+    {
       "caminho": ".claude/skills/painel-tarefas/hooks/register.tsx",
       "tipo": "fixo",
-      "sha256": "f9a50382356ca2c9e8493d4d6109d01e898ba05f2a1b596c9f76c5e1e14c4452"
+      "sha256": "5c64cd3163191999888cdae08313ecd05a311a1b18c68f68df45550bcb9d7b68"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/tarefas.ts",
       "tipo": "fixo",
-      "sha256": "2ea52e8eb36893f6add6a8358c8965791c182cabb858324a86a9cb0028a0fc96"
+      "sha256": "5bef395377cd6308b624796ff5cc5cd8369f31c87c32c07b5f8050de7eda1768"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/tests/fixtures.ts",
+      "tipo": "fixo",
+      "sha256": "bfcfb6ef691bc91ef97427366bd52819891b79de1eeaaa215ea399237f64b697"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/tests/painel.test.tsx",
       "tipo": "fixo",
-      "sha256": "4195eb8b77202489fafcb72b16bb4354d77e694a40ec9f3b0e9b46b8fe9b5853"
+      "sha256": "9e412cfe28f0515789bc470835a60f4bb70b831d656ec6f04dd18daea624feb8"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/tests/recorrencia.test.tsx",
+      "tipo": "fixo",
+      "sha256": "18261b57a9ccc14a55c61cc6f1c973ab7f454966cf85dc6779c43194ed584a07"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/types/index.d.ts",
       "tipo": "fixo",
-      "sha256": "bd3b5365e751a69b8bb422f316ee98736aa588808a488846d8edaec0de1344a9"
+      "sha256": "9b17fc267c8490202c41ceb1de428ed533f07300831d3a928a5aab2ea7309537"
     },
     {
       "caminho": ".claude/skills/processar-conteudo/SKILL.md",
@@ -170,17 +185,17 @@
     {
       "caminho": ".claude/skills/processar-inbox/SKILL.md",
       "tipo": "fixo",
-      "sha256": "8627cf018d676a4d4e20c91019d1ef6b2cd3e8fcf4f5b0df8fd8c3912f7ee397"
+      "sha256": "1a18d9ac29de00b34aae6121c25981ad48fc8cc3b966959a825c90ae129ae14b"
     },
     {
       "caminho": ".claude/skills/processar-reuniao/SKILL.md",
       "tipo": "fixo",
-      "sha256": "646a36b91013ec73f0796862de22d744711a60c5bc31954e7b0e51d69dd62618"
+      "sha256": "6413ce46ce8171551eff81ec2cbdff0dfab0f24ba8da07f9e60fb8aadc5f15e1"
     },
     {
       "caminho": ".claude/skills/revisar-memoria/SKILL.md",
       "tipo": "fixo",
-      "sha256": "fe980c1a0e05fecbb16209baf012cbcd13f57c7aa017c9287aa654ccac133aa4"
+      "sha256": "58859ed6669f41dd5eed225d0a4b9efb1162c4a094d6e72e4f005a3583b9ce61"
     },
     {
       "caminho": ".obsidian/app.json",
@@ -345,7 +360,7 @@
     {
       "caminho": "05 - GALÁXIA/Galáxia.base",
       "tipo": "fixo",
-      "sha256": "ea67bc3cc0d23db50d11faad264f0eee9ac93e121bc21fa6fb1008506fe89573"
+      "sha256": "6a33e1ec4ed8b10b09b0ede4a5c116c1fe4aa6854617b9b754890bc56a759dd6"
     },
     {
       "caminho": "05 - GALÁXIA/Gastar bem, poupar mais, investir melhor.md",
@@ -453,6 +468,11 @@
       "sha256": "40e512900359f4b022534b593d072260de58fb251c2cf1c15e68d79181d38079"
     },
     {
+      "caminho": "05 - GALÁXIA/_CANDIDATOS.md",
+      "tipo": "semente",
+      "sha256": "3c1564aab165ac581cd6718d01462a81ac5b2524aa13a79301cc88abd75e5148"
+    },
+    {
       "caminho": "05 - GALÁXIA/_INDICE.md",
       "tipo": "semente",
       "sha256": "bb71d3dc4400edb1e9e55c44dadec85b2c76fbcb3b64c1af50389406a5a1ee97"
@@ -540,7 +560,7 @@
     {
       "caminho": "CLAUDE.md",
       "tipo": "fixo",
-      "sha256": "b3d80f552b44325818ad9649fc5f74b4c0431732a4b18bf694baea46a930135e"
+      "sha256": "b82d6c22859e3cb6973a3da9cca1a074d88a5a1541812981de2da1258fbc5484"
     },
     {
       "caminho": "Homepage.md",
@@ -660,7 +680,7 @@
     {
       "caminho": "_docs/CHANGELOG.md",
       "tipo": "fixo",
-      "sha256": "ba692860c358c21489a5403b4d8d8f869306d028ba599dc9eb99b1e841bbbbe2"
+      "sha256": "48148a2f1fd6d4dabd3feab555d4f0e39d098fb79f88b61076ebea584ae85818"
     },
     {
       "caminho": "_docs/Como o Autor Opera em Casa.md",
@@ -700,12 +720,12 @@
     {
       "caminho": "_docs/Ferramentas.md",
       "tipo": "fixo",
-      "sha256": "f2230e6ae41eff4fbf291cbdd2f8534bcd596dcc8a69934d648ca188db6edee2"
+      "sha256": "52ad6950cffdcea38ef52f2b58e7e94c938ab1889db732282331027c4c1725cc"
     },
     {
       "caminho": "_docs/Manual do Segundo Cérebro.md",
       "tipo": "fixo",
-      "sha256": "a237a3c22ea7f756a1c053a4e8ae0d35238cfac0b834f5904083eff99aef4236"
+      "sha256": "6fd599f050b2bfaa7ca2267e39d1590e130fd1f9b081ef695323d43c890ba939"
     },
     {
       "caminho": "_docs/O Método.md",
@@ -735,7 +755,7 @@
     {
       "caminho": "_templates/Template de Deliberação.md",
       "tipo": "fixo",
-      "sha256": "8ca1bae5b4c3a5c3ef10c90abe3dc086adddeef98252a0dda6590d120b9ce072"
+      "sha256": "f5c8688856cec6fa429759b29f653dbc00ac912a67b67fbe11d08274a512a1ac"
     },
     {
       "caminho": "_templates/Template de Livro.md",
@@ -790,7 +810,7 @@
     {
       "caminho": "_templates/Template de Tarefa.md",
       "tipo": "fixo",
-      "sha256": "d056c1a4707db829966218388c0e7fed6bc4dd8fdc26d626c9622256884e557a"
+      "sha256": "918a4ad69415812841af5db9b67b74c532a940e0058544512568a454d8b03de5"
     },
     {
       "caminho": "_templates/Template de Tarefas.md",
@@ -832,6 +852,12 @@
     },
     {
       "versao": "1.0.0",
+      "removidos": [],
+      "renomeados": [],
+      "migracoes": []
+    },
+    {
+      "versao": "1.0.1",
       "removidos": [],
       "renomeados": [],
       "migracoes": []

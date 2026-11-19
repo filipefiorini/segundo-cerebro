@@ -248,9 +248,12 @@ export function temTelefone(texto: string): boolean {
 }
 
 // FONTE-DE-TAREFAS: nenhuma tarefa nasce sem prazo. Write de nota de tarefa aberta sem
-// `due` com data, ou Edit que deixe `due:` vazio, é recusado. Só onde há pasta de tarefas.
+// `due` com data, ou Edit que deixe `due:` vazio ou apague a linha `due`, é recusado. Só onde
+// há pasta de tarefas.
 const DUE_VAZIO = /^due:[ \t]*$/m
 const DUE_COM_DATA = /^due:[ \t]*\d{4}-\d{2}-\d{2}/m
+const TAG_TASK_FLUXO = /^tags:.*\btask\b/m
+const TAG_TASK_BLOCO = /^tags:[ \t]*\r?\n(?:[ \t]+-[ \t]*[^\r\n]*\r?\n)*?[ \t]+-[ \t]*["']?#?task["']?[ \t]*(?:\r?\n|$)/m
 
 function ehTarefa(n: string, raiz: string, config: Config): boolean {
   if (config.pastaTarefas === null) return false
@@ -258,13 +261,34 @@ function ehTarefa(n: string, raiz: string, config: Config): boolean {
   return rel !== null && rel.startsWith(config.pastaTarefas) && rel.endsWith('.md')
 }
 
-export function tarefaSemPrazo(tool: string, texto: string): string | null {
-  if (tool === 'Edit') return DUE_VAZIO.test(texto) ? 'o Edit deixa a tarefa sem `due`; toda tarefa tem prazo.' : null
+const DUE_LINHA = /^due:/m
+const STATUS_FECHADO = /^status:[ \t]*(done|cancelled)\b/m
+const STATUS_LINHA = /^status:/m
+
+// Edit que apaga a linha `due` inteira: a guarda não lê a nota, então decide só pelo trecho.
+// Passa quando o trecho mostra a tarefa fechada (status done/cancelled no novo, ou no antigo
+// sem troca de status) ou mostra `tags` sem `task` (não é tarefa).
+function editApagaDue(antigo: string, novo: string): boolean {
+  if (!DUE_LINHA.test(antigo) || DUE_LINHA.test(novo)) return false
+  if (STATUS_FECHADO.test(novo)) return false
+  if (STATUS_FECHADO.test(antigo) && !STATUS_LINHA.test(novo)) return false
+  const tags = `${antigo}\n${novo}`
+  if (/^tags:/m.test(tags) && !TAG_TASK_FLUXO.test(tags) && !TAG_TASK_BLOCO.test(tags)) return false
+  return true
+}
+
+export function tarefaSemPrazo(tool: string, texto: string, antigo = ''): string | null {
+  if (tool === 'Edit') {
+    if (DUE_VAZIO.test(texto)) return 'o Edit deixa a tarefa sem `due`; toda tarefa tem prazo.'
+    return editApagaDue(antigo, texto) ? 'o Edit apaga a linha `due` da tarefa; toda tarefa tem prazo. Se a tarefa já está done ou '
+      + 'cancelled, inclua a linha `status` no trecho ou edite pelo painel/Obsidian.' : null
+  }
   if (tool !== 'Write') return null
   if (!texto.startsWith('---')) return null
   const fim = texto.indexOf('\n---', 3)
   const fm = fim === -1 ? texto : texto.slice(0, fim)
-  if (!/^tags:.*\btask\b/m.test(fm)) return null
+  // `tags` em fluxo (`tags: [task]`) ou em bloco, como o TaskNotes regrava (`tags:` e `  - task`).
+  if (!TAG_TASK_FLUXO.test(fm) && !TAG_TASK_BLOCO.test(fm)) return null
   if (/^status:[ \t]*(done|cancelled)\b/m.test(fm)) return null
   if (DUE_COM_DATA.test(fm)) return null
   return 'tarefa sem `due`; toda tarefa nasce com prazo (sem prazo na fonte: dia útil seguinte, com `prazo_padrao: true`).'
@@ -306,7 +330,7 @@ export function avaliarArquivo(
   const noVault = relativoAoVault(n, raiz) !== null
   if (noVault && temCpf(texto)) return deny('SENSÍVEL', 'o texto contém um CPF; CPF nunca entra no vault.')
   if (ehTarefa(n, raiz, config)) {
-    const motivo = tarefaSemPrazo(tool, texto)
+    const motivo = tarefaSemPrazo(tool, texto, tool === 'Edit' ? String(input.old_string ?? '') : '')
     if (motivo) return deny('FONTE-DE-TAREFAS', motivo)
   }
   if (ehSempreLido(n, raiz, config) && temTelefone(texto)) {

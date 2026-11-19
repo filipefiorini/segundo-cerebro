@@ -1,6 +1,7 @@
 import { expect, test } from 'claude-code/testing'
 
-import { areaSensivel, candidatosContexto, definirCampos, lerData, lerTarefa, nomeArquivo, proximaSegunda } from '../hooks/tarefas'
+import { areaSensivel, candidatosContexto, definirCampos, lerCampos, lerData, lerTarefa, nomeArquivo, novaNota, proximaSegunda } from '../hooks/tarefas'
+import { REGRAVADA } from './fixtures'
 
 // Raiz fictícia de um vault com o manifesto.
 const VAULT = 'C:/Cofre/Vault'
@@ -76,6 +77,30 @@ test('reescreve só os campos pedidos e preserva o resto', () => {
   expect(definirCampos(depois, { completedDate: null })).not.toContain('completedDate')
 })
 
+test('lê nota regravada pelo TaskNotes', () => {
+  const t = lerTarefa('x.md', REGRAVADA, 0)
+  expect(t).not.toBe(null)
+  expect(t?.projetos[0]?.nome).toBe('Trabalho')
+  expect(t?.prazo).toBe('2026-12-01')
+  expect(t?.recorrente).toBe(true)
+  expect(lerCampos(REGRAVADA).tags).toEqual(['task'])
+})
+
+test('regrava lista em bloco inteira', () => {
+  const r = definirCampos(REGRAVADA, { complete_instances: ['2026-11-02', '2026-12-01'] })
+  expect(r).toContain('complete_instances:\n  - 2026-11-02\n  - 2026-12-01\nprojects:')
+  expect(r.replace('  - 2026-12-01\n', '')).toBe(REGRAVADA)
+})
+
+test('lista vazia sai em fluxo', () => {
+  expect(definirCampos(REGRAVADA, { complete_instances: [] })).toContain('complete_instances: []\nprojects:')
+})
+
+test('preserva CRLF', () => {
+  const r = definirCampos(REGRAVADA.replace(/\n/g, '\r\n'), { complete_instances: ['2026-11-02', '2026-12-01'] })
+  expect(/(^|[^\r])\n/.test(r)).toBe(false)
+})
+
 test('entende as datas digitadas', () => {
   const hoje = '2026-10-27'
   expect(lerData('+3', hoje)).toBe('2026-10-30')
@@ -88,13 +113,13 @@ test('entende as datas digitadas', () => {
 })
 
 type Engine = Parameters<Parameters<typeof test>[1]>[1]
-type Leituras = { lista: number; leitura: number; escrita: number; avisos: string[] }
+type Leituras = { lista: number; leitura: number; escrita: number; avisos: string[]; pedidos: string[] }
 
 // O engine entrega o caminho com as barras do Windows.
 const barra = (p: string) => p.replace(/\\/g, '/')
 
 function engine(on: Engine, arquivos: Record<string, string>, extras: Record<string, string> = outros()): Leituras {
-  const conta: Leituras = { lista: 0, leitura: 0, escrita: 0, avisos: [] }
+  const conta: Leituras = { lista: 0, leitura: 0, escrita: 0, avisos: [], pedidos: [] }
   const achar = (p: string): [Record<string, string>, string] | null => {
     const c = barra(p)
     if (c.startsWith(`${DIR}/`)) return [arquivos, c.slice(DIR.length + 1)]
@@ -106,6 +131,10 @@ function engine(on: Engine, arquivos: Record<string, string>, extras: Record<str
   on('ui.toast', (_, e) => {
     conta.avisos.push(String((e as { text?: unknown }).text ?? ''))
     return { value: undefined }
+  })
+  on('prompt.fill', (_, e) => {
+    conta.pedidos.push(String(e.text))
+    return { isFilled: true }
   })
   on('session.start', (_, e) => ({ cwd: e.cwd }))
   on('clock.now', () => ({ value: AGORA }))
@@ -305,6 +334,55 @@ test('nova tarefa nasce sem projeto e aceita data escolhida', async ($, on) => {
   await ui.unmount()
 })
 
+test('dentro do grupo, a lista segue a prioridade: alta, normal, baixa e sem prioridade', async ($, on) => {
+  const arquivos: Record<string, string> = {}
+  const t = (titulo: string, prioridade: string, due: string) =>
+    nota(`title: "${titulo}"\nstatus: open\npriority: ${prioridade}\ndue: ${due}\nprojects: [${TRABALHO}]\nexecutor: eu`)
+  arquivos['Sem prioridade antiga.md'] = t('Sem prioridade antiga', 'none', '2026-10-20')
+  arquivos['Baixa de hoje.md'] = t('Baixa de hoje', 'low', '2026-10-27')
+  arquivos['Normal atrasada.md'] = t('Normal atrasada', 'normal', '2026-10-25')
+  arquivos['Alta de hoje.md'] = t('Alta de hoje', 'high', '2026-10-27')
+  arquivos['Normal de hoje.md'] = t('Normal de hoje', 'normal', '2026-10-27')
+  engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  const titulos = (await ui.findAll({ type: 'Text', text: /^(Alta|Normal|Baixa|Sem prioridade) / })).map(x => x.text)
+  expect(titulos).toEqual(['Alta de hoje', 'Normal atrasada', 'Normal de hoje', 'Baixa de hoje', 'Sem prioridade antiga'])
+  await ui.unmount()
+})
+
+test('nova tarefa nasce com prioridade normal', async ($, on) => {
+  const arquivos = vault()
+  engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 'nova' })
+  await ui.input({ key: 'nova-0', text: 'Pagar conta de luz' })
+  expect(arquivos['Pagar conta de luz.md']).toContain('priority: normal')
+  await ui.unmount()
+})
+
+test('digitar no título não devolve texto velho ao campo', async ($, on) => {
+  const arquivos = vault()
+  engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 'nova' })
+  for (const texto of ['E', 'En', 'Env', 'Enviar']) {
+    await ui.input({ key: 'nova-0', text: texto, kind: 'change' })
+    // Campo não controlado: o redesenho não carrega texto, então nunca troca o que a pessoa digitou.
+    const campo = await ui.find({ type: 'Input', key: 'nova-0' })
+    expect(campo).toBeTruthy()
+    expect((campo as { props?: { value?: unknown } }).props?.value).toBeUndefined()
+  }
+  await ui.input({ key: 'nova-0', text: 'Enviar proposta' })
+  expect(arquivos['Enviar proposta.md']).toContain('title: "Enviar proposta"')
+  await ui.unmount()
+})
+
 test('nomeArquivo: reticências e pontos nas pontas', () => {
   expect(nomeArquivo('Ligar para o banco...')).toBe('Ligar para o banco')
   expect(nomeArquivo('Ver... depois')).toBe('Ver. depois')
@@ -412,5 +490,201 @@ test('o resumo do dia ao lado do anel soma o total do anel', async ($, on) => {
   expect(await ui.find({ type: 'Text', text: /^2 atrasadas$/ })).toBeTruthy()
   expect(await ui.find({ type: 'Text', text: /^1 em aberto$/ })).toBeTruthy()
   expect(await ui.find({ type: 'Text', text: /^0 concluídas$/ })).toBeTruthy()
+  await ui.unmount()
+})
+
+// --- tarefa recorrente no cartão ---
+
+const REC = 'Teste — recorrência.md'
+const botao = async (ui: { find: (q: object) => Promise<unknown> }, chave: string) =>
+  (await ui.find({ type: 'Button', key: `${chave}:${REC}` })) as { props?: { label?: string } } | null | undefined
+
+async function abrirRecorrente($: Parameters<Parameters<typeof test>[1]>[0], on: Engine, texto: string) {
+  const arquivos = vault()
+  arquivos[REC] = texto
+  const conta = engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 'f:todas' })
+  await ui.press({ key: 'bloco:TAREFAS DO CODE' })
+  await ui.press({ key: `t:${REC}` })
+  return { ui, arquivos, conta }
+}
+
+test('recorrente: o cartão troca concluir e adiar por concluir, pular e encerrar', async ($, on) => {
+  const { ui, arquivos } = await abrirRecorrente($, on, REGRAVADA)
+  expect(await ui.find({ type: 'Text', text: /^↻ / })).toBeTruthy()
+  expect((await botao(ui, 'concluirEsta'))?.props?.label).toBe('Concluir esta')
+  expect((await botao(ui, 'pular'))?.props?.label).toBe('Pular esta')
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Encerrar rotina')
+  for (const chave of ['concluir', 'amanha', 'segunda', 'data', 'trazer', 'hoje']) expect(await botao(ui, chave)).toBeFalsy()
+  expect(await ui.find({ type: 'Button', text: 'Concluir esta' })).toBeTruthy()
+  for (const rotulo of ['Marcar como concluída', 'Adiar p/ amanhã', 'Adiar p/ segunda', 'Outra data…', 'Reagendar para hoje']) {
+    expect(await ui.find({ type: 'Button', text: rotulo })).toBeFalsy()
+  }
+  const status = (await ui.find({ type: 'Select', key: `status:${REC}` })) as { props?: { options?: { value: string }[] } }
+  expect(status.props?.options?.map(o => o.value)).toEqual(['open', 'waiting'])
+
+  await ui.press({ key: `concluirEsta:${REC}` })
+  const c = lerCampos(arquivos[REC]!)
+  expect(c.scheduled).toBe('2027-01-01')
+  expect(c.complete_instances).toEqual(['2026-11-02', '2026-12-01'])
+  expect(c.status).toBe('open')
+  expect(arquivos[REC]!.endsWith('- 01/12/2026 — concluída em 27/10/2026\n')).toBe(true)
+
+  await ui.press({ key: `pular:${REC}` })
+  const p = lerCampos(arquivos[REC]!)
+  expect(p.scheduled).toBe('2027-02-01')
+  expect(p.skipped_instances).toEqual(['2027-01-01'])
+  await ui.unmount()
+})
+
+test('recorrente: encerrar a rotina pede um segundo clique', async ($, on) => {
+  const { ui, arquivos } = await abrirRecorrente($, on, REGRAVADA)
+  await ui.press({ key: `encerrar:${REC}` })
+  expect(arquivos[REC]).toBe(REGRAVADA)
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Confirmar encerramento')
+  await ui.press({ key: `encerrar:${REC}` })
+  const c = lerCampos(arquivos[REC]!)
+  expect(c.status).toBe('done')
+  expect(c.completedDate).toBe('2026-10-27')
+  expect(c.scheduled).toBe('2026-12-01')
+  await ui.unmount()
+})
+
+test('recorrente com regra não suportada: aviso, Obsidian, prioridade e projeto', async ($, on) => {
+  const diaria = REGRAVADA.replace(/^recurrence: .*$/m, 'recurrence: FREQ=DAILY')
+  const { ui, arquivos } = await abrirRecorrente($, on, diaria)
+  expect(await ui.find({ type: 'Text', text: /regra de repetição não suportada: trate no Obsidian/ })).toBeTruthy()
+  expect(await botao(ui, 'obsidian')).toBeTruthy()
+  expect(await ui.find({ type: 'Select', key: `prioridade:${REC}` })).toBeTruthy()
+  expect(await ui.find({ type: 'Select', key: `projeto:${REC}` })).toBeTruthy()
+  expect(await ui.find({ type: 'Select', key: `status:${REC}` })).toBeFalsy()
+  for (const chave of ['concluirEsta', 'pular', 'encerrar', 'concluir', 'amanha', 'segunda', 'data', 'aguardar', 'fazer']) {
+    expect(await botao(ui, chave)).toBeFalsy()
+  }
+  await ui.select({ key: `prioridade:${REC}`, value: 'high' })
+  expect(arquivos[REC]).toContain('priority: high')
+  await ui.unmount()
+})
+
+test('recorrente: nota mudada desde a leitura não é gravada (concluir, pular, encerrar)', async ($, on) => {
+  const { ui, arquivos, conta } = await abrirRecorrente($, on, REGRAVADA)
+  // Concluída por fora (TaskNotes): o scheduled andou; o corpo cresce, como o mtime mudaria.
+  const mudada = REGRAVADA.replace('scheduled: 2026-12-01', 'scheduled: 2027-01-01').replace('Corpo.\n', 'Corpo.\n- concluída no Obsidian\n')
+  arquivos[REC] = mudada
+  await ui.press({ key: `concluirEsta:${REC}` })
+  expect(arquivos[REC]).toBe(mudada)
+  expect(conta.avisos.some(a => a.includes('A nota mudou desde a leitura; recarreguei, confira.'))).toBe(true)
+
+  // Recarregada, o cartão já está em 2027-01-01; muda de novo por fora e tenta pular e encerrar.
+  const outra = mudada.replace('scheduled: 2027-01-01', 'scheduled: 2027-02-01').replace('Corpo.\n', 'Corpo.\n- de novo\n')
+  arquivos[REC] = outra
+  await ui.press({ key: `pular:${REC}` })
+  expect(arquivos[REC]).toBe(outra)
+  // Encerrar: arma com a nota como o cartão mostra; ela muda antes da confirmação.
+  await ui.press({ key: `encerrar:${REC}` })
+  const terceira = outra.replace('scheduled: 2027-02-01', 'scheduled: 2027-03-01').replace('Corpo.\n', 'Corpo.\n- mais uma\n')
+  arquivos[REC] = terceira
+  await ui.press({ key: `encerrar:${REC}` })
+  expect(arquivos[REC]).toBe(terceira)
+  await ui.unmount()
+})
+
+test('recorrente: Concluir esta desarma o Encerrar rotina; um clique habitual não encerra', async ($, on) => {
+  const { ui, arquivos } = await abrirRecorrente($, on, REGRAVADA)
+  await ui.press({ key: `encerrar:${REC}` })
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Confirmar encerramento')
+  await ui.press({ key: `concluirEsta:${REC}` })
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Encerrar rotina')
+  await ui.press({ key: `encerrar:${REC}` })
+  expect(arquivos[REC]).not.toContain('status: done')
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Confirmar encerramento')
+  await ui.unmount()
+})
+
+test('fazer agora: recorrente não manda concluir; tarefa comum segue igual', async ($, on) => {
+  const { ui, conta } = await abrirRecorrente($, on, REGRAVADA)
+  await ui.press({ key: `fazer:${REC}` })
+  expect(conta.pedidos[0]).not.toContain('status: done')
+  expect(conta.pedidos[0]).toContain('Concluir esta')
+  await ui.press({ key: 't:Ajustar script.md' })
+  await ui.press({ key: 'fazer:Ajustar script.md' })
+  expect(conta.pedidos[1]).toBe('Execute a tarefa "Ajustar script" (06 - TAREFAS/Tarefas/Ajustar script.md). Leia a nota antes e siga a Constituição. '
+    + 'Ao terminar, depois de verificar o resultado, marque a tarefa como concluída (status: done, completedDate de hoje) '
+    + 'e registre o desfecho no corpo da nota. Se não der para concluir, deixe-a aberta e anote o que falta.')
+  await ui.unmount()
+})
+
+// --- nova tarefa recorrente ---
+
+const opcoes = async (ui: { find: (q: object) => Promise<unknown> }, key: string) =>
+  ((await ui.find({ type: 'Select', key })) as { props?: { options?: { value: string; label: string }[] } } | null)?.props?.options
+
+test('nova recorrente: o campo Repete troca o prazo pela primeira ocorrência e grava a regra', async ($, on) => {
+  const arquivos = vault()
+  const conta = engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 'nova' })
+  const repete = (await ui.find({ type: 'Select', key: 'nova-repete' })) as { props?: { label?: string } }
+  expect(repete.props?.label).toBe('Repete')
+  expect((await opcoes(ui, 'nova-repete'))?.map(o => o.label)).toEqual(['Não repete', '1º dia útil do mês', 'Toda semana', 'Todo mês no dia…'])
+  expect(await ui.find({ type: 'Select', key: 'nova-prazo' })).toBeTruthy()
+  expect(await ui.find({ type: 'Text', text: /^Primeira:/ })).toBeFalsy()
+
+  // Toda semana: aparece o dia, seg a dom; o prazo some. 27/10/2026 é terça.
+  await ui.select({ key: 'nova-repete', value: 'semanal' })
+  expect(await ui.find({ type: 'Select', key: 'nova-prazo' })).toBeFalsy()
+  const dia = (await ui.find({ type: 'Select', key: 'nova-dia-semana' })) as { props?: { label?: string } }
+  expect(dia.props?.label).toBe('Dia')
+  expect((await opcoes(ui, 'nova-dia-semana'))?.map(o => o.label)).toEqual(['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'])
+  expect(await ui.find({ type: 'Text', text: 'Primeira: 02/11/2026' })).toBeTruthy()
+  await ui.select({ key: 'nova-dia-semana', value: '2' })
+  expect(await ui.find({ type: 'Text', text: 'Primeira: 27/10/2026' })).toBeTruthy()
+
+  // Todo mês no dia…: o dia do mês, de 1 a 28.
+  await ui.select({ key: 'nova-repete', value: 'mensal-dia' })
+  expect(await ui.find({ type: 'Select', key: 'nova-dia-semana' })).toBeFalsy()
+  expect(await ui.find({ type: 'Select', key: 'nova-prazo' })).toBeFalsy()
+  const campo = (await ui.find({ type: 'Input', key: 'nova-dia-mes-0' })) as { props?: { label?: string } }
+  expect(campo.props?.label).toBe('Dia do mês')
+  await ui.input({ key: 'nova-dia-mes-0', text: '31', kind: 'change' })
+  expect(await ui.find({ type: 'Text', text: 'Dia do mês: de 1 a 28.' })).toBeTruthy()
+  await ui.input({ key: 'nova-0', text: 'Conferir extrato' })
+  expect(Object.keys(arquivos).length).toBe(4)
+  expect(conta.avisos.some(a => a.includes('Dia do mês: de 1 a 28.'))).toBe(true)
+  await ui.input({ key: 'nova-dia-mes-0', text: '5', kind: 'change' })
+  expect(await ui.find({ type: 'Text', text: 'Primeira: 05/11/2026' })).toBeTruthy()
+
+  // 1º dia útil do mês: grava a nota de novaNota com a regra.
+  await ui.select({ key: 'nova-repete', value: 'mensal-util' })
+  expect(await ui.find({ type: 'Text', text: 'Primeira: 02/11/2026' })).toBeTruthy()
+  await ui.input({ key: 'nova-0', text: 'Fechar as contas do mês' })
+  const nova = arquivos['Fechar as contas do mês.md']
+  expect(nova).toBe(novaNota('Fechar as contas do mês', null, null, '2026-10-27', 'normal', { tipo: 'mensal-util' }))
+  expect(nova).toContain('scheduled: 2026-11-02\ndue: 2026-11-02\nrecurrence: "FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1"\nrecurrence_anchor: scheduled\ncomplete_instances: []\n')
+  // O formulário volta ao padrão: não repete.
+  await ui.press({ key: 'nova' })
+  expect(await ui.find({ type: 'Select', key: 'nova-prazo' })).toBeTruthy()
+  await ui.unmount()
+})
+
+test('nova recorrente semanal grava BYDAY do dia escolhido', async ($, on) => {
+  const arquivos = vault()
+  engine(on, arquivos)
+  await $.session.start({ cwd: VAULT, surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 'nova' })
+  await ui.select({ key: 'nova-projeto', value: 'Sem projeto' })
+  await ui.select({ key: 'nova-repete', value: 'semanal' })
+  await ui.select({ key: 'nova-dia-semana', value: '5' })
+  await ui.input({ key: 'nova-0', text: 'Revisar semana' })
+  const c = lerCampos(arquivos['Revisar semana.md']!)
+  expect(c.recurrence).toBe('"FREQ=WEEKLY;BYDAY=FR"')
+  expect(c.scheduled).toBe('2026-10-30')
+  expect(c.due).toBe('2026-10-30')
   await ui.unmount()
 })

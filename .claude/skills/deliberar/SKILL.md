@@ -9,9 +9,9 @@ description: |
   `Deliberações/` do escopo depois da aprovação.
   USE WHEN o usuário digitar "/deliberar", "me ajuda a decidir", "pensa comigo",
   "qual a melhor opção".
-version: 1.3.0
+version: 1.4.0
 created: 2026-11-08
-updated: 2026-11-17
+updated: 2026-11-19
 tags: [skill]
 ---
 
@@ -73,10 +73,10 @@ Mostrar na conversa, antes de gravar:
 Para cada ideia que passar no filtro ("eu buscaria isto fora de qualquer projeto?"), no máximo três:
 - **<título proposto>** — camada: <Filosofias | Conceitos | Frameworks | Metodologias | Táticas> — por quê: <uma frase>. Origem: [[<nota processada>]].
 Se nenhuma passar: "Nenhum candidato à Galáxia nesta rodada."
-Nada é gravado aqui; o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem.
+Nenhuma nota da Galáxia é gravada aqui: o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem. Em sessão, cada candidato oferecido entra em `05 - GALÁXIA/_CANDIDATOS.md` e segue as regras escritas lá.
 ```
 
-Aqui, `<nota processada>` é a nota de Deliberação do Passo 6, e "nesta rodada" vira "nesta deliberação" (o template já traz essa forma). Em escopo sensível, o candidato não carrega dado sensível: só a ideia, em termos gerais.
+Aqui, `<nota processada>` é a nota de Deliberação do Passo 6, e "nesta rodada" vira "nesta deliberação" (o template já traz essa forma). Em escopo sensível, o candidato não carrega dado sensível: só a ideia, em termos gerais, e não entra na lista. Depois de mostrar os candidatos, gravar a linha de cada um na tabela "Pendentes" de `05 - GALÁXIA/_CANDIDATOS.md` (data de hoje, título, camada, por quê, origem), menos os de área sensível e os de título que já está na lista ou na Galáxia; se a pessoa aprovar ou negar de forma expressa na mesma sessão, tirar a linha. Sem manifestação, a linha fica para a próxima revisão (regras no próprio arquivo). A lista não depende da aprovação do Passo 6: o candidato oferecido entra mesmo que a Deliberação fique só na conversa.
 
 ## Passo 6 — Aprovação e gravação ⛔
 
@@ -92,6 +92,7 @@ Sem aprovação, a deliberação fica só na conversa.
 
 ## Changelog
 
+- 1.4.0 (2026-11-19) — cada candidato à Galáxia oferecido entra em `05 - GALÁXIA/_CANDIDATOS.md`, mesmo sem a Deliberação gravada; aprovado ou negado de forma expressa, sai; sem manifestação, fica para a próxima revisão.
 - 1.3.0 (2026-11-17) — briefing de seis itens no Passo 1 (decisão, opções com "manter como está", números, limites, sucesso e prazo, inclinação e porquê), cujas lacunas alimentam as perguntas do Passo 3; unanimidade das outras perspectivas vira alerta, e o Crítico defende a alternativa mais forte sem defensor; pesar argumentos, não contar perspectivas. Ideias tiradas do protocolo do Roast Room (AI Automation Society, MIT), sem instalar o pacote.
 - 1.2.0 (2026-11-12) — rótulos de evidência nas perspectivas (inferência, suposição, desconhecido; fato sem rótulo); a síntese abre com "Em aberto" e ganha critérios de abandono; previsão, evidência que mudaria a recomendação e data de revisão, com o Resultado preenchido só na revisão; oferta da tarefa de revisão. Lacunas fechadas: tamanho das perspectivas separado entre nota e conversa; o Passo 6 manda preencher Decisão e Contexto; o template já diz "nesta deliberação". Ideias tiradas do protocolo do Council of High Intelligence (0xNyk, MIT), sem instalar o pacote.
 - 1.1.1 (2026-11-11) — o Passo 2 deixa de repetir a regra 5 (área sensível) e apenas aponta para ela.

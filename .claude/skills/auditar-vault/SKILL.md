@@ -9,9 +9,9 @@ description: |
   USE WHEN o usuário digitar "/auditar-vault", "auditar", "auditoria do vault",
   "verificar vault", "checar consistência", "vault está ok?", "tem algo quebrado?",
   ou após reorganizações estruturais e adição de muitas notas.
-version: 1.2.3
+version: 1.2.4
 created: 2026-11-07
-updated: 2026-11-12
+updated: 2026-11-19
 tags: [skill]
 ---
 

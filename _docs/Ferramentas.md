@@ -2,7 +2,7 @@
 tags: [docs, vault, ferramentas, referencia-tecnica]
 tipo: documentacao
 criado: 2026-11-07
-atualizado: 2026-11-07
+atualizado: 2026-11-19
 status: active
 ---
 
@@ -25,6 +25,7 @@ Consultar antes de gravar (regra GRAVAÇÃO). Cada arquivo tem escopo declarado;
 | `memory/fatos.md` | Fatos estáveis e decisões de longo prazo | o Code, com confirmação explícita do usuário | Quando um fato é confirmado |
 | `memory/aprendizados.md` | Regras práticas derivadas de erro ou acerto | o Code propõe, o usuário aprova | Revisão mensal ou candidato aprovado |
 | `memory/sessoes.md` | Episódico recente (≤ 5 linhas por sessão) | o Code | Final de sessão significativa |
+| `05 - GALÁXIA/_CANDIDATOS.md` | Candidatos à Galáxia oferecidos e sem resposta | o Code: grava na oferta, tira na decisão ou aos 60 dias | Oferta de candidato; `revisar-memoria` |
 | `06 - TAREFAS/Tarefas/` | Tarefas: uma nota por tarefa (`projects`, `executor`, `due`) | o Code; o usuário no Obsidian | Quando tarefa é criada ou muda de status |
 | `_TAREFAS.md` (por escopo) | Vista das tarefas do escopo | o Code | Só ao mudar a vista |
 | `_CONTEXTO.md` (por escopo) | Descrição do projeto ou área (sem `- [ ]`) | o Code | Quando o estado descrito muda |
@@ -87,12 +88,12 @@ As mudanças estruturais que você fizer no seu vault não mudam essa versão: v
 |---|---|---|
 | `atualizar` | Leva o vault para a versão nova do framework a partir do zip da release, conferido pelos hashes: mostra as novidades, compara arquivo a arquivo, mescla com aprovação o que os dois lados mudaram, preserva os blocos `usuario:`, faz commit e backup antes e grava tudo de uma vez, com uma confirmação da Guarda. Estado em `_logs/atualizacao-v<versão>.md`, retomável; o modo desfazer volta a atualização inteira ou um arquivo. | `/atualizar` · `/atualizar desfazer` |
 | `auditar-vault` | Varredura de inconsistências (pastas, frontmatter, tags, banners, wikilinks) por severidade. Nunca corrige sem aprovação; registra em `_logs/auditoria.md`. | `/auditar-vault` |
-| `deliberar` | Parceiro de pensamento para uma decisão: lê `_CONTEXTO.md`, notas da Galáxia e `_DECISOES.md` do escopo, confere o pedido contra um briefing de seis itens e faz até três perguntas sobre o que faltar, analisa pelas cinco perspectivas do Template de Deliberação, com rótulos de evidência (inferência, suposição, desconhecido), argumenta contra a opção preferida (e, se as outras convergirem, a favor da melhor alternativa sem defensor) e recomenda. A síntese abre pelo que ficou em aberto e traz critérios de abandono, previsão e data de revisão. Grava `Deliberação - AAAA-MM-DD - <Título>.md` em `Deliberações/` do escopo só com aprovação. Termina com tarefas sugeridas e candidatos à Galáxia. | `/deliberar <decisão em uma frase>` |
+| `deliberar` | Parceiro de pensamento para uma decisão: lê `_CONTEXTO.md`, notas da Galáxia e `_DECISOES.md` do escopo, confere o pedido contra um briefing de seis itens e faz até três perguntas sobre o que faltar, analisa pelas cinco perspectivas do Template de Deliberação, com rótulos de evidência (inferência, suposição, desconhecido), argumenta contra a opção preferida (e, se as outras convergirem, a favor da melhor alternativa sem defensor) e recomenda. A síntese abre pelo que ficou em aberto e traz critérios de abandono, previsão e data de revisão. Grava `Deliberação - AAAA-MM-DD - <Título>.md` em `Deliberações/` do escopo só com aprovação. Termina com tarefas sugeridas e candidatos à Galáxia (os oferecidos entram em `05 - GALÁXIA/_CANDIDATOS.md`). | `/deliberar <decisão em uma frase>` |
 | `instalar` | Primeira configuração do vault, pelo chat e sem terminal para a pessoa: instala os seis plugins do núcleo pelo `plugins.ps1` (baixa só dos repositórios oficiais no GitHub e grava em `.obsidian/plugins/` só com o Obsidian fechado e o comando aprovado, sem sobrescrever `data.json` existente), entrevista, grava o bloco do usuário no `CLAUDE.md`, cria áreas e projetos, importa projetos de outras IAs (Projects do Claude, Projetos e GPTs do ChatGPT, Gems do Gemini: instruções e arquivos, sem conversas), guia, se a pessoa quiser, conectores do claude.ai (grava a linha Zero Trust aprovada) e plugins recomendados do Claude, explica os módulos, orienta o backup, grava `.segundo-cerebro-version` e fecha com três gestos para o primeiro dia (capturar, ver tarefas, levar uma ideia para a Galáxia). Tudo com aprovação; estado em `_logs/instalacao.md`, retomável. Num vault instalado, oferece revisão do bloco, área nova, projeto novo de outra IA, backup, reinstalar os plugins ou ligar uma ferramenta do Claude. | `/instalar` |
 | `processar-conteudo` | Conteúdo externo (texto, arquivo, URL, transcrição) → Nota de Literatura + Notas da Galáxia, com plano e aprovação antes de gravar. | `/processar-conteudo [conteúdo]` |
-| `processar-inbox` | Lê `00 - INBOX/`, propõe destino para cada captura, grava o aprovado e arquiva o original em `04 - ARQUIVO/INBOX/AAAA-MM/`. Governança, destino ambíguo ou área sensível viram plano em `_logs/inbox-planos/`; registra em `_logs/inbox-AAAA-MM.md`. Termina listando candidatos à Galáxia. | `/processar-inbox` |
-| `processar-reuniao` | Transcrição colada ou arquivo no INBOX → nota de reunião estruturada e tarefas do usuário, gravadas depois de uma aprovação. Termina listando candidatos à Galáxia. | `/processar-reuniao` |
-| `revisar-memoria` | Proposta mensal de revisão da memória (subir n, esfriar, arquivar, rolar sessões), mostrada na sessão e salva em `_logs/revisao-memoria/AAAA-MM.md`; a memória só muda com ok. Termina com a síntese do mês: candidatos à Galáxia. | `/revisar-memoria` |
+| `processar-inbox` | Lê `00 - INBOX/`, propõe destino para cada captura, grava o aprovado e arquiva o original em `04 - ARQUIVO/INBOX/AAAA-MM/`. Governança, destino ambíguo ou área sensível viram plano em `_logs/inbox-planos/`; registra em `_logs/inbox-AAAA-MM.md`. Termina listando candidatos à Galáxia (os oferecidos entram em `05 - GALÁXIA/_CANDIDATOS.md`). | `/processar-inbox` |
+| `processar-reuniao` | Transcrição colada ou arquivo no INBOX → nota de reunião estruturada e tarefas do usuário, gravadas depois de uma aprovação. Termina listando candidatos à Galáxia (os oferecidos entram em `05 - GALÁXIA/_CANDIDATOS.md`). | `/processar-reuniao` |
+| `revisar-memoria` | Proposta mensal de revisão da memória (subir n, esfriar, arquivar, rolar sessões), mostrada na sessão e salva em `_logs/revisao-memoria/AAAA-MM.md`; a memória só muda com ok. Termina com a síntese do mês: candidatos à Galáxia, e os candidatos aguardando em `05 - GALÁXIA/_CANDIDATOS.md`. | `/revisar-memoria` |
 
 ## 🧩 Módulos
 
@@ -101,7 +102,7 @@ Módulos são extensões do Claude Code que vivem em `.claude/skills/<nome>/` e 
 | Módulo | O que faz | Comando |
 |---|---|---|
 | `guarda-constituicao` | Olha cada chamada de ferramenta antes de rodar. Pede confirmação em escrita de governança (`CLAUDE.md`, `VERSION`, `.segundo-cerebro-version`, `_docs/`, `_templates/`, `.claude/`, `02 - ÁREAS/Segundo Cérebro/`), em sobrescrita de nota, em comando destrutivo e em escrita em conector. Recusa CPF em nota, tarefa aberta sem `due`, telefone em arquivo lido em toda sessão, `.env` e credenciais, push forçado e reescrita de histórico. Sem pessoa para responder (`claude -p`), toda confirmação vira recusa. Ao responder, confira o caminho do arquivo e o resumo da mudança; aceite se baterem com o que você aprovou, recuse se não (detalhe em `/guarda`). | `/guarda` |
-| `painel-tarefas` | Painel ao lado do chat com as notas de `06 - TAREFAS/Tarefas/`: blocos por projeto, filtros, resumo do dia, concluir, adiar, aguardar, prioridade, "+ Nova" e abrir a nota no Obsidian (`explorer.exe`, só no Windows). Grava só `status`, `due`, `scheduled`, `priority`, `projects`, `completedDate` e `dateModified` (e apaga `prazo_padrao` ao mudar o `due`); cria nota nova sem sobrescrever. Lê o `sensivel` dos `_CONTEXTO.md` apontados por `projects`, sem nunca gravar neles, e oculta por padrão as áreas sensíveis. | `/tarefas` |
+| `painel-tarefas` | Painel ao lado do chat com as notas de `06 - TAREFAS/Tarefas/`: blocos por projeto, filtros, resumo do dia, concluir, adiar, aguardar, prioridade, "+ Nova" e abrir a nota no Obsidian (`explorer.exe`, só no Windows). Grava só `status`, `due`, `scheduled`, `priority`, `projects`, `completedDate`, `dateModified`, `complete_instances` e `skipped_instances` (e apaga `prazo_padrao` ao mudar o `due`); cria nota nova sem sobrescrever. Lê o `sensivel` dos `_CONTEXTO.md` apontados por `projects`, sem nunca gravar neles, e oculta por padrão as áreas sensíveis. Tarefa recorrente: marca visual, "Concluir esta", "Pular esta" e "Encerrar rotina", com uma linha de histórico no fim do corpo; o cartão esconde adiar e reagendar ("Pular esta" faz esse papel), e "▶ Fazer agora" pede ao Code que não mexa em status nem datas, deixando o clique em "Concluir esta" para você; o campo Repete do "+ Nova" cria a tarefa com a regra. Regra fora das três do [[Template de Tarefa]] fica para o Obsidian. | `/tarefas` |
 
 ### `/guarda`
 
@@ -181,7 +182,7 @@ Ao criar nota nova, aplicar o template mais adequado via Templater.
 | **Template de Pessoa** | Banco de Pessoas → `02 - ÁREAS/Pessoas/` | `banner-pessoas.png` |
 | **Template de Reunião** | Reunião, call ou conversa relevante | `banner-reuniao.png` |
 | **Template de Deliberação** | Deliberação de projeto ou área (pasta `Deliberações/` do escopo); traz também Em aberto, Critérios de abandono, Previsão e Revisão (Resultado preenchido só na revisão), Tarefas sugeridas e Candidatos à Galáxia, preenchidos pela `/deliberar` | — |
-| **Template de Tarefa** | Uma tarefa → `06 - TAREFAS/Tarefas/`; nasce com `due` no dia útil seguinte e `prazo_padrao: true` | — |
+| **Template de Tarefa** | Uma tarefa → `06 - TAREFAS/Tarefas/`; nasce com `due` no dia útil seguinte e `prazo_padrao: true`. O comentário do template traz as três regras de tarefa recorrente | — |
 | **Template de Tarefas** | `_TAREFAS.md` de projeto ou área (vista) | — |
 | **Template de Projeto (_CONTEXTO)** | Novo projeto em `01 - PROJETOS/` | `banner-projeto.png` |
 | **Template de Área (_CONTEXTO)** | Nova área em `02 - ÁREAS/` | `banner-area.png` |
