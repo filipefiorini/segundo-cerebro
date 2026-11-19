@@ -9,12 +9,13 @@ Módulo do Claude Code que abre, ao lado do chat, um painel com as tarefas de `0
 - Resumo do dia: atrasadas, em aberto e concluídas hoje.
 - No cartão de cada tarefa: concluir, adiar (amanhã, segunda ou outra data), marcar aguardando, trocar prioridade, status e projeto, "Fazer agora" (tarefas do Code: preenche o pedido no campo do chat, para você revisar e enviar) e abrir a nota no Obsidian.
 - "+ Nova" cria a nota pelo mesmo esquema do `_templates/Template de Tarefa.md`, sempre com prazo, executor `eu`, o projeto escolhido e prioridade normal (dá para trocar no formulário). Título com CPF é recusado.
+- Tarefa recorrente (↻ no título): "Concluir esta", "Pular esta" e "Encerrar rotina" no lugar de concluir e adiar, nas três regras do `_templates/Template de Tarefa.md`; o campo Repete do "+ Nova" cria a tarefa com a regra. Outra regra aparece com o aviso "regra de repetição não suportada: trate no Obsidian".
 
 ## O que lê e grava
 
 - Lê as notas de `06 - TAREFAS/Tarefas/`.
 - Lê só o frontmatter do `_CONTEXTO.md` apontado pelo campo `projects` de cada tarefa (por exemplo `[[02 - ÁREAS/Trabalho/_CONTEXTO|Trabalho]]`, ou `[[Trabalho]]`, que vira o `_CONTEXTO.md` da pasta com esse nome); nunca outro arquivo. Com `sensivel: true`, as tarefas daquela área ficam ocultas até você clicar em "Mostrar privadas", e aparecem num grupo próprio. Sem o arquivo ou sem o campo, a área conta como não sensível. Nunca grava no `_CONTEXTO.md`.
-- Grava só em `06 - TAREFAS/Tarefas/` e só os campos `status`, `due`, `scheduled`, `priority`, `projects`, `completedDate` e `dateModified`; quando você escolhe uma data, apaga a marca `prazo_padrao`. O corpo da nota nunca muda, e uma nota nova nunca sobrescreve outra. Tarefa recorrente se trata no Obsidian.
+- Grava só em `06 - TAREFAS/Tarefas/` e só os campos `status`, `due`, `scheduled`, `priority`, `projects`, `completedDate`, `dateModified`, `complete_instances` e `skipped_instances`; quando você escolhe uma data, apaga a marca `prazo_padrao`. O corpo da nota só muda na tarefa recorrente, que ganha no fim uma linha de histórico por ocorrência concluída ou pulada; uma nota nova nunca sobrescreve outra.
 
 ## Onde vale
 

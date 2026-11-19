@@ -1,11 +1,13 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface as $T, Register } from 'claude-code'
 
-import type { Filtro, FiltroPrioridade, PrazoNovo, Projeto, Rascunho, Tarefa, Visao } from '../types'
+import type { Filtro, FiltroPrioridade, PrazoNovo, Projeto, Rascunho, Repete, Tarefa, Visao } from '../types'
 import {
   NOME_PRIORIDADE, PRIORIDADES, areaSensivel, ativa, candidatosContexto, dataExtensa, definirCampos, faixa,
-  iso, lerData, lerTarefa, nomeArquivo, novaNota, ordenar, proximaSegunda, rotuloData, somarDias, temCpf,
+  iso, lerCampos, lerData, lerTarefa, nomeArquivo, novaNota, ordenar, proximaSegunda, rotuloData, somarDias, temCpf,
 } from './tarefas'
+import { concluirOcorrencia, primeiraOcorrencia, pularOcorrencia } from './recorrencia'
+import type { Regra } from './recorrencia'
 import type { Faixa } from './tarefas'
 
 const PANE = 'tarefas'
@@ -16,13 +18,14 @@ const INATIVO = 'Painel inativo: esta pasta não é um vault do Segundo Cérebro
 const SEM_PROJETO = 'Sem projeto'
 const PRIVADAS = 'Áreas privadas'
 
-const tarefas = atom({ plugin: 'painel-tarefas', key: 'tarefas' } as const, [] as Tarefa[])
+const tarefas = atom({ plugin: 'painel-tarefas', key: 'tarefas2' } as const, [] as Tarefa[])
 const VISAO_PADRAO: Visao = {
   filtro: 'hoje',
   prioridade: 'todas',
   privadas: false,
   aberta: null,
   editandoData: null,
+  encerrando: null,
   // Grupos de projeto que a pessoa alternou: todos começam abertos dentro do bloco.
   abertos: [],
   codeAberto: false,
@@ -37,10 +40,13 @@ const RASCUNHO_PADRAO: Rascunho = {
   prazo: 'hoje',
   dataLivre: '',
   prioridade: 'normal',
+  repete: 'nao',
+  diaSemana: 1,
+  diaMes: '',
   versao: 0,
 }
-const visao = atom({ plugin: 'painel-tarefas', key: 'visao' } as const, VISAO_PADRAO)
-const rascunho = atom({ plugin: 'painel-tarefas', key: 'rascunho' } as const, RASCUNHO_PADRAO)
+const visao = atom({ plugin: 'painel-tarefas', key: 'visao2' } as const, VISAO_PADRAO)
+const rascunho = atom({ plugin: 'painel-tarefas', key: 'rascunho2' } as const, RASCUNHO_PADRAO)
 
 // Cores do tema: seguem claro/escuro sozinhas.
 const COR: Record<Faixa, string> = {
@@ -54,7 +60,7 @@ const STATUS: Record<string, string> = { open: 'aberta', waiting: 'aguardando', 
 const LARGURA_DATA = 11
 const VAZIA: Tarefa = {
   arquivo: '', titulo: '', status: 'open', prioridade: 'none', prazo: null, agendada: null, projetos: [],
-  executor: 'eu', concluidaEm: null, recorrente: false, privada: false, mtime: 0,
+  executor: 'eu', concluidaEm: null, recorrente: false, regraValida: false, privada: false, mtime: 0,
 }
 
 // Ícone de estado: SVG de tamanho fixo onde o surface desenha SVG; glifo no terminal.
@@ -86,6 +92,20 @@ function escopo(arquivo: string): string {
   return `linha-${h.toString(36)}`
 }
 const dataBR = (d: string) => d.split('-').reverse().join('/')
+
+// Campo "Repete" do formulário: a regra escolhida, ou o aviso que impede criar.
+const DIA_MES_INVALIDO = 'Dia do mês: de 1 a 28.'
+const DIAS_SEMANA = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+function regraDoRascunho(r: Rascunho): { regra: Regra | null; erro: string | null } {
+  if (r.repete === 'mensal-util') return { regra: { tipo: 'mensal-util' }, erro: null }
+  if (r.repete === 'semanal') return { regra: { tipo: 'semanal', dia: r.diaSemana }, erro: null }
+  if (r.repete === 'mensal-dia') {
+    const t = r.diaMes.trim()
+    const dia = /^\d{1,2}$/.test(t) ? Number(t) : 0
+    return dia >= 1 && dia <= 28 ? { regra: { tipo: 'mensal-dia', dia }, erro: null } : { regra: null, erro: DIA_MES_INVALIDO }
+  }
+  return { regra: null, erro: null }
+}
 
 // Raiz do vault: lida no session.start. Vazia = painel inerte (não lê nem grava nada).
 let raiz = ''
@@ -160,16 +180,43 @@ async function caminho($: $T, arquivo: string, deveExistir: boolean): Promise<st
   return p
 }
 
-async function alterar($: $T, t: Tarefa, campos: Record<string, string | null>, aviso: string) {
+async function alterar($: $T, t: Tarefa, campos: Record<string, string | string[] | null>, aviso: string, conferir = false) {
   try {
-    if (t.recorrente) throw new Error('tarefa recorrente: trate no Obsidian')
     const p = await caminho($, t.arquivo, true)
     const dia = await hoje($)
     // Data escolhida pela pessoa apaga a marca do prazo padrão (regra FONTE-DE-TAREFAS).
     const marca = 'due' in campos ? { prazo_padrao: null } : {}
-    await $.fs.write(p, definirCampos(await $.fs.read(p), { ...campos, ...marca, dateModified: dia }))
+    const texto = await $.fs.read(p)
+    if (conferir && await mudou($, t, texto)) return
+    await $.fs.write(p, definirCampos(texto, { ...campos, ...marca, dateModified: dia }))
     await carregar($)
     $.ui.toast(aviso)
+  } catch (err) {
+    $.ui.toast(`Não gravei: ${err instanceof Error ? err.message : String(err)}`)
+  }
+}
+
+// Recorrente: só grava se a nota ainda está na ocorrência que a pessoa viu no cartão. Conclusão
+// feita no TaskNotes, duplo clique ou hotkey repetida mudam o `scheduled`; aí recarrega e não grava.
+async function mudou($: $T, t: Tarefa, texto: string): Promise<boolean> {
+  const lida = String(lerCampos(texto).scheduled ?? '').trim().replace(/^(["'])(.*)\1$/, '$2').slice(0, 10)
+  if ((/^\d{4}-\d{2}-\d{2}$/.test(lida) ? lida : null) === t.agendada) return false
+  await carregar($)
+  $.ui.toast('A nota mudou desde a leitura; recarreguei, confira.')
+  return true
+}
+
+// Tarefa recorrente: concluir ou pular a ocorrência regrava a nota inteira (datas, lista e histórico).
+async function ocorrencia($: $T, t: Tarefa, regravar: (texto: string, hoje: string) => string, aviso: string) {
+  try {
+    const p = await caminho($, t.arquivo, true)
+    const texto = await $.fs.read(p)
+    if (await mudou($, t, texto)) return
+    const novo = regravar(texto, await hoje($))
+    await $.fs.write(p, novo)
+    await carregar($)
+    const proxima = String(lerCampos(novo).scheduled ?? '')
+    $.ui.toast(`${aviso} Próxima: ${dataBR(proxima)}.`)
   } catch (err) {
     $.ui.toast(`Não gravei: ${err instanceof Error ? err.message : String(err)}`)
   }
@@ -183,13 +230,16 @@ async function criar($: $T, digitado: string | null, projetos: Projeto[]) {
   if (temCpf(t)) return $.ui.toast('Recusado: o título parece ter um CPF.')
   try {
     const dia = await hoje($)
-    const prazo = r.prazo === 'data'
+    const { regra, erro } = regraDoRascunho(r)
+    if (erro) return $.ui.toast(erro)
+    // Recorrente: o prazo é a primeira ocorrência, que novaNota calcula.
+    const prazo = regra ? null : r.prazo === 'data'
       ? lerData(r.dataLivre, dia)
       : { hoje: dia, amanha: somarDias(dia, 1), segunda: proximaSegunda(dia) }[r.prazo]
-    if (!prazo) return $.ui.toast(r.prazo === 'data' ? `Não entendi a data "${r.dataLivre}".` : 'Toda tarefa nasce com prazo.')
+    if (!regra && !prazo) return $.ui.toast(r.prazo === 'data' ? `Não entendi a data "${r.dataLivre}".` : 'Toda tarefa nasce com prazo.')
     const projeto = projetos.find(p => p.nome === r.projeto) ?? null
     const p = await caminho($, `${nomeArquivo(t)}.md`, false)
-    await $.fs.write(p, novaNota(t, projeto, prazo, dia, r.prioridade))
+    await $.fs.write(p, novaNota(t, projeto, prazo ?? null, dia, r.prioridade, regra))
     await update($, rascunho, x => ({ ...RASCUNHO_PADRAO, versao: x.versao + 1 }))
     await update($, visao, v => ({ ...v, novaAberta: false }))
     await carregar($)
@@ -200,9 +250,14 @@ async function criar($: $T, digitado: string | null, projetos: Projeto[]) {
 }
 
 async function fazerAgora($: $T, t: Tarefa) {
-  const texto = `Execute a tarefa "${t.titulo}" (${PASTA}/${t.arquivo}). Leia a nota antes e siga a Constituição. `
-    + 'Ao terminar, depois de verificar o resultado, marque a tarefa como concluída (status: done, completedDate de hoje) '
-    + 'e registre o desfecho no corpo da nota. Se não der para concluir, deixe-a aberta e anote o que falta.'
+  const inicio = `Execute a tarefa "${t.titulo}" (${PASTA}/${t.arquivo}). Leia a nota antes e siga a Constituição. `
+  // Recorrente: marcar concluída encerraria a rotina; quem conclui a ocorrência é a pessoa, no painel.
+  const texto = t.recorrente
+    ? inicio + 'É uma tarefa recorrente: não altere status, completedDate, complete_instances, scheduled nem due. '
+      + 'Ao terminar, depois de verificar o resultado, registre o desfecho no corpo da nota e peça ao usuário '
+      + 'para clicar em "Concluir esta" no painel de tarefas. Se não der para concluir, anote o que falta.'
+    : inicio + 'Ao terminar, depois de verificar o resultado, marque a tarefa como concluída (status: done, completedDate de hoje) '
+      + 'e registre o desfecho no corpo da nota. Se não der para concluir, deixe-a aberta e anote o que falta.'
   const r = await $.prompt.fill({ text: texto, mode: 'replace' })
   $.ui.toast(r.isFilled ? 'Pedido no campo do chat: revise e envie.' : 'Não consegui preencher o chat.')
 }
@@ -469,19 +524,56 @@ export const register: Register = (on, options) => {
               value={nomesProjetos.includes(r.projeto) ? r.projeto : nomesProjetos[0]}
               options={nomesProjetos.map(p => ({ value: p, label: p }))}
               onSelect={(p: string) => void update($, rascunho, x => ({ ...x, projeto: p }))} />
-            <Select key="nova-prazo" label="Prazo" value={r.prazo}
+            <Select key="nova-repete" label="Repete" value={r.repete}
               options={[
-                { value: 'hoje', label: 'Hoje' },
-                { value: 'amanha', label: 'Amanhã' },
-                { value: 'segunda', label: 'Segunda' },
-                { value: 'data', label: 'Escolher data…' },
+                { value: 'nao', label: 'Não repete' },
+                { value: 'mensal-util', label: '1º dia útil do mês' },
+                { value: 'semanal', label: 'Toda semana' },
+                { value: 'mensal-dia', label: 'Todo mês no dia…' },
               ]}
-              onSelect={(p: string) => void update($, rascunho, x => ({ ...x, prazo: p as PrazoNovo }))} />
+              onSelect={(p: string) => void update($, rascunho, x => ({ ...x, repete: p as Repete }))} />
+            {r.repete === 'semanal'
+              ? (
+                <Select key="nova-dia-semana" label="Dia" value={String(r.diaSemana)}
+                  options={[1, 2, 3, 4, 5, 6, 0].map(d => ({ value: String(d), label: DIAS_SEMANA[d]! }))}
+                  onSelect={(d: string) => void update($, rascunho, x => ({ ...x, diaSemana: Number(d) }))} />
+              )
+              : null}
+            {r.repete === 'nao'
+              ? (
+                <Select key="nova-prazo" label="Prazo" value={r.prazo}
+                  options={[
+                    { value: 'hoje', label: 'Hoje' },
+                    { value: 'amanha', label: 'Amanhã' },
+                    { value: 'segunda', label: 'Segunda' },
+                    { value: 'data', label: 'Escolher data…' },
+                  ]}
+                  onSelect={(p: string) => void update($, rascunho, x => ({ ...x, prazo: p as PrazoNovo }))} />
+              )
+              : null}
             <Select key="nova-prioridade" label="Prioridade" value={r.prioridade}
               options={opcoesPrioridade}
               onSelect={(p: string) => void update($, rascunho, x => ({ ...x, prioridade: p }))} />
           </Box>
-          {r.prazo === 'data'
+          {r.repete === 'mensal-dia'
+            ? (
+              <Input
+                key={`nova-dia-mes-${r.versao}`}
+                label="Dia do mês"
+                placeholder="1 a 28"
+                onInput={(texto: string) => void update($, rascunho, x => ({ ...x, diaMes: texto }))}
+                onSubmit={(texto: string) => void update($, rascunho, x => ({ ...x, diaMes: texto }))}
+              />
+            )
+            : null}
+          {r.repete !== 'nao'
+            ? (() => {
+              const { regra, erro } = regraDoRascunho(r)
+              if (regra) return <Text color="success">{`Primeira: ${dataBR(primeiraOcorrencia(regra, dia))}`}</Text>
+              return erro && r.diaMes.trim() ? <Text color="error">{erro}</Text> : null
+            })()
+            : null}
+          {r.repete === 'nao' && r.prazo === 'data'
             ? (
               <Box flexDirection="column">
                 <Input
@@ -540,7 +632,7 @@ export const register: Register = (on, options) => {
       const rotulo = feita
         ? (t.concluidaEm === dia ? 'hoje' : t.concluidaEm ? dataBR(t.concluidaEm).slice(0, 5) : 'feita')
         : rotuloData(t, dia)
-      const atrasada = ativa(t) && !esperando && f === 'atrasada'
+      const atrasada = ativa(t) && !esperando && !t.recorrente && f === 'atrasada'
       const aberta = v.aberta === t.arquivo
       return (
         <Box flexDirection="column">
@@ -549,8 +641,9 @@ export const register: Register = (on, options) => {
             <Box width={2} flexShrink={0} alignItems="center" justifyContent="center">{icone(tipo, cor)}</Box>
             <Box flexGrow={1} flexShrink={1} minWidth={0} overflow="hidden">
               <Button key={`t:${t.arquivo}`} plain
-                onPress={() => setV(x => ({ ...x, aberta: x.aberta === t.arquivo ? null : t.arquivo, editandoData: null }))}>
+                onPress={() => setV(x => ({ ...x, aberta: x.aberta === t.arquivo ? null : t.arquivo, editandoData: null, encerrando: null }))}>
                 <Text wrap="truncate-end" strikethrough={feita} dimColor={feita || esperando} weight={alta ? 'semibold' : undefined}>
+                  {t.recorrente ? '↻ ' : ''}
                   {t.titulo}
                   {esperando && !feita ? <Text dimColor>  · aguardando</Text> : ''}
                   {chip && t.projetos[0] ? <Text dimColor>  · {t.projetos[0].nome}</Text> : ''}
@@ -579,6 +672,12 @@ export const register: Register = (on, options) => {
       const feita = !ativa(t)
       const esperando = t.status === 'waiting'
       const k = (s: string) => `${s}:${t.arquivo}`
+      // Recorrente aberta: concluir e pular a ocorrência no lugar de concluir e adiar.
+      // Regra que o painel não trata: só prioridade, projeto e o Obsidian.
+      const rotina = !feita && t.recorrente
+      const recusada = rotina && !t.regraValida
+      const comum = !feita && !t.recorrente
+      const encerrando = v.encerrando === t.arquivo
       const detalhe = (rotulo: string, valor: string, cor?: string) => (
         <Text><Text dimColor>{rotulo} </Text><Text weight="semibold" color={cor}>{valor}</Text></Text>
       )
@@ -588,18 +687,23 @@ export const register: Register = (on, options) => {
           borderStyle="round" borderColor="claude">
           <Text weight="bold" wrap="wrap">{t.titulo}</Text>
           <Box flexDirection="row" flexWrap="wrap" columnGap={2}>
-            {feita || !Select ? detalhe('Status:', STATUS[t.status] ?? t.status, feita ? 'success' : esperando ? 'subtle' : undefined) : null}
+            {feita || !Select || recusada ? detalhe('Status:', STATUS[t.status] ?? t.status, feita ? 'success' : esperando ? 'subtle' : undefined) : null}
             {feita && t.concluidaEm ? detalhe('Concluída em:', dataBR(t.concluidaEm), 'success') : null}
             {detalhe('Prazo:', prazo, feita ? undefined : COR[faixa(t, dia)])}
             {feita || !Select ? detalhe('Projeto:', t.projetos.map(p => p.nome).join(', ') || SEM_PROJETO) : null}
           </Box>
+          {recusada ? <Text color="warning" wrap="wrap">regra de repetição não suportada: trate no Obsidian</Text> : null}
           {!feita && Select
             ? (
               <Box flexDirection="row" flexWrap="wrap" columnGap={2} rowGap={1}>
-                <Select key={k('status')} label="Status" value={esperando ? 'waiting' : 'open'}
-                  options={opcoesStatus}
-                  onSelect={(s: string) => void alterar($, t, s === 'done' ? { status: 'done', completedDate: dia } : { status: s },
-                    s === 'done' ? 'Concluída. 🎉' : `Status: ${STATUS[s] ?? s}.`)} />
+                {recusada
+                  ? null
+                  : (
+                    <Select key={k('status')} label="Status" value={esperando ? 'waiting' : 'open'}
+                      options={rotina ? opcoesStatus.filter(o => o.value !== 'done') : opcoesStatus}
+                      onSelect={(s: string) => void alterar($, t, s === 'done' ? { status: 'done', completedDate: dia } : { status: s },
+                        s === 'done' ? 'Concluída. 🎉' : `Status: ${STATUS[s] ?? s}.`)} />
+                  )}
                 <Select key={k('prioridade')} label="Prioridade" value={PRIORIDADES.includes(t.prioridade) ? t.prioridade : 'none'}
                   options={opcoesPrioridade}
                   onSelect={(p: string) => void alterar($, t, { priority: p }, `Prioridade: ${NOME_PRIORIDADE[p] ?? p}.`)} />
@@ -610,26 +714,45 @@ export const register: Register = (on, options) => {
                     const novo = projetosConhecidos.find(x => x.nome === p)
                     const resto = t.projetos.slice(1).filter(x => x.nome !== p)
                     const lista = [...(novo ? [novo] : []), ...resto]
-                    void alterar($, t, { projects: `[${lista.map(x => `"${x.link}"`).join(', ')}]` }, `Projeto: ${p}.`)
+                    void alterar($, t, { projects: lista.map(x => `"${x.link}"`) }, `Projeto: ${p}.`)
                   }} />
               </Box>
             )
             : null}
           <Text dimColor weight="semibold">Ações:</Text>
           <Box flexDirection="row" flexWrap="wrap" columnGap={1} rowGap={1}>
-            {!feita && t.executor === 'code'
+            {!feita && !recusada && t.executor === 'code'
               ? <Button key={k('fazer')} label="▶ Fazer agora" hotkey="f" variant="primary" onPress={() => void fazerAgora($, t)} />
               : null}
             {feita
               ? <Button key={k('reabrir')} label="Reabrir" onPress={() => void alterar($, t, { status: 'open', completedDate: null }, 'Reaberta.')} />
-              : <Button key={k('concluir')} label="Marcar como concluída" hotkey="c" onPress={() => void alterar($, t, { status: 'done', completedDate: dia }, 'Concluída. 🎉')} />}
-            {!feita && !esperando && faixa(t, dia) === 'atrasada'
+              : null}
+            {comum
+              ? <Button key={k('concluir')} label="Marcar como concluída" hotkey="c" onPress={() => void alterar($, t, { status: 'done', completedDate: dia }, 'Concluída. 🎉')} />
+              : null}
+            {rotina && !recusada
+              ? (
+                <>
+                  <Button key={k('concluirEsta')} label="Concluir esta" hotkey="c"
+                    onPress={() => void ocorrencia($, t, concluirOcorrencia, 'Ocorrência concluída. 🎉')} />
+                  <Button key={k('pular')} label="Pular esta" hotkey="p"
+                    onPress={() => void ocorrencia($, t, pularOcorrencia, 'Ocorrência pulada.')} />
+                  <Button key={k('encerrar')} label={encerrando ? 'Confirmar encerramento' : 'Encerrar rotina'} hotkey="e"
+                    onPress={() => {
+                      // Encerrar a rotina inteira pede um segundo clique: o primeiro só arma.
+                      setV(x => ({ ...x, encerrando: encerrando ? null : t.arquivo }))
+                      if (encerrando) void alterar($, t, { status: 'done', completedDate: dia }, 'Rotina encerrada.', true)
+                    }} />
+                </>
+              )
+              : null}
+            {comum && !esperando && faixa(t, dia) === 'atrasada'
               ? <Button key={k('trazer')} label="Reagendar para hoje" hotkey="h" onPress={() => void alterar($, t, { due: dia }, 'Reagendada para hoje.')} />
               : null}
-            {!feita ? <Button key={k('amanha')} label="Adiar p/ amanhã" hotkey="a" onPress={() => void alterar($, t, { due: somarDias(dia, 1) }, 'Adiada para amanhã.')} /> : null}
-            {!feita ? <Button key={k('segunda')} label="Adiar p/ segunda" hotkey="s" onPress={() => void alterar($, t, { due: proximaSegunda(dia) }, 'Adiada para segunda.')} /> : null}
-            {!feita ? <Button key={k('data')} label="Outra data…" hotkey="d" onPress={() => setV(x => ({ ...x, editandoData: x.editandoData === t.arquivo ? null : t.arquivo }))} /> : null}
-            {!feita
+            {comum ? <Button key={k('amanha')} label="Adiar p/ amanhã" hotkey="a" onPress={() => void alterar($, t, { due: somarDias(dia, 1) }, 'Adiada para amanhã.')} /> : null}
+            {comum ? <Button key={k('segunda')} label="Adiar p/ segunda" hotkey="s" onPress={() => void alterar($, t, { due: proximaSegunda(dia) }, 'Adiada para segunda.')} /> : null}
+            {comum ? <Button key={k('data')} label="Outra data…" hotkey="d" onPress={() => setV(x => ({ ...x, editandoData: x.editandoData === t.arquivo ? null : t.arquivo }))} /> : null}
+            {!feita && !recusada
               ? <Button key={k('aguardar')} label={esperando ? 'Voltar para a fila' : 'Marcar aguardando'} hotkey="w"
                   onPress={() => void alterar($, t, { status: esperando ? 'open' : 'waiting' }, esperando ? 'De volta à fila.' : 'Marcada como aguardando.')} />
               : null}

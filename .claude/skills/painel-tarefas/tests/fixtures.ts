@@ -1,0 +1,2 @@
+// Nota recorrente como o TaskNotes regrava: listas em bloco, dateModified com hora.
+export const REGRAVADA = `---\ntitle: Teste — recorrência\nstatus: open\npriority: none\nscheduled: 2026-12-01\ndue: 2026-12-01\nrecurrence: DTSTART:20261102;FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1\nrecurrence_anchor: scheduled\ncomplete_instances:\n  - 2026-11-02\nprojects:\n  - "[[02 - ÁREAS/Trabalho/_CONTEXTO|Trabalho]]"\ncontexts: []\nexecutor: code\ndateCreated: 2026-11-19\ndateModified: 2026-11-19T08:56:48.633-03:00\ntags:\n  - task\nskipped_instances: []\n---\n\nCorpo.\n`
