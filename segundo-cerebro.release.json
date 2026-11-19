@@ -1,6 +1,6 @@
 {
   "versao_schema": 1,
-  "versao": "1.0.0",
+  "versao": "1.0.1",
   "arquivos": [
     {
       "caminho": ".claude/settings.json",
@@ -680,7 +680,7 @@
     {
       "caminho": "_docs/CHANGELOG.md",
       "tipo": "fixo",
-      "sha256": "ba692860c358c21489a5403b4d8d8f869306d028ba599dc9eb99b1e841bbbbe2"
+      "sha256": "48148a2f1fd6d4dabd3feab555d4f0e39d098fb79f88b61076ebea584ae85818"
     },
     {
       "caminho": "_docs/Como o Autor Opera em Casa.md",
@@ -852,6 +852,12 @@
     },
     {
       "versao": "1.0.0",
+      "removidos": [],
+      "renomeados": [],
+      "migracoes": []
+    },
+    {
+      "versao": "1.0.1",
       "removidos": [],
       "renomeados": [],
       "migracoes": []
