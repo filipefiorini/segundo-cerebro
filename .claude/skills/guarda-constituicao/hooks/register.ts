@@ -251,6 +251,8 @@ export function temTelefone(texto: string): boolean {
 // `due` com data, ou Edit que deixe `due:` vazio, é recusado. Só onde há pasta de tarefas.
 const DUE_VAZIO = /^due:[ \t]*$/m
 const DUE_COM_DATA = /^due:[ \t]*\d{4}-\d{2}-\d{2}/m
+const TAG_TASK_FLUXO = /^tags:.*\btask\b/m
+const TAG_TASK_BLOCO = /^tags:[ \t]*\r?\n(?:[ \t]+-[ \t]*[^\r\n]*\r?\n)*?[ \t]+-[ \t]*["']?#?task["']?[ \t]*(?:\r?\n|$)/m
 
 function ehTarefa(n: string, raiz: string, config: Config): boolean {
   if (config.pastaTarefas === null) return false
@@ -264,7 +266,8 @@ export function tarefaSemPrazo(tool: string, texto: string): string | null {
   if (!texto.startsWith('---')) return null
   const fim = texto.indexOf('\n---', 3)
   const fm = fim === -1 ? texto : texto.slice(0, fim)
-  if (!/^tags:.*\btask\b/m.test(fm)) return null
+  // `tags` em fluxo (`tags: [task]`) ou em bloco, como o TaskNotes regrava (`tags:` e `  - task`).
+  if (!TAG_TASK_FLUXO.test(fm) && !TAG_TASK_BLOCO.test(fm)) return null
   if (/^status:[ \t]*(done|cancelled)\b/m.test(fm)) return null
   if (DUE_COM_DATA.test(fm)) return null
   return 'tarefa sem `due`; toda tarefa nasce com prazo (sem prazo na fonte: dia útil seguinte, com `prazo_padrao: true`).'

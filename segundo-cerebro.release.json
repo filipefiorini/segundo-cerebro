@@ -75,7 +75,7 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "3961256e4b570ed344a149be587f218d2c5870cd7c122b8d108bcb3c2544ecfa"
+      "sha256": "c68041e080232c2d48aaa8e0cb48c5db7ecedd97a18618193043309632faa494"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/README.md",
@@ -90,12 +90,12 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/hooks/register.ts",
       "tipo": "fixo",
-      "sha256": "251b45556b7be7c316165dea882f97108427f00a09917239f8bdb0d13c709b51"
+      "sha256": "c79da89468d4835a3607cfc7eb98b7a45fadb1f1106ff5250fd26c832225b752"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
       "tipo": "fixo",
-      "sha256": "a3e7fa5b8aceb09f1289cce53e8d4fc396db1210a123de82c95639a4c85d6725"
+      "sha256": "de1b03b19a2e0920c7438682fe035f968513334a9fad3c9b7948a77a7e6c91a3"
     },
     {
       "caminho": ".claude/skills/instalar/SKILL.md",
