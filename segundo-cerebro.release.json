@@ -50,7 +50,7 @@
     {
       "caminho": ".claude/skills/auditar-vault/SKILL.md",
       "tipo": "fixo",
-      "sha256": "76292a7a53d8a752244f57a2e2a2a4f35ab06bb80a5f4ae021c15e2842b3790e"
+      "sha256": "906abd03deefb9b7f34274bb7caca3e7b1ae5f711f5e5d50b80c8d6a9f367509"
     },
     {
       "caminho": ".claude/skills/auditar-vault/exemplos.md",
@@ -75,7 +75,7 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "c68041e080232c2d48aaa8e0cb48c5db7ecedd97a18618193043309632faa494"
+      "sha256": "74f98b64daf88d9f395fcd9beca8522ec30cff6ba55f2f6df1397fb78534726a"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/README.md",
@@ -90,12 +90,12 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/hooks/register.ts",
       "tipo": "fixo",
-      "sha256": "c79da89468d4835a3607cfc7eb98b7a45fadb1f1106ff5250fd26c832225b752"
+      "sha256": "b6c1318a2acd6ba867bb02dc011b9d5096feb857be4d8fcab7fe019b2348f83c"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
       "tipo": "fixo",
-      "sha256": "de1b03b19a2e0920c7438682fe035f968513334a9fad3c9b7948a77a7e6c91a3"
+      "sha256": "03ce65d5171f14417dee7e8186bbbfbd3be95ff7049aa53165f466963e8ed311"
     },
     {
       "caminho": ".claude/skills/instalar/SKILL.md",
@@ -120,7 +120,7 @@
     {
       "caminho": ".claude/skills/painel-tarefas/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "495dc9b6bdbb52abc2a6faeb18e5f3c2760cd011e3a3e30e7d7a90f34c8cfd15"
+      "sha256": "d17c251dbd7f0ef0952c50ee82b4d99c860387666800040470508106be7a53d1"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/README.md",
@@ -140,7 +140,7 @@
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/register.tsx",
       "tipo": "fixo",
-      "sha256": "0657898be18ee9f5989dd8609d32c05880388dd93210216cd24aee216f2ce7c8"
+      "sha256": "5c64cd3163191999888cdae08313ecd05a311a1b18c68f68df45550bcb9d7b68"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/tarefas.ts",
@@ -155,7 +155,7 @@
     {
       "caminho": ".claude/skills/painel-tarefas/tests/painel.test.tsx",
       "tipo": "fixo",
-      "sha256": "5678c3302b8c25901c5e245e5d9c499ba19a88113f591fbb272ec8ef74e1dcf4"
+      "sha256": "9e412cfe28f0515789bc470835a60f4bb70b831d656ec6f04dd18daea624feb8"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/tests/recorrencia.test.tsx",
