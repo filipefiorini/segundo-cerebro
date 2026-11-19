@@ -8,6 +8,8 @@
 
 ## 🧠 O que é
 
+**Suas notas, tarefas e decisões organizadas pelo Claude, no seu computador, e nada importante acontece sem o seu ok.**
+
 Organize o que você aprende, decide e precisa fazer com uma IA que trabalha por conta própria e pede licença no que é sensível e na proposta de cada lote.
 
 Você pede e o Claude executa; você aprova a proposta de uma vez, não cada passo. Ele lê suas capturas, decide o destino de cada uma, grava as notas, cria as tarefas com prazo e responde sobre o que o vault já registra.
@@ -94,6 +96,7 @@ Você pede, o Claude Code lê a Constituição e propõe; a Guarda, um módulo q
 
 - quer guardar o que aprende, decide e precisa fazer num lugar que é seu, em arquivos no próprio computador;
 - já usa o Claude e quer que ele leia e mantenha as notas seguindo regras escritas;
+- não programa: a configuração é guiada pelo `/instalar`, numa conversa com o Claude;
 - quer que a IA faça o trabalho e pare só na proposta e no que é sensível;
 - usa Windows e lê português.
 
