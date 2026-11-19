@@ -37,6 +37,7 @@
     {"caminho": "04 - ARQUIVO/", "tipo": "semente"},
     {"caminho": "05 - GALÁXIA/Galáxia.base", "tipo": "fixo"},
     {"caminho": "05 - GALÁXIA/_INDICE.md", "tipo": "semente"},
+    {"caminho": "05 - GALÁXIA/_CANDIDATOS.md", "tipo": "semente"},
     {"caminho": "05 - GALÁXIA/", "tipo": "exemplo"},
     {"caminho": "06 - TAREFAS/Views/", "tipo": "fixo"},
     {"caminho": "06 - TAREFAS/_INDICE.md", "tipo": "fixo"},

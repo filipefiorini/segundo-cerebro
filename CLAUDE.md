@@ -59,7 +59,7 @@ Comportamento do Claude Code dentro deste vault. Estado operacional vive em `mem
 - **ZERO-TRUST** — Cada integração tem escopo declarado na tabela abaixo. Operação fora do escopo: confirmar antes.
 - **SENSÍVEL** — Saúde, finanças pessoais, jurídico, família, credenciais, IDs de sistemas e telefones nunca entram em `CLAUDE.md`, `memory.md` ou qualquer arquivo lido em toda sessão. Vivem na nota canônica do escopo.
 - **MUDANÇA-ESTRUTURAL** — Vale só para: nova skill, nova regra, mudança de pasta IPARAG ou de `_docs/`. Sequência: plano → execução → verificação dos arquivos afetados → registro no `_HISTORICO.md` da área Segundo Cérebro → confirmação ao usuário com a lista. A versão do framework é do mantenedor e não muda aqui. O que fica entre marcadores `usuario:` é da pessoa e não dispara esta regra. Não se aplica a sessões de conteúdo.
-- **GRADUAÇÃO** — Ideia que passaria no filtro da Galáxia ("eu buscaria isto fora de qualquer projeto?") e surgiu numa sessão, reunião ou deliberação é oferecida ao usuário no fim da tarefa como candidata, com a camada sugerida. Nunca gravada sem aprovação.
+- **GRADUAÇÃO** — Ideia que passaria no filtro da Galáxia ("eu buscaria isto fora de qualquer projeto?") e surgiu numa sessão, reunião ou deliberação é oferecida ao usuário no fim da tarefa como candidata, com a camada sugerida. Nunca gravada sem aprovação. A candidata oferecida entra em `05 - GALÁXIA/_CANDIDATOS.md` na hora da oferta: aprovada, vira nota e sai da lista; negada de forma expressa, sai; sem manifestação, fica para a próxima `/revisar-memoria`. Só a negativa expressa descarta.
 
 ## Zero Trust dos módulos
 

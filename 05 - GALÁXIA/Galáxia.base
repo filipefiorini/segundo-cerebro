@@ -3,6 +3,7 @@ filters:
     - file.inFolder("05 - GALÁXIA")
     - 'file.ext == "md"'
     - 'file.name != "_INDICE"'
+    - 'file.name != "_CANDIDATOS"'
 properties:
   tipo_nota:
     displayName: "Tipo"

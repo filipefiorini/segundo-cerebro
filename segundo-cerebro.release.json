@@ -65,7 +65,7 @@
     {
       "caminho": ".claude/skills/deliberar/SKILL.md",
       "tipo": "fixo",
-      "sha256": "fcf810fb9d057ffc5e53da107917964e3dfb205c416d24e6c3545858e35fa576"
+      "sha256": "cb231a0a01b5524ae6c76984e0a70121784187b883b8483757fc0f16e381caa5"
     },
     {
       "caminho": ".claude/skills/deliberar/exemplos.md",
@@ -170,17 +170,17 @@
     {
       "caminho": ".claude/skills/processar-inbox/SKILL.md",
       "tipo": "fixo",
-      "sha256": "8627cf018d676a4d4e20c91019d1ef6b2cd3e8fcf4f5b0df8fd8c3912f7ee397"
+      "sha256": "1a18d9ac29de00b34aae6121c25981ad48fc8cc3b966959a825c90ae129ae14b"
     },
     {
       "caminho": ".claude/skills/processar-reuniao/SKILL.md",
       "tipo": "fixo",
-      "sha256": "646a36b91013ec73f0796862de22d744711a60c5bc31954e7b0e51d69dd62618"
+      "sha256": "6413ce46ce8171551eff81ec2cbdff0dfab0f24ba8da07f9e60fb8aadc5f15e1"
     },
     {
       "caminho": ".claude/skills/revisar-memoria/SKILL.md",
       "tipo": "fixo",
-      "sha256": "fe980c1a0e05fecbb16209baf012cbcd13f57c7aa017c9287aa654ccac133aa4"
+      "sha256": "58859ed6669f41dd5eed225d0a4b9efb1162c4a094d6e72e4f005a3583b9ce61"
     },
     {
       "caminho": ".obsidian/app.json",
@@ -345,7 +345,7 @@
     {
       "caminho": "05 - GALÁXIA/Galáxia.base",
       "tipo": "fixo",
-      "sha256": "ea67bc3cc0d23db50d11faad264f0eee9ac93e121bc21fa6fb1008506fe89573"
+      "sha256": "6a33e1ec4ed8b10b09b0ede4a5c116c1fe4aa6854617b9b754890bc56a759dd6"
     },
     {
       "caminho": "05 - GALÁXIA/Gastar bem, poupar mais, investir melhor.md",
@@ -453,6 +453,11 @@
       "sha256": "40e512900359f4b022534b593d072260de58fb251c2cf1c15e68d79181d38079"
     },
     {
+      "caminho": "05 - GALÁXIA/_CANDIDATOS.md",
+      "tipo": "semente",
+      "sha256": "3c1564aab165ac581cd6718d01462a81ac5b2524aa13a79301cc88abd75e5148"
+    },
+    {
       "caminho": "05 - GALÁXIA/_INDICE.md",
       "tipo": "semente",
       "sha256": "bb71d3dc4400edb1e9e55c44dadec85b2c76fbcb3b64c1af50389406a5a1ee97"
@@ -540,7 +545,7 @@
     {
       "caminho": "CLAUDE.md",
       "tipo": "fixo",
-      "sha256": "b3d80f552b44325818ad9649fc5f74b4c0431732a4b18bf694baea46a930135e"
+      "sha256": "fb727bb72efd275d1879137fa5e36042ccf8a0405ed15ed73c9c81c4bf0bf9be"
     },
     {
       "caminho": "Homepage.md",
@@ -700,12 +705,12 @@
     {
       "caminho": "_docs/Ferramentas.md",
       "tipo": "fixo",
-      "sha256": "f2230e6ae41eff4fbf291cbdd2f8534bcd596dcc8a69934d648ca188db6edee2"
+      "sha256": "711b5c5220bfba2db42cc96a0ce8d2f3bb242d4c5b1a6d05916009888cdbe1ee"
     },
     {
       "caminho": "_docs/Manual do Segundo Cérebro.md",
       "tipo": "fixo",
-      "sha256": "a237a3c22ea7f756a1c053a4e8ae0d35238cfac0b834f5904083eff99aef4236"
+      "sha256": "2b0763ef43a7bbcd8f5b46fbc09fa71dc3af866d997775ec63fd6f44283d0f26"
     },
     {
       "caminho": "_docs/O Método.md",
@@ -735,7 +740,7 @@
     {
       "caminho": "_templates/Template de Deliberação.md",
       "tipo": "fixo",
-      "sha256": "8ca1bae5b4c3a5c3ef10c90abe3dc086adddeef98252a0dda6590d120b9ce072"
+      "sha256": "f5c8688856cec6fa429759b29f653dbc00ac912a67b67fbe11d08274a512a1ac"
     },
     {
       "caminho": "_templates/Template de Livro.md",

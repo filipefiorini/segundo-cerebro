@@ -8,9 +8,9 @@ description: |
   USE WHEN o usuário digitar "/processar-reuniao", "processar reunião",
   "registra a reunião de hoje", "nota da call com [nome]", "ata desta reunião",
   ou colar uma transcrição de reunião pedindo a nota.
-version: 1.1.1
+version: 1.2.0
 created: 2026-11-07
-updated: 2026-11-12
+updated: 2026-11-19
 tags: [skill]
 ---
 
@@ -96,14 +96,14 @@ Regra FONTE-DE-TAREFAS do `CLAUDE.md`: uma nota por tarefa em `06 - TAREFAS/Tare
 
 ## Passo 5b — Candidatos à Galáxia
 
-Depois da ata e das tarefas, antes da aprovação do Passo 6. Aplicar o bloco padrão à ata, com `Origem` apontando para a nota de reunião. Os candidatos não fazem parte da aprovação do Passo 6: ficam listados no resumo final, e nada é gravado por causa deles.
+Depois da ata e das tarefas, antes da aprovação do Passo 6. Aplicar o bloco padrão à ata, com `Origem` apontando para a nota de reunião. Os candidatos não fazem parte da aprovação do Passo 6: ficam listados no resumo final, e nenhuma nota da Galáxia é gravada por causa deles. Depois de mostrar os candidatos, gravar a linha de cada um na tabela "Pendentes" de `05 - GALÁXIA/_CANDIDATOS.md` (data de hoje, título, camada, por quê, origem), menos os de área sensível e os de título que já está na lista ou na Galáxia; se a pessoa aprovar ou negar de forma expressa na mesma sessão, tirar a linha. Sem manifestação, a linha fica para a próxima revisão (regras no próprio arquivo). Vale também quando o Passo 6 é cancelado: os candidatos foram oferecidos no resumo e entram na lista.
 
 ```markdown
 ### Candidatos à Galáxia
 Para cada ideia que passar no filtro ("eu buscaria isto fora de qualquer projeto?"), no máximo três:
 - **<título proposto>** — camada: <Filosofias | Conceitos | Frameworks | Metodologias | Táticas> — por quê: <uma frase>. Origem: [[<nota processada>]].
 Se nenhuma passar: "Nenhum candidato à Galáxia nesta rodada."
-Nada é gravado aqui; o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem.
+Nenhuma nota da Galáxia é gravada aqui: o usuário escolhe e a nota é criada pelo /processar-conteudo com a fonte apontando para a origem. Em sessão, cada candidato oferecido entra em `05 - GALÁXIA/_CANDIDATOS.md` e segue as regras escritas lá.
 ```
 
 Exemplo, nenhuma ideia passa:
@@ -137,6 +137,7 @@ Exemplo, uma ideia passa:
 
 ## Changelog
 
+- 1.2.0 (2026-11-19) — Passo 5b: cada candidato oferecido entra em `05 - GALÁXIA/_CANDIDATOS.md`, também quando o Passo 6 é cancelado; aprovado ou negado de forma expressa, sai; sem manifestação, fica para a próxima revisão.
 - 1.1.1 (2026-11-12) — palavra da transcrição que não dê para identificar com segurança fica como está e é citada na resposta final.
 - 1.1.0 (2026-11-08) — novo Passo 5b, Candidatos à Galáxia: o resumo final lista até três ideias da ata que passam no filtro da Galáxia, com a camada sugerida; fora da aprovação do Passo 6, nada é gravado; se a pessoa cancelar, nada é gravado e os candidatos só aparecem no resumo final.
 - 1.0.0 (2026-11-07) — derivada da skill privada v3.2.0, neutralizada para o framework público: só o modo interativo, fonte em transcrição colada ou arquivo do INBOX, tipologia externa, interna e estudo, nota pelo Template de Reunião.
