@@ -109,12 +109,14 @@ Estado da atualização, atualizado pelo `/atualizar` ao fim de cada etapa. Para
   ],
   "removidos": ["_templates/Template antigo.md"],
   "renomeados": [{"de": "_docs/Nome antigo.md", "para": "_docs/Nome novo.md"}],
-  "migracoes": [{"id": "tarefas-executor", "descricao": "...", "instrucoes": "..."}]
+  "migracoes": [{"id": "tarefas-executor", "descricao": "...", "instrucoes": "..."}],
+  "gitignore": [".segundo-cerebro/preparo/"]
 }
 ```
 
 - `acao`: `copiar`, `perguntar-apagado`, `nada`, `substituir`, `manter`, `mesclar`, `modulo`, `perguntar`, `criar` ou `ignorar` (tabela no SKILL.md).
-- `removidos`, `renomeados` e `migracoes` juntam os itens do `historico` da release com versão maior que `de` e até `para`.
+- `removidos`, `renomeados` e `migracoes` juntam os itens do `historico` da release com versão maior que `de` e até `para`. Arquivo que saiu numa versão e voltou na release nova (está em `arquivos`) não entra em `removidos`, e a renomeação cujo `de` voltou não entra em `renomeados`: ele fica. O `aplicar.ps1` recusa, com código 2, remover ou renomear arquivo listado na release nova.
+- `gitignore`: as linhas `.segundo-cerebro/backup/` e `.segundo-cerebro/preparo/` que faltam no `.gitignore` da instância. O `aplicar.ps1` as acrescenta no fim do arquivo, com backup, sem mexer no resto. Sem `.gitignore`, a lista vem vazia e nada é criado.
 - Sem base (`tem_base: false`), todo `fixo` diferente da nova (ou ausente) vem como `perguntar`.
 
 Códigos de saída: 0 gravou; 1 uso errado ou pasta não encontrada; 2 a release não confere (arquivo ausente ou hash diferente, lista impressa) ou o `segundo-cerebro.release.json` falta ou é inválido; 3 versões que não se comparam ou falta o `.segundo-cerebro-version`.
@@ -415,6 +417,7 @@ Sem base (dois lados), dizer "a sua versão" e "a versão nova", sem separar que
 > | Removido | <lista> |
 > | Renomeado | <lista> |
 > | Código de módulo trocado | <lista, ou "nenhum"> |
+> | Linhas acrescentadas ao `.gitignore` | <`gitignore` do `comparacao.json`; linha omitida se vazio> |
 >
 > Antes de gravar, eu <faço um commit do estado atual no Git | não faço commit, porque o vault não usa Git> e o próprio script guarda um backup de tudo o que vai mudar. Posso aplicar?
 

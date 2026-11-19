@@ -12,7 +12,7 @@ description: |
   desfazer: volta a atualização inteira ou um arquivo, a partir de um dos dois backups.
   USE WHEN o usuário digitar "/atualizar", "atualizar", "atualizar o vault", "versão nova",
   "saiu versão nova", "instalar a versão nova", "desfazer atualização", "/atualizar desfazer".
-version: 1.1.0
+version: 1.1.1
 created: 2026-11-10
 updated: 2026-11-17
 tags: [skill]
@@ -95,7 +95,7 @@ Arquivo com blocos `usuario:` é comparado pelo texto fora dos blocos (o script 
 
 **4 — Mescla.** Para cada `mesclar` (e cada `perguntar` em que a pessoa escolheu mesclar): monta a versão mesclada, grava em `.segundo-cerebro/preparo/v<para>/mesclados/<rel>`, mostra o que veio da pessoa e o que veio da release, e pergunta trecho a trecho onde os dois lados mudaram a mesma coisa. Blocos `usuario:` entram por transplante. **Feito quando:** cada mesclado está gravado e aprovado.
 
-**5 — Resumo e plano.** Mostra a tabela de ações (quantos arquivos em cada uma, e um por linha os que mudam). Grava em `preparo/v<para>/` o `.segundo-cerebro-version` (uma linha, `para`) e o `plano.json`: as cópias da tabela, a base nova (cada `fixo` da release, de `origem/` para `.segundo-cerebro/base/<rel>`), o `.segundo-cerebro-version` e o `segundo-cerebro.release.json` para a raiz, as remoções e renomeações aprovadas. Pergunta se pode aplicar. **Feito quando:** o plano está gravado e a pessoa aprovou.
+**5 — Resumo e plano.** Mostra a tabela de ações (quantos arquivos em cada uma, e um por linha os que mudam). Grava em `preparo/v<para>/` o `.segundo-cerebro-version` (uma linha, `para`) e o `plano.json`: as cópias da tabela, a base nova (cada `fixo` da release, de `origem/` para `.segundo-cerebro/base/<rel>`), o `.segundo-cerebro-version` e o `segundo-cerebro.release.json` para a raiz, as remoções e renomeações aprovadas. Se `gitignore` do `comparacao.json` não está vazio, a tabela diz que essas linhas entram no fim do `.gitignore` (o script as acrescenta; não vão no plano). Pergunta se pode aplicar. **Feito quando:** o plano está gravado e a pessoa aprovou.
 
 **6 — Commit antes.** Se existe `.git`: `git add -A` sem `.segundo-cerebro/preparo` e `.segundo-cerebro/backup` (pathspec no reference.md; o `.gitignore` da instância é do tipo `repo` e pode não ignorá-las) e `git commit -m "antes da atualização para v<para>"`. Árvore sem mudança conta como feito. Se falhar (Git ausente, autor não configurado), segue só com o backup e diz isso. **Feito quando:** `commit_antes` no log é `sim`, `nao` ou `sem-git`.
 
@@ -164,6 +164,7 @@ Desfazer tudo devolve também `.segundo-cerebro-version`, `segundo-cerebro.relea
 
 ## Changelog
 
+- 1.1.1 (2026-11-18) — arquivo removido ou renomeado numa versão e de volta numa seguinte fica (não entra em `removidos` nem em `renomeados`, e o `aplicar.ps1` recusa removê-lo); o `aplicar.ps1` acrescenta ao `.gitignore` da instância as linhas do preparo e do backup que faltam, com backup, e a etapa 5 mostra o acréscimo.
 - 1.1.0 (2026-11-17) — a etapa 1 oferece baixar o zip ("eu baixo para você") pelo `baixar.ps1`, que busca a versão mais recente nas releases do repositório oficial, fixo no script, e confere o SHA-256 publicado; um zip corrompido ou incompleto é recusado. Indicar um zip já baixado continua valendo.
 - 1.0.2 (2026-11-12) — o changelog da release passa a ser lido em `_docs/CHANGELOG.md` de `origem/`; a página de releases é indicada como a mesma de onde a pessoa baixou o vault; os arquivos de tipo `repo` citados são os que vêm no zip (os do clone, à parte), porque `scripts/`, READMEs e `CONTRIBUTING.md` deixam de ir no zip.
 - 1.0.1 (2026-11-11) — a etapa 7 documenta que o `aplicar.ps1` só aceita código de módulo (Guarda e Painel) vindo de `origem/` com o hash da release, e recusa com código 2 caso contrário.
