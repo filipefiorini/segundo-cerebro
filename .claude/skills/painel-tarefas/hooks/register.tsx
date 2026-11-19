@@ -734,9 +734,9 @@ export const register: Register = (on, options) => {
               ? (
                 <>
                   <Button key={k('concluirEsta')} label="Concluir esta" hotkey="c"
-                    onPress={() => void ocorrencia($, t, concluirOcorrencia, 'Ocorrência concluída. 🎉')} />
+                    onPress={() => { setV(x => ({ ...x, encerrando: null })); void ocorrencia($, t, concluirOcorrencia, 'Ocorrência concluída. 🎉') }} />
                   <Button key={k('pular')} label="Pular esta" hotkey="p"
-                    onPress={() => void ocorrencia($, t, pularOcorrencia, 'Ocorrência pulada.')} />
+                    onPress={() => { setV(x => ({ ...x, encerrando: null })); void ocorrencia($, t, pularOcorrencia, 'Ocorrência pulada.') }} />
                   <Button key={k('encerrar')} label={encerrando ? 'Confirmar encerramento' : 'Encerrar rotina'} hotkey="e"
                     onPress={() => {
                       // Encerrar a rotina inteira pede um segundo clique: o primeiro só arma.

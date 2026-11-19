@@ -591,6 +591,18 @@ test('recorrente: nota mudada desde a leitura não é gravada (concluir, pular, 
   await ui.unmount()
 })
 
+test('recorrente: Concluir esta desarma o Encerrar rotina; um clique habitual não encerra', async ($, on) => {
+  const { ui, arquivos } = await abrirRecorrente($, on, REGRAVADA)
+  await ui.press({ key: `encerrar:${REC}` })
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Confirmar encerramento')
+  await ui.press({ key: `concluirEsta:${REC}` })
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Encerrar rotina')
+  await ui.press({ key: `encerrar:${REC}` })
+  expect(arquivos[REC]).not.toContain('status: done')
+  expect((await botao(ui, 'encerrar'))?.props?.label).toBe('Confirmar encerramento')
+  await ui.unmount()
+})
+
 test('fazer agora: recorrente não manda concluir; tarefa comum segue igual', async ($, on) => {
   const { ui, conta } = await abrirRecorrente($, on, REGRAVADA)
   await ui.press({ key: `fazer:${REC}` })

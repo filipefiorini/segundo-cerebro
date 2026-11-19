@@ -11,7 +11,7 @@ description: |
   ou após reorganizações estruturais e adição de muitas notas.
 version: 1.2.4
 created: 2026-11-07
-updated: 2026-11-12
+updated: 2026-11-19
 tags: [skill]
 ---
 
