@@ -10,6 +10,8 @@
 
 ## 🧠 What it is
 
+**Your notes, tasks and decisions organized by Claude, on your own computer, and nothing important happens without your ok.**
+
 Organize what you learn, decide and need to do with an AI that works on its own and asks permission for what is sensitive and for the proposal of each batch.
 
 You ask and Claude carries it out; you approve the proposal once, not each step. It reads your captures, decides where each one goes, writes the notes, creates the tasks with due dates and answers about what the vault already records.
@@ -96,6 +98,7 @@ You ask; Claude Code reads the Constitution and proposes; the Guard, a module th
 
 - want to keep what they learn, decide and need to do in a place they own, as files on their own computer;
 - already use Claude and want it to read and maintain their notes following written rules;
+- don't program: setup is guided by `/instalar`, in a conversation with Claude;
 - want the AI to do the work and stop only at the proposal and at what is sensitive;
 - use Windows and read Portuguese.
 
