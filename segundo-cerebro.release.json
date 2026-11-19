@@ -100,7 +100,7 @@
     {
       "caminho": ".claude/skills/instalar/SKILL.md",
       "tipo": "fixo",
-      "sha256": "f1a219ad71d799f0280ce9ee8dc98c151e101e3866ed47e591cfce205913a50e"
+      "sha256": "14197f8116d95f7b5d1eccfe3fbf4c8ca0ab14ddcce4ee3749bbb1f0eaed2160"
     },
     {
       "caminho": ".claude/skills/instalar/exemplos.md",
@@ -115,7 +115,7 @@
     {
       "caminho": ".claude/skills/instalar/reference.md",
       "tipo": "fixo",
-      "sha256": "673c8094e0bc6379b879e2682ecb37dab479ec577ddaf1384c6de4208d738d9b"
+      "sha256": "dcb5fb44c49a0a38ee83c25b8c978d698820cce578d9bcd28a733bc42e77057d"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/.claude-plugin/plugin.json",
