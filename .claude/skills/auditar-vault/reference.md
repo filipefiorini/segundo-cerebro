@@ -57,6 +57,7 @@ Para cada arquivo, verificar:
 
 **Exceções por desenho** (não são achado):
 - Capturas de `00 - INBOX/` seguem o esquema de captura (`tipo`, `status`, `data`; sem `criado`).
+- Nota de tarefa em `06 - TAREFAS/Tarefas/` com `tags` em bloco (`tags:` e `  - task`): é o formato em que o TaskNotes regrava a nota (tarefa recorrente concluída no Obsidian, por exemplo), não desvio. As tags valem igual às da lista inline.
 - `CLAUDE.md`, `Homepage.md`, `_docs/CHANGELOG.md`, `CONTRIBUTING.md`, os `README*.md` e os `LEIA-ME.md` não têm frontmatter.
 - Em `.claude/skills/`, o `SKILL.md` segue o formato de skill (`name`, `description`, `version`); `reference.md` e `exemplos.md` não têm frontmatter.
 - `_logs/` segue o formato que cada skill define (`tipo: log` nos registros, `tipo: plano-inbox` nos planos do INBOX); só o `status` é conferido (Etapa 3).

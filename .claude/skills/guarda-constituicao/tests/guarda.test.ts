@@ -27,6 +27,8 @@ const DESFAZER = '.claude/skills/atualizar/desfazer.ps1'
 const PS = 'powershell -NoProfile -ExecutionPolicy Bypass -File'
 
 const tarefa = (fm: string) => `---\ntitle: "X — fazer"\n${fm}\nprojects: ["[[Trabalho]]"]\ntags: [task]\n---\n`
+// Nota recorrente como o TaskNotes regrava: listas em bloco, dateModified com hora, DTSTART na regra.
+const REGRAVADA = `---\ntitle: Teste — recorrência\nstatus: open\npriority: none\nscheduled: 2026-12-01\ndue: 2026-12-01\nrecurrence: DTSTART:20261102;FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1\nrecurrence_anchor: scheduled\ncomplete_instances:\n  - 2026-11-02\nprojects:\n  - "[[02 - ÁREAS/Trabalho/_CONTEXTO|Trabalho]]"\ncontexts: []\nexecutor: code\ndateCreated: 2026-11-19\ndateModified: 2026-11-19T08:56:48.633-03:00\ntags:\n  - task\nskipped_instances: []\n---\n\nCorpo.\n`
 
 const CASOS: Caso[] = [
   // GRAVAÇÃO: governança
@@ -61,6 +63,8 @@ const CASOS: Caso[] = [
   { nome: 'tarefa concluída sem due passa', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\y.md`, content: tarefa('status: done\ncompletedDate: 2026-11-06') }, espera: 'allow' },
   { nome: 'Edit que esvazia o due bloqueia', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'due: 2026-11-09', new_string: 'due:' }, espera: 'deny' },
   { nome: 'Edit que muda o due passa', tool: 'Edit', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\x.md`, old_string: 'due: 2026-11-09', new_string: 'due: 2026-11-10' }, espera: 'allow' },
+  { nome: 'aceita Write de tarefa recorrente com due', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\Teste — recorrência.md`, content: REGRAVADA }, espera: 'allow' },
+  { nome: 'Write de tarefa recorrente sem a linha due bloqueia', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\Teste — recorrência.md`, content: REGRAVADA.replace(/^due:.*\n/m, '') }, espera: 'deny' },
   { nome: 'nota sem tag task na pasta passa', tool: 'Write', input: { file_path: `${V}06 - TAREFAS\\Tarefas\\_rascunho.md`, content: '---\ntags: [nota]\n---\nx' }, espera: 'allow' },
   { nome: 'telefone em memory/ bloqueia', tool: 'Edit', input: { file_path: `${V}memory\\fatos.md`, old_string: 'a', new_string: `tel ${TELEFONE}` }, espera: 'deny' },
   { nome: 'telefone no memory.md bloqueia', tool: 'Edit', input: { file_path: `${V}memory.md`, old_string: 'a', new_string: `tel ${TELEFONE}` }, espera: 'deny' },

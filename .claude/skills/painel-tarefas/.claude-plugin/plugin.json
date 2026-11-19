@@ -1,7 +1,7 @@
 {
   "name": "painel-tarefas",
-  "version": "1.1.0",
-  "description": "Painel das tarefas do Segundo Cérebro ao lado do chat: vê o dia por projeto e trata cada tarefa (concluir, adiar, aguardar, prioridade, projeto, criar), gravando só os campos de data, status, prioridade e projeto em 06 - TAREFAS/Tarefas.",
+  "version": "1.2.0",
+  "description": "Painel das tarefas do Segundo Cérebro ao lado do chat: vê o dia por projeto e trata cada tarefa (concluir, adiar, aguardar, prioridade, projeto, criar), gravando só os campos de data, status, prioridade e projeto (e, nas recorrentes, o histórico: complete_instances, skipped_instances e a linha de histórico) em 06 - TAREFAS/Tarefas.",
   "author": { "name": "Segundo Cérebro" },
   "license": "MIT",
   "defaultEnabled": true,

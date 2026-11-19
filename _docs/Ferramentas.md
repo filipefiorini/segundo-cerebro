@@ -2,7 +2,7 @@
 tags: [docs, vault, ferramentas, referencia-tecnica]
 tipo: documentacao
 criado: 2026-11-07
-atualizado: 2026-11-07
+atualizado: 2026-11-19
 status: active
 ---
 
@@ -102,7 +102,7 @@ Módulos são extensões do Claude Code que vivem em `.claude/skills/<nome>/` e 
 | Módulo | O que faz | Comando |
 |---|---|---|
 | `guarda-constituicao` | Olha cada chamada de ferramenta antes de rodar. Pede confirmação em escrita de governança (`CLAUDE.md`, `VERSION`, `.segundo-cerebro-version`, `_docs/`, `_templates/`, `.claude/`, `02 - ÁREAS/Segundo Cérebro/`), em sobrescrita de nota, em comando destrutivo e em escrita em conector. Recusa CPF em nota, tarefa aberta sem `due`, telefone em arquivo lido em toda sessão, `.env` e credenciais, push forçado e reescrita de histórico. Sem pessoa para responder (`claude -p`), toda confirmação vira recusa. Ao responder, confira o caminho do arquivo e o resumo da mudança; aceite se baterem com o que você aprovou, recuse se não (detalhe em `/guarda`). | `/guarda` |
-| `painel-tarefas` | Painel ao lado do chat com as notas de `06 - TAREFAS/Tarefas/`: blocos por projeto, filtros, resumo do dia, concluir, adiar, aguardar, prioridade, "+ Nova" e abrir a nota no Obsidian (`explorer.exe`, só no Windows). Grava só `status`, `due`, `scheduled`, `priority`, `projects`, `completedDate` e `dateModified` (e apaga `prazo_padrao` ao mudar o `due`); cria nota nova sem sobrescrever. Lê o `sensivel` dos `_CONTEXTO.md` apontados por `projects`, sem nunca gravar neles, e oculta por padrão as áreas sensíveis. | `/tarefas` |
+| `painel-tarefas` | Painel ao lado do chat com as notas de `06 - TAREFAS/Tarefas/`: blocos por projeto, filtros, resumo do dia, concluir, adiar, aguardar, prioridade, "+ Nova" e abrir a nota no Obsidian (`explorer.exe`, só no Windows). Grava só `status`, `due`, `scheduled`, `priority`, `projects`, `completedDate`, `dateModified`, `complete_instances` e `skipped_instances` (e apaga `prazo_padrao` ao mudar o `due`); cria nota nova sem sobrescrever. Lê o `sensivel` dos `_CONTEXTO.md` apontados por `projects`, sem nunca gravar neles, e oculta por padrão as áreas sensíveis. Tarefa recorrente: marca visual, "Concluir esta", "Pular esta" e "Encerrar rotina", com uma linha de histórico no fim do corpo; o cartão esconde adiar e reagendar ("Pular esta" faz esse papel), e "▶ Fazer agora" pede ao Code que não mexa em status nem datas, deixando o clique em "Concluir esta" para você; o campo Repete do "+ Nova" cria a tarefa com a regra. Regra fora das três do [[Template de Tarefa]] fica para o Obsidian. | `/tarefas` |
 
 ### `/guarda`
 
@@ -182,7 +182,7 @@ Ao criar nota nova, aplicar o template mais adequado via Templater.
 | **Template de Pessoa** | Banco de Pessoas → `02 - ÁREAS/Pessoas/` | `banner-pessoas.png` |
 | **Template de Reunião** | Reunião, call ou conversa relevante | `banner-reuniao.png` |
 | **Template de Deliberação** | Deliberação de projeto ou área (pasta `Deliberações/` do escopo); traz também Em aberto, Critérios de abandono, Previsão e Revisão (Resultado preenchido só na revisão), Tarefas sugeridas e Candidatos à Galáxia, preenchidos pela `/deliberar` | — |
-| **Template de Tarefa** | Uma tarefa → `06 - TAREFAS/Tarefas/`; nasce com `due` no dia útil seguinte e `prazo_padrao: true` | — |
+| **Template de Tarefa** | Uma tarefa → `06 - TAREFAS/Tarefas/`; nasce com `due` no dia útil seguinte e `prazo_padrao: true`. O comentário do template traz as três regras de tarefa recorrente | — |
 | **Template de Tarefas** | `_TAREFAS.md` de projeto ou área (vista) | — |
 | **Template de Projeto (_CONTEXTO)** | Novo projeto em `01 - PROJETOS/` | `banner-projeto.png` |
 | **Template de Área (_CONTEXTO)** | Nova área em `02 - ÁREAS/` | `banner-area.png` |

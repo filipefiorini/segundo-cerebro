@@ -50,7 +50,7 @@
     {
       "caminho": ".claude/skills/auditar-vault/SKILL.md",
       "tipo": "fixo",
-      "sha256": "2eb595c72c5355e9944f26cb368b47ccb3aa7f0a08109eff706a107d7e73f220"
+      "sha256": "76292a7a53d8a752244f57a2e2a2a4f35ab06bb80a5f4ae021c15e2842b3790e"
     },
     {
       "caminho": ".claude/skills/auditar-vault/exemplos.md",
@@ -60,7 +60,7 @@
     {
       "caminho": ".claude/skills/auditar-vault/reference.md",
       "tipo": "fixo",
-      "sha256": "9e148220c17bd5b1130862b1b4f201bf36171de2c9ecc50abb802fd67c2d9aa8"
+      "sha256": "4e074b24ef341c8258f93a673ddba29764823cae9f5f45e1473d6d1e0208b020"
     },
     {
       "caminho": ".claude/skills/deliberar/SKILL.md",
@@ -75,7 +75,7 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "3961256e4b570ed344a149be587f218d2c5870cd7c122b8d108bcb3c2544ecfa"
+      "sha256": "c68041e080232c2d48aaa8e0cb48c5db7ecedd97a18618193043309632faa494"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/README.md",
@@ -90,12 +90,12 @@
     {
       "caminho": ".claude/skills/guarda-constituicao/hooks/register.ts",
       "tipo": "fixo",
-      "sha256": "251b45556b7be7c316165dea882f97108427f00a09917239f8bdb0d13c709b51"
+      "sha256": "c79da89468d4835a3607cfc7eb98b7a45fadb1f1106ff5250fd26c832225b752"
     },
     {
       "caminho": ".claude/skills/guarda-constituicao/tests/guarda.test.ts",
       "tipo": "fixo",
-      "sha256": "a3e7fa5b8aceb09f1289cce53e8d4fc396db1210a123de82c95639a4c85d6725"
+      "sha256": "de1b03b19a2e0920c7438682fe035f968513334a9fad3c9b7948a77a7e6c91a3"
     },
     {
       "caminho": ".claude/skills/instalar/SKILL.md",
@@ -120,12 +120,12 @@
     {
       "caminho": ".claude/skills/painel-tarefas/.claude-plugin/plugin.json",
       "tipo": "fixo",
-      "sha256": "f06f3b0d6bffcc21d28b45d20aea98f7d3a7d82e646f19044ca14e39abef1ec7"
+      "sha256": "495dc9b6bdbb52abc2a6faeb18e5f3c2760cd011e3a3e30e7d7a90f34c8cfd15"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/README.md",
       "tipo": "fixo",
-      "sha256": "bfae443e209a15c374a7dbdd73ff89fa72cd67d6cc848527dee7849d0a4c4fdb"
+      "sha256": "25dd7ae37ff7c514a439b6428abad5dbfd32786857cc10bad49f54c11bfa6923"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/hooks.json",
@@ -133,24 +133,39 @@
       "sha256": "d842d789476d67282d0f04b7e5fdc68a3d981ccec65dd79cfa2d11eed13fb828"
     },
     {
+      "caminho": ".claude/skills/painel-tarefas/hooks/recorrencia.ts",
+      "tipo": "fixo",
+      "sha256": "cf34742c7504647b7a06963a8fa554a67e244866e89f20f55d1efc07971c599d"
+    },
+    {
       "caminho": ".claude/skills/painel-tarefas/hooks/register.tsx",
       "tipo": "fixo",
-      "sha256": "928aa8c12c409fe9001772f483c7c8313cb60ccce4da7688a388654c2fdc260f"
+      "sha256": "0657898be18ee9f5989dd8609d32c05880388dd93210216cd24aee216f2ce7c8"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/hooks/tarefas.ts",
       "tipo": "fixo",
-      "sha256": "2acc3d8539da0518d2e48fd6a51ff22941ab16cc6c7186d0defaf6412f8f4ef3"
+      "sha256": "5bef395377cd6308b624796ff5cc5cd8369f31c87c32c07b5f8050de7eda1768"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/tests/fixtures.ts",
+      "tipo": "fixo",
+      "sha256": "bfcfb6ef691bc91ef97427366bd52819891b79de1eeaaa215ea399237f64b697"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/tests/painel.test.tsx",
       "tipo": "fixo",
-      "sha256": "bb69c97d61bf9f8abd39e0b2459a973b80be5d99b8fbcefabd0bd5308df5b8dc"
+      "sha256": "5678c3302b8c25901c5e245e5d9c499ba19a88113f591fbb272ec8ef74e1dcf4"
+    },
+    {
+      "caminho": ".claude/skills/painel-tarefas/tests/recorrencia.test.tsx",
+      "tipo": "fixo",
+      "sha256": "18261b57a9ccc14a55c61cc6f1c973ab7f454966cf85dc6779c43194ed584a07"
     },
     {
       "caminho": ".claude/skills/painel-tarefas/types/index.d.ts",
       "tipo": "fixo",
-      "sha256": "bd3b5365e751a69b8bb422f316ee98736aa588808a488846d8edaec0de1344a9"
+      "sha256": "9b17fc267c8490202c41ceb1de428ed533f07300831d3a928a5aab2ea7309537"
     },
     {
       "caminho": ".claude/skills/processar-conteudo/SKILL.md",
@@ -545,7 +560,7 @@
     {
       "caminho": "CLAUDE.md",
       "tipo": "fixo",
-      "sha256": "fb727bb72efd275d1879137fa5e36042ccf8a0405ed15ed73c9c81c4bf0bf9be"
+      "sha256": "b82d6c22859e3cb6973a3da9cca1a074d88a5a1541812981de2da1258fbc5484"
     },
     {
       "caminho": "Homepage.md",
@@ -705,12 +720,12 @@
     {
       "caminho": "_docs/Ferramentas.md",
       "tipo": "fixo",
-      "sha256": "711b5c5220bfba2db42cc96a0ce8d2f3bb242d4c5b1a6d05916009888cdbe1ee"
+      "sha256": "52ad6950cffdcea38ef52f2b58e7e94c938ab1889db732282331027c4c1725cc"
     },
     {
       "caminho": "_docs/Manual do Segundo Cérebro.md",
       "tipo": "fixo",
-      "sha256": "2b0763ef43a7bbcd8f5b46fbc09fa71dc3af866d997775ec63fd6f44283d0f26"
+      "sha256": "6fd599f050b2bfaa7ca2267e39d1590e130fd1f9b081ef695323d43c890ba939"
     },
     {
       "caminho": "_docs/O Método.md",
@@ -795,7 +810,7 @@
     {
       "caminho": "_templates/Template de Tarefa.md",
       "tipo": "fixo",
-      "sha256": "d056c1a4707db829966218388c0e7fed6bc4dd8fdc26d626c9622256884e557a"
+      "sha256": "918a4ad69415812841af5db9b67b74c532a940e0058544512568a454d8b03de5"
     },
     {
       "caminho": "_templates/Template de Tarefas.md",

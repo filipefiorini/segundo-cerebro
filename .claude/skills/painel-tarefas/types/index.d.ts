@@ -11,6 +11,7 @@ export type Tarefa = {
   executor: string
   concluidaEm: string | null
   recorrente: boolean
+  regraValida: boolean
   privada: boolean
   mtime: number
 }
@@ -25,6 +26,7 @@ export type Visao = {
   privadas: boolean
   aberta: string | null
   editandoData: string | null
+  encerrando: string | null
   abertos: string[]
   codeAberto: boolean
   minhasAberto: boolean
@@ -34,6 +36,7 @@ export type Visao = {
 }
 
 export type PrazoNovo = 'hoje' | 'amanha' | 'segunda' | 'data'
+export type Repete = 'nao' | 'mensal-util' | 'semanal' | 'mensal-dia'
 
 export type Rascunho = {
   titulo: string
@@ -41,11 +44,15 @@ export type Rascunho = {
   prazo: PrazoNovo
   dataLivre: string
   prioridade: string
+  repete: Repete
+  /** 0 = domingo … 6 = sábado, como `Date.getDay`. */
+  diaSemana: number
+  diaMes: string
   versao: number
 }
 
 declare module 'claude-code' {
   interface PluginState {
-    'painel-tarefas': { tarefas: Tarefa[]; visao: Visao; rascunho: Rascunho }
+    'painel-tarefas': { tarefas2: Tarefa[]; visao2: Visao; rascunho2: Rascunho }
   }
 }

@@ -2,7 +2,7 @@
 tags: [docs, vault, manual, segundo-cerebro]
 tipo: documentacao
 criado: 2026-11-07
-atualizado: 2026-11-10
+atualizado: 2026-11-19
 status: active
 ---
 
@@ -75,6 +75,7 @@ Cada tarefa é uma nota em `06 - TAREFAS/Tarefas/`, criada pelo [[Template de Ta
 - `executor`: `eu` (você faz) ou `code` (o Code faz numa sessão).
 - `due` é obrigatório: nenhuma tarefa nasce sem prazo. Fonte sem prazo → `due` no dia útil seguinte, com `prazo_padrao: true` para você rever a data. Ao combinar o prazo, troque a data e apague a marca.
 - `projects` aponta para o `_CONTEXTO` do escopo. Dado pessoal nunca no título.
+- Tarefa recorrente: uma nota só, com `scheduled`, `due`, `recurrence` e `recurrence_anchor: scheduled`. Concluir uma ocorrência (no Obsidian ou no painel) registra a data em `complete_instances`, leva `scheduled` e `due` para a próxima e deixa a nota aberta; se estava atrasada, vai à primeira ocorrência a partir de hoje, hoje incluído. Três regras: 1º dia de semana do mês `FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1`, toda segunda `FREQ=WEEKLY;BYDAY=MO`, todo dia 10 `FREQ=MONTHLY;BYMONTHDAY=10`. O painel cria (campo Repete do + Nova), conclui, pula e encerra a rotina nessas três e escreve uma linha de histórico no fim do corpo. Regra fora delas, contagem a partir da conclusão e feriado ficam para o Obsidian e para a mão.
 
 Projetos e áreas guardam arquivos com papéis distintos:
 
