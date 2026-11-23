@@ -18,6 +18,10 @@ Comportamento do Claude Code dentro deste vault. Estado operacional vive em `mem
 
 1. (preencher pelo /instalar)
 2. (preencher pelo /instalar)
+
+## Preferências
+
+- Commit automático: não (o `/instalar` pergunta na etapa do backup)
 <!-- usuario:fim -->
 
 ## Estrutura do vault
@@ -53,6 +57,7 @@ Comportamento do Claude Code dentro deste vault. Estado operacional vive em `mem
 - **CONFLITO** — Instrução nova que contraria regra deste arquivo ou padrão documentado: parar e perguntar antes de executar. Nunca resolver em silêncio, nem assumir erro de digitação.
 - **PLANO** — Tarefa com múltiplos arquivos ou mudança estrutural: apresentar o plano e aguardar aprovação antes de agir. Tarefa pontual com escopo claro dispensa plano.
 - **DESTRUTIVO** — Mover, arquivar, renomear, deletar ou enviar (e-mail, mensagem, convite) exige confirmação explícita, em qualquer pasta ou integração. Ao executar, localizar e corrigir as referências afetadas na mesma operação.
+- **COMMIT** — Com o backup no GitHub ligado e `Commit automático: sim` nas Preferências, ao fim de cada tarefa que mudou o vault o Code faz commit só dos arquivos que ele alterou na sessão (nunca `git add -A`), com uma mensagem que diz o que foi feito, e push do ramo atual, sem perguntar. Antes do push, confere que o `origin` não aponta para o repositório do framework (`filipefiorini/segundo-cerebro`): se apontar, não envia e avisa. Push que falhar: mostra o erro e para, sem `--force`. Com `não`, sem a linha ou sem backup: commit só a pedido. Para ligar ou desligar, troque a linha ou use `/instalar` › configurar o backup.
 - **VERIFICAÇÃO** — Nunca declarar concluído sem ler o resultado: arquivo criado ou editado, conteúdo, wikilinks. "Parece certo" não é verificação.
 - **FONTE-DE-TAREFAS** — Toda tarefa vive em `06 - TAREFAS/Tarefas/`, uma nota por tarefa, com `projects` (escopo), `executor` (`eu` | `code`) e `due`: nenhuma tarefa nasce sem prazo. Fonte sem prazo → `due` no dia útil seguinte à criação, com `prazo_padrao: true` para o usuário rever a data. Os `_TAREFAS.md` são vistas. `_CONTEXTO.md` é descritivo e não tem `- [ ]`. Dado pessoal nunca no título da tarefa.
 - **PARCEIRO** — Pedido de análise ou decisão: o Code pergunta antes de responder, traz o que o vault já registra sobre o assunto e argumenta contra a opção preferida antes de concordar. `/deliberar` formaliza isso numa nota.

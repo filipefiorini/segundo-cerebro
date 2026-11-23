@@ -18,6 +18,7 @@ criado: AAAA-MM-DD
 etapa_atual: 1
 etapas_concluidas: [0]
 backup: pendente
+commit_automatico:
 areas: []
 projects_importados: []
 conectores:
@@ -218,10 +219,14 @@ A cada "feito", o Code relê o que foi pedido. Se ainda não confere, diz o que 
 
 1. <prioridade>
 2. <prioridade>
+
+## Preferências
+
+- Commit automático: não (o `/instalar` pergunta na etapa do backup)
 <!-- usuario:fim -->
 ```
 
-Área sensível entra só com nome e caminho, como as outras. O segundo par (a tabela "Projetos e áreas ativos", da etapa 4) e o terceiro (Zero Trust, da etapa 6) não mudam aqui.
+Área sensível entra só com nome e caminho, como as outras. A seção "Preferências" vai como está, com `não`; quem muda a linha é a etapa 8. O segundo par (a tabela "Projetos e áreas ativos", da etapa 4) e o terceiro (Zero Trust, da etapa 6) não mudam aqui.
 
 > Este é o trecho do `CLAUDE.md` com as suas informações. Posso gravar assim? Se quiser mudar algo, me diga o quê.
 >
@@ -442,9 +447,16 @@ O Code nunca pede senha, token ou código no chat. Se a pessoa colar um, avisar 
 
 Passo que falhar: pedir a mensagem que apareceu (print ou texto), explicar em uma frase e repetir o passo. Se travar, `backup: pendente` com a pendência "terminar o backup a partir do passo <n>" e seguir.
 
-**Gravar:** no log, `backup: sim` depois do passo 9 conferido; `nao` ou `pendente` nos outros casos. Nenhum endereço de repositório vai para o log.
+10. **Commit automático.** Só depois do passo 9 conferido. Antes, ler o primeiro par de marcadores `usuario:` do `CLAUDE.md`.
+    > Última pergunta do backup. O Obsidian já envia tudo a cada 30 minutos. Além disso, quando eu terminar uma tarefa que mudou o vault, posso guardar e enviar na hora só o que eu alterei, com uma mensagem dizendo o que foi feito. Assim fica fácil achar ou desfazer depois, e você não precisa me pedir. O que você editar no Obsidian continua indo pelo envio de 30 minutos, não pelo meu. Quer ligar? Dá para desligar quando quiser.
 
-**Feito quando:** `backup` é `sim` ou `nao`, ou `pendente` com a pendência registrada.
+    **Sim:** um Edit no `CLAUDE.md` que troca a linha `- Commit automático: ...` da seção "Preferências" do primeiro par por `- Commit automático: sim`. Se a seção não existir (vault instalado antes da 1.0.2), acrescentar ao fim do primeiro par, antes do `<!-- usuario:fim -->`, uma linha em branco, `## Preferências`, outra linha em branco e `- Commit automático: sim`. A Guarda pede confirmação para alterar o `CLAUDE.md`: é esperado. Reler e conferir que os três pares de marcadores continuam lá. **Não:** a linha fica com `não`; nada é gravado. Nos dois casos, `commit_automatico: sim | nao` no log.
+
+**Gravar:** no log, `backup: sim` depois do passo 9 conferido; `nao` ou `pendente` nos outros casos; `commit_automatico` depois do passo 10. Nenhum endereço de repositório vai para o log.
+
+**Já com backup.** Na segunda execução, opção 4, com `backup: sim` no log ou o `origin` já apontando para um repositório da pessoa: não refazer os passos 1 a 9, só o passo 10.
+
+**Feito quando:** `backup` é `sim` (com `commit_automatico` preenchido) ou `nao`, ou `pendente` com a pendência registrada.
 
 ---
 
