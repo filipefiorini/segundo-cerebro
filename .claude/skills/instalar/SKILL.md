@@ -6,9 +6,9 @@ description: |
   Tudo pelo chat, grava só com aprovação, pode retomar. Num vault instalado, revisa ou liga
   uma peça. USE WHEN "/instalar", "instalar o vault", "retomar a instalação" ou sem
   `.segundo-cerebro-version`.
-version: 1.4.4
+version: 1.5.0
 created: 2026-11-07
-updated: 2026-11-18
+updated: 2026-11-23
 tags: [skill]
 ---
 
@@ -59,7 +59,7 @@ Dois exemplos:
 | 5 | Projetos de outras IAs | Projects do Claude, Projetos e GPTs do ChatGPT, Gems do Gemini ou outra IA: instruções coladas no chat, arquivos em `00 - INBOX/<nome>/`, destino proposto e gravado com aprovação. Conversas ficam de fora. |
 | 6 | Ferramentas do Claude | Opcional: conectores do claude.ai (a pessoa conecta; o Code grava a linha Zero Trust com aprovação) e plugins recomendados do Claude, como o superpowers, instalados pela pessoa no app. |
 | 7 | Módulos | Confirma que Guarda e Painel estão carregados, explica o que fazem e como desligar. |
-| 8 | Backup | Se a pessoa quiser: Git para Windows, GitHub, repositório privado e o plugin Git, passo a passo com janela. |
+| 8 | Backup | Se a pessoa quiser: Git para Windows, GitHub, repositório privado e o plugin Git, passo a passo com janela; no fim, pergunta se liga o commit automático do Code (regra COMMIT). |
 | 9 | Pronto | Pergunta se a pessoa fica com as notas de exemplo ou começa sem elas (e as apaga, se ela quiser). Grava a versão, o registro no `_HISTORICO.md` e a base do `/atualizar`, e mostra a mensagem de Pronto. |
 
 ## Estado e retomada
@@ -73,6 +73,7 @@ criado: AAAA-MM-DD
 etapa_atual: 0..9               # a próxima etapa a fazer; 9 quando terminou
 etapas_concluidas: [..]
 backup: pendente                # sim | nao | pendente
+commit_automatico:              # sim | nao, preenchido no passo 10 da etapa 8
 areas: [..]
 projects_importados: [..]
 conectores: [..]                # etapa 6
@@ -99,7 +100,7 @@ Num vault com `.segundo-cerebro-version`, a skill não refaz a instalação. Ofe
 1. **Revisar o bloco do usuário** — mostra os três pares de marcadores do `CLAUDE.md` (o do dono, o da tabela de áreas e projetos e o da Zero Trust); grava a revisão aprovada, como na etapa 3.
 2. **Criar área nova** — como na etapa 4, para uma área ou projeto.
 3. **Importar projeto novo de outra IA** — como na etapa 5.
-4. **Configurar o backup** — como na etapa 8; atualiza `backup` no log.
+4. **Configurar o backup** — como na etapa 8; atualiza `backup` no log. Com o backup já ligado, só o passo 10 (commit automático).
 5. **Instalar os plugins do Obsidian** — como na etapa 1, para computador novo (restauração do backup) ou plugin do núcleo faltando.
 6. **Ligar uma ferramenta do Claude** — conector ou plugin, como na etapa 6.
 7. **Apagar as notas de exemplo** — só se a pessoa ficou com elas na etapa 9; mesmo procedimento, com a confirmação da Guarda.
@@ -117,6 +118,7 @@ Cada uma acrescenta uma linha à seção "Depois da instalação" do log. `.segu
 
 ## Changelog
 
+- 1.5.0 (2026-11-23) — passo 10 na etapa 8: com o backup conferido, o Code pergunta se pode fazer commit e push sozinho ao fim de cada tarefa, só dos arquivos que alterou (regra COMMIT do `CLAUDE.md`). A resposta vai para a linha `Commit automático` da nova seção "Preferências", no primeiro bloco `usuario:`, que a etapa 3 passa a gravar com `não`. O log ganha `commit_automatico`; a opção 4 da segunda execução, com o backup já ligado, faz só esse passo.
 - 1.4.4 (2026-11-18) — achados do teste de instalação: a etapa 0 avisa que a conferência leva um ou dois minutos antes de ler e, com o vault dentro do OneDrive, explica o risco e deixa a pessoa decidir se segue ali; a etapa 1 diz quanto tempo os plugins levam; a etapa 5 tira os CPFs do material antes de propor a gravação e diz quantos tirou.
 - 1.4.3 (2026-11-12) — achados do ensaio: na etapa 2, quando a pessoa dá só os nomes das áreas, o Code propõe uma frase por área a partir do que ela contou, para aprovar ou ajustar, em vez de pedir as frases. Nova regra 11: resposta que não casa com nenhuma opção da pergunta volta como pergunta, sem palpite e sem proposta de gravação.
 - 1.4.2 (2026-11-11) — apagar os exemplos (etapa 9 e opção 7) usa exatamente os caminhos que o Code listou e a pessoa aprovou, num `Remove-Item -LiteralPath` com a lista explícita, em vez de buscar de novo; a listagem conta só `exemplo: true` no frontmatter, sensível a maiúsculas. A linha do `_HISTORICO.md` omite "e N área(s) sensível(is)" quando N = 0. O caso de `ausente:` passa a ser um `fixo` apagado pela pessoa (exemplo recusado não é `fixo`).
